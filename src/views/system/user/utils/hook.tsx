@@ -22,7 +22,7 @@ import {
   getRoleIds,
   getDeptList,
   getUserList,
-  getAllRoleList,
+  getAssignableRoles,
   addUser,
   assignRoles,
   updateUserStatus,
@@ -272,7 +272,7 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
       status: form.status !== undefined ? form.status : undefined,
       deptId: form.deptId || undefined
     };
-    
+
     const { data } = await getUserList(params);
     dataList.value = data.list;
     pagination.total = data.total;
@@ -549,41 +549,55 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
 
   /** 分配角色 */
   async function handleRole(row) {
-    // 选中的角色列表
-    const ids = (await getRoleIds({ userId: row.id })).data ?? [];
-    addDialog({
-      title: `分配 ${row.username} 用户的角色`,
-      props: {
-        formInline: {
-          username: row?.username ?? "",
-          nickname: row?.nickname ?? "",
-          roleOptions: roleOptions.value ?? [],
-          ids
-        }
-      },
-      width: "400px",
-      draggable: true,
-      fullscreen: deviceDetection(),
-      fullscreenIcon: true,
-      closeOnClickModal: false,
-      contentRenderer: () => h(roleForm),
-      beforeSure: (done, { options }) => {
-        const curData = options.props.formInline as any; // 使用 any 类型暂时解决类型问题
-        // 根据实际业务使用curData.ids和row里的某些字段去调用修改角色接口即可
-        assignRoles({
-          userId: row.id,
-          roleIds: curData.ids
-        }).then(() => {
-          message("分配角色成功", { type: "success" });
-          done(); // 关闭弹框
-          onSearch(); // 刷新表格数据
-        }).catch(error => {
-          message(`分配角色失败：${error.message}`, {
-            type: "error"
+    try {
+      // 获取所有角色列表
+      const allRolesResponse = await getAssignableRoles();
+      // 提取角色列表数组，getAssignableRoles直接返回数组而不是分页结构
+      const allRoles = allRolesResponse.data || [];
+      
+      // 选中的角色列表
+      const rolesResponse = await getRoleIds({ userId: row.id });
+      const roles = rolesResponse.data ?? [];
+      
+      // 从角色对象数组中提取ID数组
+      const ids = roles.map(role => role.id);
+      
+      addDialog({
+        title: `分配 ${row.username} 用户的角色`,
+        props: {
+          formInline: {
+            username: row?.username ?? "",
+            nickname: row?.nickname ?? "",
+            roleOptions: allRoles,
+            ids
+          }
+        },
+        width: "400px",
+        draggable: true,
+        fullscreen: deviceDetection(),
+        fullscreenIcon: true,
+        closeOnClickModal: false,
+        contentRenderer: () => h(roleForm),
+        beforeSure: (done, { options }) => {
+          const curData = options.props.formInline as any; // 使用 any 类型暂时解决类型问题
+          // 根据实际业务使用curData.ids和row里的某些字段去调用修改角色接口即可
+          assignRoles({
+            userId: row.id,
+            roleIds: curData.ids
+          }).then(() => {
+            message("分配角色成功", { type: "success" });
+            done(); // 关闭弹框
+            onSearch(); // 刷新表格数据
+          }).catch(error => {
+            message(`分配角色失败：${error.message}`, {
+              type: "error"
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    } catch (error) {
+      message(`加载角色信息失败：${error.message}`, { type: "error" });
+    }
   }
 
   /** 删除用户 */
@@ -613,6 +627,7 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
       });
   }
 
+  
   onMounted(async () => {
     treeLoading.value = true;
     onSearch();
@@ -624,7 +639,7 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
     treeLoading.value = false;
 
     // 角色列表
-    roleOptions.value = (await getAllRoleList()).data;
+    roleOptions.value = (await getAssignableRoles()).data;
   });
 
   return {

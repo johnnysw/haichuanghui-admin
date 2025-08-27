@@ -155,6 +155,10 @@ export namespace Role {
   /** 角色表单数据 */
   export interface FormData extends Omit<BaseRole, 'id'> {
     id?: number;
+    username?: string;
+    nickname?: string;
+    roleOptions?: BaseRole[];
+    ids?: number[];
   }
 
   export interface FormProps {

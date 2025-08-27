@@ -44,19 +44,19 @@ export const updateUserStatus = (data: { userId: number; status: number }) => {
   return http.request<Response>("put", `/api/v1/admin/users/${data.userId}/status`, { data: { status: data.status } });
 };
 
-/** 系统管理-用户管理-获取所有角色列表 */
-export const getAllRoleList = () => {
-  return http.request<Response<Role.BaseRole[]>>("get", "/api/v1/admin/roles");
+/** 系统管理-用户管理-获取所有可分配的角色列表 */
+export const getAssignableRoles = () => {
+  return http.request<Response<Role.BaseRole[]>>("get", "/api/v1/admin/roles/active");
 };
 
 /** 系统管理-用户管理-根据 userId，获取对应角色id列表 */
 export const getRoleIds = (data: { userId: number }) => {
-  return http.request<Response<number[]>>("get", `/api/v1/admin/users/${data.userId}/roles`);
+  return http.request<Response<Role.BaseRole[]>>("get", `/api/v1/admin/users/${data.userId}/roles`);
 };
 
 /** 系统管理-用户管理-分配角色 */
 export const assignRoles = (data: { userId: number; roleIds: number[] }) => {
-  return http.request<Response>("put", `/api/v1/admin/users/${data.userId}/roles`, { data });
+  return http.request<Response>("put", `/api/v1/admin/users/${data.userId}/roles`, { data: { roleIds: data.roleIds } });
 };
 
 // ==================== 角色管理相关接口 ====================
