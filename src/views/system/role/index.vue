@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { useRole } from "./utils/hook";
-import { ref, computed, nextTick, onMounted } from "vue";
+import { ref, computed, nextTick, onMounted, watch } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import {
   delay,
   subBefore,
-  deviceDetection,
   useResizeObserver
 } from "@pureadmin/utils";
 
@@ -78,15 +77,32 @@ const {
   handleSelectionChange
 } = useRole(treeRef);
 
-onMounted(() => {
-  useResizeObserver(contentRef, async () => {
-    await nextTick();
-    delay(60).then(() => {
-      treeHeight.value = parseFloat(
-        subBefore(tableRef.value.getTableDoms().tableWrapper.style.height, "px")
-      );
-    });
+const recalcTreeHeight = async () => {
+  await nextTick();
+  delay(60).then(() => {
+    let h = 0;
+    try {
+      const tableDom = tableRef.value?.getTableDoms?.().tableWrapper;
+      const styleH = tableDom?.style?.height || "";
+      const parsed = parseFloat(subBefore(styleH, "px"));
+      if (!Number.isNaN(parsed) && parsed > 0) h = parsed;
+    } catch (e) {}
+    if (!h) {
+      const contentH = contentRef.value?.clientHeight || 0;
+      const viewportH = typeof window !== "undefined" ? window.innerHeight : 0;
+      h = contentH || viewportH - 260; // 回退值，避免为0
+    }
+    treeHeight.value = Math.max(280, Math.floor(h - 80));
   });
+};
+
+onMounted(() => {
+  useResizeObserver(contentRef, recalcTreeHeight);
+  recalcTreeHeight();
+});
+
+watch(isShow, () => {
+  recalcTreeHeight();
 });
 </script>
 
@@ -142,15 +158,16 @@ onMounted(() => {
 
     <div
       ref="contentRef"
-      :class="['flex', deviceDetection() ? 'flex-wrap' : '']"
+      :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
     >
-      <PureTableBar
-        :class="[isShow && !deviceDetection() ? '!w-[60vw]' : 'w-full']"
-        style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
-        title="角色管理"
-        :columns="columns"
-        @refresh="onSearch"
-      >
+      <div :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']" class="w-full min-w-0">
+        <PureTableBar
+          class="w-full min-w-0"
+          style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
+          title="角色管理"
+          :columns="columns"
+          @refresh="onSearch"
+        >
         <template #buttons>
           <el-button
             type="primary"
@@ -259,11 +276,12 @@ onMounted(() => {
             </template>
           </pure-table>
         </template>
-      </PureTableBar>
+        </PureTableBar>
+      </div>
 
       <div
         v-if="isShow"
-        class="!min-w-[calc(100vw-60vw-268px)] w-full mt-2 px-2 pb-2 bg-bg_color ml-2 overflow-auto"
+        class="col-span-12 md:col-span-5 w-full min-w-0 mt-2 md:mt-0 px-2 pb-2 bg-bg_color overflow-auto md:max-h-[calc(100vh-200px)]"
       >
         <div class="flex justify-between w-full px-3 pt-5 pb-4">
           <div class="flex">

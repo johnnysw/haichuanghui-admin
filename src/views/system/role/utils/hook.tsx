@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import editForm from "../form.vue";
 import { handleTree } from "@/utils/tree";
 import { message } from "@/utils/message";
@@ -58,6 +57,11 @@ export function useRole(treeRef: Ref) {
       prop: "code"
     },
     {
+      label: "备注",
+      prop: "remark",
+      minWidth: 160
+    },
+    {
       label: "状态",
       cellRenderer: scope => (
         <el-switch
@@ -74,18 +78,6 @@ export function useRole(treeRef: Ref) {
         />
       ),
       minWidth: 90
-    },
-    {
-      label: "备注",
-      prop: "remark",
-      minWidth: 160
-    },
-    {
-      label: "创建时间",
-      prop: "created_time",
-      minWidth: 160,
-      formatter: ({ created_time }) =>
-        created_time ? dayjs(created_time).format("YYYY-MM-DD HH:mm:ss") : "-"
     },
     {
       label: "操作",
@@ -186,7 +178,7 @@ export function useRole(treeRef: Ref) {
       code: form.code || undefined,
       status: form.status !== undefined ? form.status : undefined
     };
-    
+
     const { data } = await getRoleList(params);
     dataList.value = data.list;
     pagination.total = data.total;
@@ -293,14 +285,14 @@ export function useRole(treeRef: Ref) {
       const checkedKeys = treeRef.value.getCheckedKeys(false);
       const halfCheckedKeys = treeRef.value.getHalfCheckedKeys();
       const menuIds = [...checkedKeys, ...halfCheckedKeys];
-      
+
       // 调用保存接口
       await saveRoleMenus({ roleId: id, menuIds });
-      
+
       message(`角色"${name}"的菜单权限修改成功`, {
         type: "success"
       });
-      
+
       // 关闭菜单权限窗口
       handleMenu();
     } catch (error) {
