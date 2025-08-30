@@ -20,9 +20,14 @@ export const getFullImageUrl = (url: string): string => {
     return url;
   }
 
-  // 如果是以/public开头的相对路径，则拼接API基础URL
-  if (url.startsWith("/public")) {
-    return `${apiBaseUrl}${url}`;
+  // 如果是以/uploads开头的相对路径，则拼接API基础URL
+  if (url.startsWith("/uploads")) {
+    return `${apiBaseUrl}/public${url}`;
+  }
+
+  // 兼容性处理：如果是不带/的uploads开头，也要处理
+  if (url.startsWith("uploads")) {
+    return `${apiBaseUrl}/public/${url}`;
   }
 
   return url;

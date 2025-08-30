@@ -1,14 +1,14 @@
 import { ref } from "vue";
-import { updateCompetition, reviewCompetition, recommendCompetition } from "../api";
+import { updateCompetition, reviewCompetition, recommendCompetition } from "../../list/api";
 import { message } from "@/utils/message";
 import { ElMessageBox } from "element-plus";
-import type { Competition } from "@/types/competition";
+import type { CompetitionForm } from "../../list/types/types";
 
 export function useCompetitionDetailActions() {
   const formRef = ref();
 
   // 保存大赛信息
-  async function saveCompetition(id: number, data: Competition.CompetitionForm) {
+  async function saveCompetition(id: number, data: CompetitionForm) {
     try {
       const result = await updateCompetition(id, data);
       if (result.code === 200) {
@@ -27,7 +27,7 @@ export function useCompetitionDetailActions() {
   // 审核大赛
   async function reviewCompetitionAction(id: number, status: number, reviewComment?: string) {
     try {
-      const result = await reviewCompetition(id, status, reviewComment);
+      const result = await reviewCompetition(id, { status, reviewComment });
       if (result.code === 200) {
         message("审核成功", { type: "success" });
         return { success: true, data: result.data };
@@ -44,7 +44,7 @@ export function useCompetitionDetailActions() {
   // 推荐/取消推荐大赛
   async function toggleRecommendation(id: number, isRecommended: boolean) {
     try {
-      const result = await recommendCompetition(id, isRecommended);
+      const result = await recommendCompetition(id, { isRecommended });
       if (result.code === 200) {
         const action = isRecommended ? "推荐" : "取消推荐";
         message(`${action}成功`, { type: "success" });

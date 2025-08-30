@@ -5,7 +5,7 @@ import LayFooter from "../lay-footer/index.vue";
 import { useTags } from "@/layout/hooks/useTag";
 import { useGlobal, isNumber } from "@pureadmin/utils";
 import BackTopIcon from "@/assets/svg/back_top.svg?component";
-import { h, computed, Transition, defineComponent } from "vue";
+import { h, computed, Transition, defineComponent, onMounted, nextTick, ref } from "vue";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 
 const props = defineProps({
@@ -105,6 +105,30 @@ const transitionMain = defineComponent({
     );
   }
 });
+
+// 防御性处理 Backtop 的 target，避免在容器未渲染时抛错
+const backtopTarget = ref<string>(".app-main .el-scrollbar__wrap");
+const backtopReady = ref<boolean>(false);
+
+function resolveBacktopTarget() {
+  nextTick(() => {
+    const candidates = [
+      ".app-main .el-scrollbar__wrap",
+      ".app-main"
+    ];
+    const found = candidates.find(sel => document.querySelector(sel));
+    if (found) {
+      backtopTarget.value = found;
+      backtopReady.value = true;
+    } else {
+      backtopReady.value = false;
+    }
+  });
+}
+
+onMounted(() => {
+  resolveBacktopTarget();
+});
 </script>
 
 <template>
@@ -132,10 +156,11 @@ const transitionMain = defineComponent({
                 }"
               >
               <el-backtop
+                v-if="backtopReady"
                 :title="t('buttons.pureBackTop')"
                 :right="10"
                 :bottom="10"
-                target=".app-main .el-scrollbar__wrap"
+                :target="backtopTarget"
               >
                 <BackTopIcon />
               </el-backtop>

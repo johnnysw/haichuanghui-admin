@@ -190,6 +190,9 @@ menus:
   pureMindMap: 思维导图
   pureMenuOverflow: 目录超出显示 Tooltip 文字提示
   pureChildMenuOverflow: 菜单超出显示 Tooltip 文字提示
+  pureCompetition: 创业大赛
+  pureCompetitionList: 大赛列表
+  pureCompetitionRegistration: 报名管理
 status:
   pureLoad: 加载中...
   pureMessage: 消息

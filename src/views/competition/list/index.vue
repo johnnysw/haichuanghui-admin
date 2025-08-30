@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useCompetitionTable } from "./composables/useCompetitionTable";
-import { useCompetitionFilter } from "./composables/useCompetitionFilter";
-import { useCompetitionActions } from "./composables/useCompetitionActions";
+import { ref, onMounted, onUnmounted } from "vue";
+import { useCompetitionList } from "./composables/useCompetitionTable";
 import { deviceDetection } from "@pureadmin/utils";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import CompetitionDrawer from "./components/CompetitionDrawer.vue";
+import type { FormItemProps } from "./types/types";
 
 import Delete from "@iconify-icons/ep/delete";
 import EditPen from "@iconify-icons/ep/edit-pen";
@@ -19,35 +19,90 @@ defineOptions({
 
 const formRef = ref();
 const tableRef = ref();
+const contentRef = ref();
+const drawerRef = ref();
 
-// 使用新的composables
-const { dataList, loading, isShow, pagination, columns, statusMap, fetchData, handleSizeChange, handleCurrentChange } = useCompetitionTable();
-const { form, formRef: filterFormRef, industryOptions, regionOptions, resetForm } = useCompetitionFilter();
-const { openDialog, openDetail, handleDelete } = useCompetitionActions();
+const {
+  form,
+  isShow,
+  loading,
+  columns,
+  dataList,
+  pagination,
+  industryOptions,
+  onSearch,
+  resetForm,
+  openDialog,
+  openDetail,
+  handleDelete,
+  handleSizeChange,
+  handleCurrentChange,
+  handleSelectionChange,
+  rowStyle
+} = useCompetitionList();
 
-// 将filterFormRef赋值给formRef以保持一致性
-formRef.value = filterFormRef.value;
-
-// 处理搜索功能
-const onSearch = () => {
-  pagination.currentPage = 1; // 重置到第一页
-  const params = {
-    ...form,
-    page: pagination.currentPage,
-    limit: pagination.pageSize
-  };
-  fetchData(params);
-};
-
-// 组件挂载时获取数据
-onMounted(() => {
-  onSearch();
+const drawerVisible = ref(false);
+const drawerTitle = ref("");
+const drawerFormData = ref<FormItemProps>({
+  id: undefined,
+  title: "",
+  industryId: 0,
+  regionId: 0,
+  organizer: "",
+  status: 0,
+  startTime: "",
+  endTime: "",
+  registrationDeadline: "",
+  location: "",
+  isRecommended: false,
+  description: "",
+  summary: ""
 });
 
-// 处理分页变化
-const handleSelectionChange = (val) => {
-  console.log("handleSelectionChange", val);
+// 处理打开新增大赛抽屉事件
+const handleOpenAddDrawer = (event: CustomEvent) => {
+  drawerTitle.value = event.detail.title;
+  // 深拷贝，避免引用同一对象导致状态串联
+  drawerFormData.value = JSON.parse(JSON.stringify(event.detail.formData));
+  drawerVisible.value = true;
+  setTimeout(() => {
+    if (drawerRef.value) {
+      drawerRef.value.showDrawer();
+    }
+  }, 0);
 };
+
+// 处理打开修改大赛抽屉事件
+const handleOpenEditDrawer = (event: CustomEvent) => {
+  drawerTitle.value = event.detail.title;
+  // 深拷贝，避免引用同一对象导致状态串联
+  drawerFormData.value = JSON.parse(JSON.stringify(event.detail.formData));
+  drawerVisible.value = true;
+  setTimeout(() => {
+    if (drawerRef.value) {
+      drawerRef.value.showDrawer();
+    }
+  }, 0);
+};
+
+// 处理抽屉提交事件
+const handleDrawerSubmit = (data: FormItemProps) => {
+  console.log("提交数据:", data);
+  // 保存成功后刷新表格
+  onSearch();
+};
+
+// 组件挂载时监听事件
+onMounted(() => {
+  window.addEventListener('openAddCompetitionDrawer', handleOpenAddDrawer as EventListener);
+  window.addEventListener('openEditCompetitionDrawer', handleOpenEditDrawer as EventListener);
+});
+
+// 组件卸载时移除事件监听
+onUnmounted(() => {
+  window.removeEventListener('openAddCompetitionDrawer', handleOpenAddDrawer as EventListener);
+  window.removeEventListener('openEditCompetitionDrawer', handleOpenEditDrawer as EventListener);
+});
 </script>
 
 <template>
@@ -114,83 +169,101 @@ const handleSelectionChange = (val) => {
       </el-form-item>
     </el-form>
 
-    <PureTableBar
-      :class="[isShow && !deviceDetection() ? '!w-[60vw]' : 'w-full']"
-      title="创业大赛列表"
-      :columns="columns"
-      @refresh="onSearch"
+    <div
+      ref="contentRef"
+      :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
     >
-      <template #buttons>
-        <el-button
-          type="primary"
-          :icon="useRenderIcon(AddFill)"
-          @click="openDialog()"
+      <div :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']" class="w-full min-w-0">
+        <PureTableBar
+          class="w-full min-w-0"
+          style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
+          title="创业大赛列表"
+          :columns="columns"
+          @refresh="onSearch"
         >
-          新增大赛
-        </el-button>
-      </template>
-      <template v-slot="{ size, dynamicColumns }">
-        <pure-table
-          ref="tableRef"
-          align-whole="center"
-          showOverflowTooltip
-          table-layout="auto"
-          :loading="loading"
-          :size="size"
-          adaptive
-          :adaptiveConfig="{ offsetBottom: 108 }"
-          :data="dataList"
-          :columns="dynamicColumns"
-          :pagination="{ ...pagination, size }"
-          :header-cell-style="{
-            background: 'var(--el-fill-color-light)',
-            color: 'var(--el-text-color-primary)'
-          }"
-          @selection-change="handleSelectionChange"
-          @page-size-change="handleSizeChange"
-          @page-current-change="handleCurrentChange"
-        >
-          <template #operation="{ row }">
+          <template #buttons>
             <el-button
-              class="reset-margin"
-              link
               type="primary"
-              :size="size"
-              :icon="useRenderIcon(View)"
-              @click="openDetail(row)"
+              :icon="useRenderIcon(AddFill)"
+              @click="openDialog()"
             >
-              查看
+              新增大赛
             </el-button>
-            <el-button
-              class="reset-margin"
-              link
-              type="primary"
+          </template>
+          <template v-slot="{ size, dynamicColumns }">
+            <pure-table
+              ref="tableRef"
+              align-whole="center"
+              showOverflowTooltip
+              table-layout="auto"
+              :loading="loading"
               :size="size"
-              :icon="useRenderIcon(EditPen)"
-              @click="openDialog('修改', row)"
+              adaptive
+              :row-style="rowStyle"
+              :adaptiveConfig="{ offsetBottom: 108 }"
+              :data="dataList"
+              :columns="dynamicColumns"
+              :pagination="{ ...pagination, size }"
+              :header-cell-style="{
+                background: 'var(--el-fill-color-light)',
+                color: 'var(--el-text-color-primary)'
+              }"
+              @selection-change="handleSelectionChange"
+              @page-size-change="handleSizeChange"
+              @page-current-change="handleCurrentChange"
             >
-              修改
-            </el-button>
-            <el-popconfirm
-              :title="`是否确认删除大赛名为${row.title}的这条数据`"
-              @confirm="handleDelete(row)"
-            >
-              <template #reference>
+              <template #operation="{ row }">
                 <el-button
                   class="reset-margin"
                   link
                   type="primary"
                   :size="size"
-                  :icon="useRenderIcon(Delete)"
+                  :icon="useRenderIcon(View)"
+                  @click="openDetail(row)"
                 >
-                  删除
+                  查看
                 </el-button>
+                <el-button
+                  class="reset-margin"
+                  link
+                  type="primary"
+                  :size="size"
+                  :icon="useRenderIcon(EditPen)"
+                  @click="openDialog('修改', row)"
+                >
+                  修改
+                </el-button>
+                <el-popconfirm
+                  :title="`是否确认删除大赛名为${row.title}的这条数据`"
+                  @confirm="handleDelete(row)"
+                >
+                  <template #reference>
+                    <el-button
+                      class="reset-margin"
+                      link
+                      type="primary"
+                      :size="size"
+                      :icon="useRenderIcon(Delete)"
+                    >
+                      删除
+                    </el-button>
+                  </template>
+                </el-popconfirm>
               </template>
-            </el-popconfirm>
+            </pure-table>
           </template>
-        </pure-table>
-      </template>
-    </PureTableBar>
+        </PureTableBar>
+      </div>
+    </div>
+    
+    <!-- 竞赛表单抽屉 -->
+    <CompetitionDrawer
+      ref="drawerRef"
+      v-model:visible="drawerVisible"
+      :title="drawerTitle"
+      :form-data="drawerFormData"
+      @submit="handleDrawerSubmit"
+    />
   </div>
 </template>
 
@@ -201,5 +274,11 @@ const handleSelectionChange = (val) => {
 
 .main-content {
   margin: 24px 24px 0 !important;
+}
+
+.search-form {
+  :deep(.el-form-item) {
+    margin-bottom: 12px;
+  }
 }
 </style>

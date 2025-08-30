@@ -35,8 +35,8 @@ formRef.value = filterFormRef.value;
 const onSearch = () => {
   const params = {
     ...form,
-    page: pagination.currentPage,
-    limit: pagination.pageSize
+    pageNum: pagination.currentPage,
+    pageSize: pagination.pageSize
   };
   if (competitionId.value) {
     fetchData(competitionId.value, params);

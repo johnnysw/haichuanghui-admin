@@ -1,8 +1,8 @@
 /** 报名管理模块类型定义 */
 
 export interface RegistrationQueryParams {
-  page?: number;
-  limit?: number;
+  pageNum?: number;
+  pageSize?: number;
   status?: number;
 }
 
@@ -30,6 +30,6 @@ export interface RegistrationItem {
 export interface RegistrationListResponse {
   list: RegistrationItem[];
   total: number;
-  page: number;
-  limit: number;
+  pageSize: number;
+  currentPage: number;
 }

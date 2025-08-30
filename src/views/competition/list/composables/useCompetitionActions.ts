@@ -7,17 +7,17 @@ import type { FormItemProps } from "../types/types";
 import { reactive, ref, h } from "vue";
 import { useRouter } from "vue-router";
 import { createCompetition, updateCompetition, deleteCompetition } from "../api";
-import type { Competition } from "@/types/competition";
+import type { CompetitionInfo } from "../types/types";
 
 export function useCompetitionActions() {
   const router = useRouter();
   const formRef = ref();
 
-  function openDetail(row: Competition.CompetitionInfo) {
+  function openDetail(row: CompetitionInfo) {
     router.push(`/competition/detail/${row.id}`);
   }
 
-  function handleDelete(row: Competition.CompetitionInfo) {
+  function handleDelete(row: CompetitionInfo) {
     ElMessageBox.confirm(
       `确认要删除大赛名为${row.title}的这条数据吗?`,
       "系统提示",
@@ -41,7 +41,7 @@ export function useCompetitionActions() {
       });
   }
 
-  function openDialog(title = "新增", row?: Competition.CompetitionInfo) {
+  function openDialog(title = "新增", row?: CompetitionInfo) {
     addDialog({
       title: `${title}创业大赛`,
       props: {

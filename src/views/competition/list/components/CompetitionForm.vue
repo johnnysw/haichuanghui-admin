@@ -191,11 +191,11 @@
 
     <el-row :gutter="24">
       <el-col :span="24">
-        <el-form-item label="竞赛描述" prop="description">
+        <el-form-item label="大赛主题" prop="description">
           <el-input
             v-model="formInline.description"
             type="textarea"
-            placeholder="请输入竞赛描述"
+            placeholder="请输入大赛主题"
             :rows="4"
             clearable
           />
@@ -205,11 +205,11 @@
 
     <el-row :gutter="24">
       <el-col :span="24">
-        <el-form-item label="参赛要求" prop="requirements">
+        <el-form-item label="参赛条件" prop="requirements">
           <el-input
             v-model="formInline.requirements"
             type="textarea"
-            placeholder="请输入参赛要求"
+            placeholder="请输入参赛条件"
             :rows="3"
             clearable
           />
@@ -219,11 +219,11 @@
 
     <el-row :gutter="24">
       <el-col :span="24">
-        <el-form-item label="奖项设置" prop="prizes">
+        <el-form-item label="支持政策" prop="prizes">
           <el-input
             v-model="formInline.prizes"
             type="textarea"
-            placeholder="请输入奖项设置"
+            placeholder="请输入支持政策"
             :rows="3"
             clearable
           />
@@ -233,25 +233,11 @@
 
     <el-row :gutter="24">
       <el-col :span="24">
-        <el-form-item label="评委信息" prop="judges">
-          <el-input
-            v-model="formInline.judges"
-            type="textarea"
-            placeholder="请输入评委信息"
-            :rows="3"
-            clearable
-          />
-        </el-form-item>
-      </el-col>
-    </el-row>
-
-    <el-row :gutter="24">
-      <el-col :span="24">
-        <el-form-item label="赛程安排" prop="schedule">
+        <el-form-item label="大赛流程" prop="schedule">
           <el-input
             v-model="formInline.schedule"
             type="textarea"
-            placeholder="请输入赛程安排"
+            placeholder="请输入大赛流程"
             :rows="3"
             clearable
           />

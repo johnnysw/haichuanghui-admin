@@ -1,6 +1,6 @@
 import { reactive, ref, onMounted } from "vue";
 import { getIndustryList, getRegionList } from "../api";
-import type { Competition } from "@/types/competition";
+
 
 export function useCompetitionFilter() {
   const form = reactive({

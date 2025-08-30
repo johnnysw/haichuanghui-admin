@@ -3,7 +3,7 @@ import { getCompetitionRegistrations } from "../api";
 import type { PaginationProps, TableColumnList } from "@pureadmin/table";
 import { reactive, ref, toRaw, h } from "vue";
 import { message } from "@/utils/message";
-import type { RegistrationItem, RegistrationListResponse } from "../types/types";
+import type { RegistrationItem } from "../types/types";
 
 export function useRegistrationTable() {
   const dataList = ref<RegistrationItem[]>([]);
@@ -81,6 +81,8 @@ export function useRegistrationTable() {
       const { data } = await getCompetitionRegistrations(competitionId, params);
       dataList.value = data.list;
       pagination.total = data.total;
+      pagination.pageSize = data.pageSize || pagination.pageSize;
+      pagination.currentPage = data.currentPage || pagination.currentPage;
       
       setTimeout(() => {
         loading.value = false;
