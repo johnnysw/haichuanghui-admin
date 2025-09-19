@@ -256,7 +256,7 @@ export function useTenantPackage(treeRef: Ref) {
     onSearch();
     const { data } = await getTenantPackageMenu();
     treeIds.value = getKeyList(data, "id");
-    treeData.value = handleTree(data);
+    treeData.value = handleTree((data as any).list || (data as any));
   });
 
   watch(isExpandAll, val => {

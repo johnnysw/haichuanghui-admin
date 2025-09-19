@@ -82,7 +82,10 @@ export const useUserStore = defineStore("pure-user", {
         getLogin(loginParams)
           .then(loginResponse => {
             if (loginResponse?.code === 200) {
-              setToken(loginResponse.data);
+              setToken({
+                ...loginResponse.data,
+                expires: new Date(loginResponse.data.expires)
+              });
               // 更新本地状态
               this.SET_AVATAR(loginResponse.data.avatar || "");
               this.SET_USERNAME(loginResponse.data.username);
@@ -132,7 +135,7 @@ export const useUserStore = defineStore("pure-user", {
               const updatedData = {
                 ...currentUser,
                 ...response.data,
-                expires: response.data.expires
+                expires: new Date(response.data.expires)
               };
               setToken(updatedData);
               resolve(response.data);

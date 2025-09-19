@@ -29,7 +29,8 @@ function getRef() {
 }
 
 onMounted(async () => {
-  options.value = (await getTenantPackageSimple()).data;
+  const result = await getTenantPackageSimple();
+  options.value = (result.data as any).list || result.data;
 });
 
 defineExpose({ getRef });

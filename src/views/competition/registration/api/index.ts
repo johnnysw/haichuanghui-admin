@@ -1,6 +1,6 @@
 import { http } from "@/utils/http";
 import type { Response, PageResponse } from "@/types/response";
-import type { RegistrationQueryParams, RegistrationItem } from "./types/types";
+import type { RegistrationQueryParams, RegistrationItem } from "../types/types";
 
 // 获取竞赛报名列表
 export const getCompetitionRegistrations = (competitionId: number, params: RegistrationQueryParams) => {

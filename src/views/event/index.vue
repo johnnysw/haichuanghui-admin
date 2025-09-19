@@ -1,5 +1,7 @@
 <template>
-  <div>
-    活动
-  </div>
+  <router-view />
 </template>
+
+<script setup lang="ts">
+defineOptions({ name: "EventManagement" });
+</script>

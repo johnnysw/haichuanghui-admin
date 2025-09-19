@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { getCompetitionRegistrations } from "../api";
-import type { PaginationProps, TableColumnList } from "@pureadmin/table";
+import type { PaginationProps, TableColumns } from "@pureadmin/table";
 import { reactive, ref, toRaw, h } from "vue";
 import { message } from "@/utils/message";
 import type { RegistrationItem } from "../types/types";

@@ -257,7 +257,7 @@ export function useDict() {
     treeLoading.value = true;
     const { data } = await getDictTree();
     setTimeout(() => {
-      treeData.value = data;
+      treeData.value = (data as any).list || (data as any);
       treeLoading.value = false;
     }, 200);
   }

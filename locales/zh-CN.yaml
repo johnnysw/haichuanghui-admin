@@ -178,6 +178,18 @@ menus:
   purePdf: PDF预览
   pureExcel: 导出Excel
   pureInfiniteScroll: 表格无限滚动
+  # 双创载体管理
+  incubatorManage: 双创载体管理
+  incubatorList: 双创载体列表
+  incubatorDetail: 双创载体详情
+  addIncubator: 新增载体
+  editIncubator: 编辑载体
+  # 离岸中心管理
+  offshoreManage: 离岸中心管理
+  offshoreList: 离岸中心列表
+  offshoreDetail: 离岸中心详情
+  addOffshore: 新增离岸中心
+  editOffshore: 编辑离岸中心
   pureSensitive: 敏感词过滤
   purePinyin: 汉语拼音
   pureDanmaku: 弹幕

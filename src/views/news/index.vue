@@ -1,5 +1,7 @@
 <template>
-  <div>
-    xixun
-  </div>
+  <router-view />
 </template>
+
+<script setup lang="ts">
+defineOptions({ name: "News" });
+</script>
