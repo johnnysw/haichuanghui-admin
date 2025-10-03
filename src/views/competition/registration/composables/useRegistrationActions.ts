@@ -1,33 +1,39 @@
 import { message } from "@/utils/message";
 import { ElMessageBox } from "element-plus";
 import { updateRegistrationStatus } from "../api";
-import type { RegistrationItem } from "../types/types";
+import type { RegistrationListItem } from "../types/types";
+
+function extractErrorMessage(error: any, fallback = "操作失败") {
+  const apiMsg = error?.response?.data?.message;
+  const msg = error?.message;
+  return apiMsg || msg || fallback;
+}
 
 export function useRegistrationActions() {
-  // 审核通过
-  function approveRegistration(row: RegistrationItem) {
-    ElMessageBox.confirm(
-      `确认要通过用户${row.user?.username}的报名申请吗?`,
+  function approveRegistration(row: RegistrationListItem) {
+    const targetName = row.teamName || row.contactName || `ID ${row.id}`;
+
+    return ElMessageBox.confirm(
+      `确认要通过「${targetName}」的报名申请吗？`,
       "系统提示",
       {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-        draggable: true
+        draggable: true,
       }
     )
       .then(async () => {
         try {
-          const result = await updateRegistrationStatus(row.id, 1);
+          const result = await updateRegistrationStatus(row.id, 2);
           if (result.code === 200) {
             message("审核通过成功", { type: "success" });
             return true;
-          } else {
-            message("审核通过失败: " + result.message, { type: "error" });
-            return false;
           }
+          message(result.message || "审核通过失败", { type: "error" });
+          return false;
         } catch (error) {
-          message("审核通过失败: " + error.message, { type: "error" });
+          message(extractErrorMessage(error, "审核通过失败"), { type: "error" });
           return false;
         }
       })
@@ -37,42 +43,43 @@ export function useRegistrationActions() {
       });
   }
 
-  // 拒绝报名
-  function rejectRegistration(row: RegistrationItem) {
-    ElMessageBox.prompt(
-      `请输入拒绝原因：`,
-      "拒绝报名",
+  function rejectRegistration(row: RegistrationListItem) {
+    const targetName = row.teamName || row.contactName || `ID ${row.id}`;
+
+    return ElMessageBox.prompt(
+      "请输入拒绝原因：",
+      `拒绝「${targetName}」的报名`,
       {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
         inputPattern: /^.{1,200}$/,
-        inputErrorMessage: "拒绝原因长度应在1-200个字符之间"
+        inputErrorMessage: "拒绝原因长度应在 1-200 个字符之间",
+        inputType: "textarea",
       }
     )
       .then(async ({ value }) => {
         try {
-          const result = await updateRegistrationStatus(row.id, 2, value);
+          const result = await updateRegistrationStatus(row.id, 3, value);
           if (result.code === 200) {
-            message("拒绝成功", { type: "success" });
+            message("已拒绝该报名", { type: "success" });
             return true;
-          } else {
-            message("拒绝失败: " + result.message, { type: "error" });
-            return false;
           }
+          message(result.message || "拒绝操作失败", { type: "error" });
+          return false;
         } catch (error) {
-          message("拒绝失败: " + error.message, { type: "error" });
+          message(extractErrorMessage(error, "拒绝操作失败"), { type: "error" });
           return false;
         }
       })
       .catch(() => {
-        message("已取消拒绝", { type: "info" });
+        message("已取消拒绝操作", { type: "info" });
         return false;
       });
   }
 
   return {
     approveRegistration,
-    rejectRegistration
+    rejectRegistration,
   };
 }

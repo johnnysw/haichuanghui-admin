@@ -1,95 +1,144 @@
 import dayjs from "dayjs";
 import { getCompetitionRegistrations } from "../api";
-import type { PaginationProps, TableColumns } from "@pureadmin/table";
-import { reactive, ref, toRaw, h } from "vue";
+import type { PaginationProps } from "@pureadmin/table";
+import { reactive, ref, h } from "vue";
 import { message } from "@/utils/message";
-import type { RegistrationItem } from "../types/types";
+import {
+  REGISTRATION_STATUS_MAP,
+  type RegistrationListItem,
+  type RegistrationQueryParams,
+  type RegistrationSummary,
+} from "../types/types";
+
+const SUMMARY_DEFAULT: RegistrationSummary = {
+  pending: 0,
+  approved: 0,
+  rejected: 0,
+  cancelled: 0,
+};
 
 export function useRegistrationTable() {
-  const dataList = ref<RegistrationItem[]>([]);
-  const loading = ref(true);
+  const dataList = ref<RegistrationListItem[]>([]);
+  const summary = ref<RegistrationSummary>({ ...SUMMARY_DEFAULT });
+  const loading = ref(false);
   const isShow = ref(false);
 
   const pagination = reactive<PaginationProps>({
     total: 0,
     pageSize: 10,
     currentPage: 1,
-    background: true
+    background: true,
   });
-  
-  const statusMap = {
-    0: "待审核",
-    1: "已通过",
-    2: "已拒绝"
-  };
 
   const columns: TableColumnList = [
     {
       label: "ID",
       prop: "id",
-      minWidth: 80
+      minWidth: 80,
     },
     {
-      label: "用户信息",
-      prop: "user",
-      minWidth: 150,
-      cellRenderer: ({ row }) => h("div", {}, [
-        h("div", {}, `用户名: ${row.user?.username}`),
-        h("div", {}, `邮箱: ${row.user?.email}`),
-        h("div", {}, `手机: ${row.user?.phone}`)
-      ])
-    },
-    {
-      label: "团队名称",
+      label: "团队/项目",
       prop: "teamName",
-      minWidth: 120
+      minWidth: 200,
+      cellRenderer: ({ row }) =>
+        h("div", { class: "flex flex-col" }, [
+          h("span", {}, row.teamName || "--"),
+          h(
+            "span",
+            { class: "text-[12px] text-text_color_secondary" },
+            row.projectName || row.companyName || ""
+          ),
+        ]),
     },
     {
-      label: "项目名称",
-      prop: "projectName",
-      minWidth: 150
+      label: "联系人",
+      prop: "contactName",
+      minWidth: 160,
+      cellRenderer: ({ row }) =>
+        h("div", { class: "flex flex-col" }, [
+          h("span", {}, row.contactName || "--"),
+          h(
+            "span",
+            { class: "text-[12px] text-text_color_secondary" },
+            row.contactPhone || "--"
+          ),
+        ]),
     },
     {
       label: "状态",
       prop: "status",
-      minWidth: 100,
-      cellRenderer: ({ row, props }) => h("el-tag", {
-          type: row.status === 0 ? "info" : 
-               row.status === 1 ? "success" : 
-               "danger",
-          size: props.size === "small" ? "small" : "default"
-        }, statusMap[row.status])
+      minWidth: 110,
+      cellRenderer: ({ row, props }) => {
+        const meta =
+          REGISTRATION_STATUS_MAP[row.status as keyof typeof REGISTRATION_STATUS_MAP];
+        return h(
+          "el-tag",
+          {
+            type: meta?.type || "info",
+            size: props.size === "small" ? "small" : "default",
+          },
+          meta?.text || "--"
+        );
+      },
     },
     {
       label: "报名时间",
       prop: "createdTime",
       minWidth: 160,
       formatter: ({ createdTime }) =>
-        dayjs(createdTime).format("YYYY-MM-DD HH:mm:ss")
+        createdTime ? dayjs(createdTime).format("YYYY-MM-DD HH:mm") : "--",
+    },
+    {
+      label: "审核信息",
+      prop: "reviewTime",
+      minWidth: 180,
+      cellRenderer: ({ row }) =>
+        h("div", { class: "flex flex-col" }, [
+          h(
+            "span",
+            {},
+            row.reviewer?.name ? `审核人：${row.reviewer.name}` : "审核人：--"
+          ),
+          h(
+            "span",
+            { class: "text-[12px] text-text_color_secondary" },
+            row.reviewTime
+              ? dayjs(row.reviewTime).format("YYYY-MM-DD HH:mm")
+              : "未审核"
+          ),
+        ]),
     },
     {
       label: "操作",
       fixed: "right",
-      width: 200,
-      slot: "operation"
-    }
+      width: 180,
+      slot: "operation",
+    },
   ];
 
-  async function fetchData(competitionId: number, params: any) {
+  async function fetchData(competitionId: number, params: RegistrationQueryParams) {
     loading.value = true;
     try {
       const { data } = await getCompetitionRegistrations(competitionId, params);
-      dataList.value = data.list;
-      pagination.total = data.total;
-      pagination.pageSize = data.pageSize || pagination.pageSize;
-      pagination.currentPage = data.currentPage || pagination.currentPage;
-      
-      setTimeout(() => {
-        loading.value = false;
-      }, 300);
-    } catch (error) {
+      const payload = data?.data ?? data; // 兼容不同响应格式
+
+      if (!payload) {
+        dataList.value = [];
+        summary.value = { ...SUMMARY_DEFAULT };
+        pagination.total = 0;
+        return;
+      }
+
+      dataList.value = payload.list || [];
+      pagination.total = payload.total ?? 0;
+      pagination.pageSize = payload.pageSize ?? pagination.pageSize;
+      pagination.currentPage = payload.pageNum ?? pagination.currentPage;
+      summary.value = payload.summary ?? { ...SUMMARY_DEFAULT };
+    } catch (error: any) {
+      const errMsg = error?.message || "获取报名数据失败";
+      message(errMsg, { type: "error" });
+    } finally {
       loading.value = false;
-      message("获取数据失败: " + error.message, { type: "error" });
     }
   }
 
@@ -103,13 +152,13 @@ export function useRegistrationTable() {
 
   return {
     dataList,
+    summary,
     loading,
     isShow,
     pagination,
     columns,
-    statusMap,
     fetchData,
     handleSizeChange,
-    handleCurrentChange
+    handleCurrentChange,
   };
 }

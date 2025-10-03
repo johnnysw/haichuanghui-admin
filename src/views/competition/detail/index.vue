@@ -25,8 +25,18 @@ defineOptions({
 const route = useRoute();
 const router = useRouter();
 
-// 获取大赛ID
-const competitionId = ref(Number(route.params.id) || 0);
+// 直接从路由参数获取ID
+const competitionIdParam = computed(() => {
+  const id = route.params.id as string;
+  return id || "";
+});
+
+const competitionIdNumber = computed(() => {
+  const value = Number(competitionIdParam.value);
+  return Number.isNaN(value) ? null : value;
+});
+
+const competitionId = computed(() => competitionIdNumber.value);
 
 // 使用composables
 const { competitionData, loading, statusMap, fetchCompetitionDetail } = useCompetitionDetail();
@@ -99,12 +109,15 @@ const statusConfig = computed(() => {
 
 // 组件挂载时获取数据
 onMounted(() => {
-  if (competitionId.value) {
-    fetchCompetitionDetail(competitionId.value);
+  if (competitionIdNumber.value) {
+    fetchCompetitionDetail(competitionIdNumber.value);
     // 加载相关大赛数据
     loadRelatedCompetitions();
     // 加载竞赛资料
     loadMaterials();
+  } else {
+    ElMessage.error("无效的大赛 ID");
+    router.push("/competition/list");
   }
 });
 
@@ -113,9 +126,19 @@ const goBack = () => {
   router.push("/competition/list");
 };
 
+const goToRegistration = () => {
+  const id = competitionId.value;
+  if (id === null || id === undefined) {
+    ElMessage.error("缺少有效的大赛 ID");
+    return;
+  }
+  router.push({ path: `/competition/registration/${id}` });
+};
+
 // 审核大赛
 const reviewCompetition = (status: number) => {
-  if (!competitionData.value) return;
+  const id = competitionIdNumber.value;
+  if (!competitionData.value || !id) return;
 
   if (status === 6) {
     // 拒绝时需要输入拒绝原因
@@ -125,7 +148,7 @@ const reviewCompetition = (status: number) => {
       inputPattern: /^.{1,200}$/,
       inputErrorMessage: "拒绝原因长度应在1-200个字符之间"
     }).then(({ value }) => {
-      reviewCompetitionAction(competitionId.value, status, value);
+      reviewCompetitionAction(id, status, value);
     }).catch(() => {
       ElMessage.info("已取消拒绝");
     });
@@ -136,7 +159,7 @@ const reviewCompetition = (status: number) => {
       cancelButtonText: "取消",
       type: "warning"
     }).then(async () => {
-      const result = await reviewCompetitionAction(competitionId.value, status);
+      const result = await reviewCompetitionAction(id, status);
       if (result.success) {
         // 更新本地数据
         if (competitionData.value) {
@@ -153,7 +176,8 @@ const reviewCompetition = (status: number) => {
 
 // 切换推荐状态
 const toggleRecommend = () => {
-  if (!competitionData.value) return;
+  const id = competitionIdNumber.value;
+  if (!competitionData.value || !id) return;
 
   const newRecommended = !competitionData.value.isRecommended;
   const action = newRecommended ? "推荐" : "取消推荐";
@@ -163,7 +187,7 @@ const toggleRecommend = () => {
     cancelButtonText: "取消",
     type: "warning"
   }).then(async () => {
-    const result = await toggleRecommendation(competitionId.value, newRecommended);
+    const result = await toggleRecommendation(id, newRecommended);
     if (result.success) {
       // 更新本地数据
       if (competitionData.value) {
@@ -202,11 +226,11 @@ const loadRelatedCompetitions = async () => {
 
 // 加载竞赛资料列表
 const loadMaterials = async () => {
-  if (!competitionId.value) return;
+  if (!competitionIdNumber.value) return;
   
   try {
     materialsLoading.value = true;
-    const result = await getMaterials({ competitionId: competitionId.value });
+    const result = await getMaterials({ competitionId: competitionIdNumber.value });
     if (result.code === 200) {
       materials.value = result.data.list;
     }
@@ -333,6 +357,17 @@ const downloadMaterial = (material: CompetitionMaterial) => {
                 </div>
                 <div class="flex flex-wrap gap-3">
                   <!-- 管理员专用按钮 -->
+                  <el-button
+                    type="primary"
+                    plain
+                    class="pc-style-btn"
+                    size="default"
+                    :disabled="!competitionIdNumber"
+                    @click="goToRegistration"
+                  >
+                    <IconifyIconOffline :icon="DocumentIcon" class="mr-2 w-4 h-4" />
+                    报名管理
+                  </el-button>
                   <el-button
                     type="primary"
                     @click="reviewCompetition(1)"
