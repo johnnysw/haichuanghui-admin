@@ -20,17 +20,23 @@ export const getFullImageUrl = (url: string): string => {
     return url;
   }
 
-  // 对于mock数据，返回占位图片
-  if (url.startsWith("/uploads")) {
-    return getPlaceholderImage(url);
+  // 处理以/public开头的路径
+  if (url.startsWith('/public')) {
+    return `${apiBaseUrl}${url}`;
+  }
+
+  // 如果是以/uploads开头的相对路径，则拼接API基础URL
+  if (url.startsWith('/uploads')) {
+    return `${apiBaseUrl}/public${url}`;
   }
 
   // 兼容性处理：如果是不带/的uploads开头，也要处理
-  if (url.startsWith("uploads")) {
-    return getPlaceholderImage(`/${url}`);
+  if (url.startsWith('uploads')) {
+    return `${apiBaseUrl}/public/${url}`;
   }
 
-  return url;
+  // 默认情况下，添加/public前缀
+  return `${apiBaseUrl}/public${url.startsWith('/') ? url : `/${url}`}`;
 };
 
 /**

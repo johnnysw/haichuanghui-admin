@@ -3,7 +3,7 @@
     v-model="drawerVisible"
     :title="drawerTitle"
     direction="rtl"
-    size="50%"
+    size="65%"
     :before-close="handleClose"
     custom-class="competition-drawer"
   >
@@ -195,8 +195,6 @@
               <el-option label="进行中" :value="2" />
               <el-option label="已结束" :value="3" />
               <el-option label="已取消" :value="4" />
-              <el-option label="审核中" :value="5" />
-              <el-option label="已拒绝" :value="6" />
             </el-select>
           </el-form-item>
         </el-col>
@@ -440,8 +438,10 @@
                 >
                   <div class="upload-placeholder">
                     <el-icon class="upload-icon"><upload-filled /></el-icon>
-                    <div class="upload-text">点击或拖拽上传赛事资料</div>
-                    <div class="upload-hint">支持 PDF、Word、Excel、PPT、压缩包、图片等格式，单个文件不超过 20MB</div>
+                    <div class="upload-text-container">
+                      <div class="upload-text">点击或拖拽上传赛事资料</div>
+                      <div class="upload-hint">支持 PDF、Word、Excel、PPT、压缩包、图片等格式，单个文件不超过 20MB</div>
+                    </div>
                   </div>
                 </el-upload>
                 
@@ -1317,7 +1317,9 @@ defineExpose({
 }
 
 /* 仅针对竞赛海报上传的 el-upload-dragger 样式覆盖 */
-.competition-poster-upload-container :deep(.el-upload-dragger), .organizer-logo-upload-container :deep(.el-upload-dragger) {
+.competition-poster-upload-container :deep(.el-upload-dragger), 
+.organizer-logo-upload-container :deep(.el-upload-dragger),
+.materials-management :deep(.el-upload-dragger) {
   padding: 0 !important;
   margin: 0 !important;
 }
@@ -1345,7 +1347,7 @@ defineExpose({
 .organizer-logo-upload-container {
   display: flex;
   align-items: flex-start;
-  gap: 20px;
+  gap: 16px;
 }
 
 .logo-upload-area {
@@ -1353,13 +1355,13 @@ defineExpose({
 }
 
 .organizer-logo-uploader {
-  width: 200px;
-  height: 200px;
+  width: 120px;
+  height: 120px;
 }
 
 .organizer-logo-uploader .el-upload {
-  width: 200px;
-  height: 200px;
+  width: 120px;
+  height: 120px;
   border: 1px dashed var(--el-border-color);
   border-radius: 8px;
   cursor: pointer;
@@ -1380,20 +1382,20 @@ defineExpose({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 200px;
-  height: 200px;
-  padding: 20px;
+  width: 120px;
+  height: 120px;
+  padding: 12px;
   text-align: center;
 }
 
 .logo-uploader-icon {
-  font-size: 48px;
+  font-size: 32px;
   color: var(--el-text-color-secondary);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .logo-upload-text {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--el-text-color-secondary);
 }
 
@@ -1440,21 +1442,20 @@ defineExpose({
 
 .logo-upload-info {
   flex: 1;
-  padding: 16px 0;
 }
 
 .logo-info-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--el-text-color-primary);
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .logo-info-item {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--el-text-color-regular);
-  margin-bottom: 8px;
-  line-height: 1.5;
+  margin-bottom: 4px;
+  line-height: 1.4;
 }
 
 /* 响应式调整 */
@@ -1589,13 +1590,14 @@ defineExpose({
 
 /* 赛事资料管理样式 */
 .materials-management {
+  width: 100%;
   border: 1px solid var(--el-border-color-light);
   border-radius: 8px;
   overflow: hidden;
 }
 
 .upload-section {
-  padding: 20px;
+  padding: 16px;
   border-bottom: 1px solid var(--el-border-color-lighter);
 }
 
@@ -1618,40 +1620,48 @@ defineExpose({
 }
 
 .upload-placeholder {
-  padding: 40px 20px;
-  text-align: center;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
 }
 
 .upload-icon {
-  font-size: 48px;
+  font-size: 36px;
   color: var(--el-text-color-secondary);
-  margin-bottom: 16px;
+  margin-right: 12px;
+  margin-bottom: 0;
+}
+
+.upload-text-container {
+  text-align: left;
 }
 
 .upload-text {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--el-text-color-primary);
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 
 .upload-hint {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--el-text-color-secondary);
-  line-height: 1.5;
 }
 
 
 
 .materials-list {
-  max-height: 300px;
+  max-height: 240px;
   overflow-y: auto;
 }
 
 .list-header {
-  padding: 12px 20px;
+  padding: 10px 16px;
   background-color: var(--el-fill-color-light);
   border-bottom: 1px solid var(--el-border-color-lighter);
   font-weight: 600;
+  font-size: 13px;
   color: var(--el-text-color-primary);
 }
 
@@ -1659,7 +1669,7 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--el-border-color-lighter);
   transition: background-color 0.2s;
 }
@@ -1681,18 +1691,18 @@ defineExpose({
 
 .material-icon {
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: var(--el-fill-color);
   border-radius: 6px;
-  margin-right: 12px;
+  margin-right: 10px;
 }
 
 .material-icon .el-icon {
-  font-size: 20px;
+  font-size: 16px;
   color: var(--el-color-primary);
 }
 

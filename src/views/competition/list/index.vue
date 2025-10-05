@@ -150,8 +150,6 @@ onUnmounted(() => {
           <el-option label="进行中" value="2" />
           <el-option label="已结束" value="3" />
           <el-option label="已取消" value="4" />
-          <el-option label="审核中" value="5" />
-          <el-option label="已拒绝" value="6" />
         </el-select>
       </el-form-item>
       <el-form-item>

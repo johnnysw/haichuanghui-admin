@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import { REGISTRATION_STATUS_MAP, type RegistrationDetail } from "../types/types";
 
@@ -42,7 +43,6 @@ const attachmentTypeMap: Record<string, string> = {
   businessPlanUrl: "计划书链接",
   demoFile: "演示材料",
 };
-
 const detailTitle = computed(() => {
   const d = props.detail;
   if (!d) return "--";
@@ -66,16 +66,23 @@ const handleReject = () => {
   }
 };
 
+const router = useRouter();
+
 const handleOpenProject = () => {
-  if (!props.detail?.project) return;
-  emit("open-project", props.detail);
+  if (!props.detail?.project?.id) return;
+  // 跳转到项目详情页
+  router.push(`/project/detail/${props.detail.project.id}`);
 };
+
+// 项目信息展开/折叠状态
+const projectExpanded = ref(false);
+
 </script>
 
 <template>
   <el-drawer
     v-model="visible"
-    size="720px"
+    size="60%"
     :destroy-on-close="true"
     append-to-body
     title="报名详情"
@@ -89,14 +96,14 @@ const handleOpenProject = () => {
           <div>
             <div class="detail-title">
               {{ detailTitle }}
+              <el-tag v-if="statusMeta" :type="statusMeta.type" class="title-status-tag">
+                {{ statusMeta.text }}
+              </el-tag>
             </div>
             <div class="detail-subtitle">
-              报名编号：{{ detail?.id }} · 创建时间：{{ formatTime(detail?.createdTime) }}
+              报名时间：{{ formatTime(detail?.createdTime) }}
             </div>
           </div>
-          <el-tag v-if="statusMeta" :type="statusMeta.type">
-            {{ statusMeta.text }}
-          </el-tag>
         </div>
 
         <el-card shadow="never" class="detail-card">
@@ -189,30 +196,48 @@ const handleOpenProject = () => {
                   {{ detail?.project?.shortDescription || detail?.projectDescription || "--" }}
                 </span>
               </div>
-              <div class="info-item info-span-2" v-if="detail?.project?.introduction">
-                <span class="info-label">项目介绍</span>
-                <span class="info-value text-preline">{{ detail?.project?.introduction }}</span>
-              </div>
-              <div class="info-item info-span-2" v-if="detail?.project?.coreTechnology">
-                <span class="info-label">核心技术</span>
-                <span class="info-value text-preline">{{ detail?.project?.coreTechnology }}</span>
-              </div>
-              <div class="info-item info-span-2" v-if="detail?.project?.businessModel">
-                <span class="info-label">商业模式</span>
-                <span class="info-value text-preline">{{ detail?.project?.businessModel }}</span>
-              </div>
-              <div class="info-item info-span-2" v-if="detail?.project?.teamInfo">
-                <span class="info-label">团队情况</span>
-                <span class="info-value text-preline">{{ detail?.project?.teamInfo }}</span>
-              </div>
-              <div class="info-item info-span-2" v-if="detail?.project?.marketAnalysis">
-                <span class="info-label">市场分析</span>
-                <span class="info-value text-preline">{{ detail?.project?.marketAnalysis }}</span>
-              </div>
-              <div class="info-item info-span-2" v-if="detail?.project?.competitiveAdvantage">
-                <span class="info-label">竞争优势</span>
-                <span class="info-value text-preline">{{ detail?.project?.competitiveAdvantage }}</span>
-              </div>
+              
+              <!-- 可折叠的详细信息 -->
+              <template v-if="projectExpanded">
+                <div class="info-item info-span-2" v-if="detail?.project?.introduction">
+                  <span class="info-label">项目介绍</span>
+                  <span class="info-value text-preline">{{ detail?.project?.introduction }}</span>
+                </div>
+                <div class="info-item info-span-2" v-if="detail?.project?.coreTechnology">
+                  <span class="info-label">核心技术</span>
+                  <span class="info-value text-preline">{{ detail?.project?.coreTechnology }}</span>
+                </div>
+                <div class="info-item info-span-2" v-if="detail?.project?.businessModel">
+                  <span class="info-label">商业模式</span>
+                  <span class="info-value text-preline">{{ detail?.project?.businessModel }}</span>
+                </div>
+                <div class="info-item info-span-2" v-if="detail?.project?.teamInfo">
+                  <span class="info-label">团队情况</span>
+                  <span class="info-value text-preline">{{ detail?.project?.teamInfo }}</span>
+                </div>
+                <div class="info-item info-span-2" v-if="detail?.project?.marketAnalysis">
+                  <span class="info-label">市场分析</span>
+                  <span class="info-value text-preline">{{ detail?.project?.marketAnalysis }}</span>
+                </div>
+                <div class="info-item info-span-2" v-if="detail?.project?.competitiveAdvantage">
+                  <span class="info-label">竞争优势</span>
+                  <span class="info-value text-preline">{{ detail?.project?.competitiveAdvantage }}</span>
+                </div>
+              </template>
+            </div>
+            
+            <!-- 折叠/展开按钮 -->
+            <div class="collapse-toggle">
+              <el-button
+                type="primary"
+                link
+                @click="projectExpanded = !projectExpanded"
+              >
+                {{ projectExpanded ? '收起' : '展开' }}
+                <el-icon :class="{ 'rotate-icon': projectExpanded }">
+                  <arrow-down />
+                </el-icon>
+              </el-button>
             </div>
           </div>
         </el-card>
@@ -252,7 +277,7 @@ const handleOpenProject = () => {
             </div>
           </template>
           <div class="card-body">
-            <el-empty v-if="attachments.length === 0" description="暂无附件" />
+            <el-empty v-if="attachments.length === 0" description="暂无附件" :image-size="80" />
             <el-timeline v-else>
               <el-timeline-item
                 v-for="item in attachments"
@@ -261,14 +286,18 @@ const handleOpenProject = () => {
                 :timestamp="attachmentTypeMap[item.type]"
               >
                 <div class="attachment-item">
-                  <span class="attachment-name">{{ item.name }}</span>
-                  <el-link
-                    v-if="item.downloadUrl"
-                    :href="item.downloadUrl"
-                    type="primary"
-                    target="_blank"
-                  >下载</el-link>
-                  <el-tag v-else type="danger" size="small">文件缺失</el-tag>
+                  <div class="attachment-main">
+                    <span class="attachment-name">{{ item.name }}</span>
+                  </div>
+                  <div class="attachment-actions">
+                    <el-link
+                      v-if="item.downloadUrl"
+                      :href="item.downloadUrl"
+                      type="primary"
+                      target="_blank"
+                    >下载</el-link>
+                    <el-tag v-else type="danger" size="small">文件缺失</el-tag>
+                  </div>
                 </div>
               </el-timeline-item>
             </el-timeline>
@@ -309,6 +338,9 @@ const handleOpenProject = () => {
   font-size: 20px;
   font-weight: 600;
   color: var(--el-text-color-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .detail-subtitle {
@@ -371,12 +403,42 @@ const handleOpenProject = () => {
 
 .attachment-item {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
   gap: 12px;
+  align-items: flex-start;
 }
 
 .attachment-name {
   color: var(--el-text-color-primary);
+}
+
+.attachment-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.attachment-title {
+  font-size: 13px;
+  color: var(--el-text-color-secondary);
+}
+
+.attachment-description {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  line-height: 1.5;
+}
+
+.attachment-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+}
+
+.attachment-required {
+  align-self: flex-end;
 }
 
 .detail-footer {
@@ -398,5 +460,40 @@ const handleOpenProject = () => {
   .info-span-2 {
     grid-column: span 1;
   }
+}
+
+/* 覆盖 el-empty 样式，删除 padding */
+:deep(.el-empty) {
+  padding: 0 !important;
+}
+
+/* 折叠/展开按钮样式 */
+.collapse-toggle {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--el-border-color-lighter);
+}
+
+.collapse-toggle .el-button {
+  font-size: 13px;
+}
+
+.collapse-toggle .el-icon {
+  margin-left: 4px;
+  transition: transform 0.3s ease;
+}
+
+.rotate-icon {
+  transform: rotate(180deg);
+}
+
+/* 标题中的状态标签样式 */
+.title-status-tag {
+  font-size: 12px;
+  padding: 2px 8px;
+  height: auto;
+  line-height: 1.2;
 }
 </style>

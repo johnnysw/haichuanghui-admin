@@ -16,7 +16,10 @@ import ShareIcon from "@iconify-icons/ep/share";
 import DocumentIcon from "@iconify-icons/ep/document";
 import EditIcon from "@iconify-icons/ep/edit";
 import HeartIcon from "@iconify-icons/ri/heart-line";
+import StarIcon from "@iconify-icons/ep/star-filled";
+import StarOutlineIcon from "@iconify-icons/ep/star";
 import { Document, Link, Download, Loading } from "@element-plus/icons-vue";
+import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 
 defineOptions({
   name: "CompetitionDetail"
@@ -51,6 +54,9 @@ const isRegistered = ref(false);
 // 竞赛资料相关状态
 const materials = ref<CompetitionMaterial[]>([]);
 const materialsLoading = ref(false);
+
+// 海报加载错误状态
+const posterError = ref(false);
 
 // 标签页配置
 const activeTab = ref('summary');
@@ -268,27 +274,44 @@ const downloadMaterial = (material: CompetitionMaterial) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 competition-detail-page">
-    <!-- 主内容区域 - 调整padding适合admin端 -->
-    <main class="pt-6 pb-10">
-      <div class="container mx-auto px-4">
-        <!-- 顶部操作栏 -->
-        <div class="flex justify-between items-center mb-6">
-          <!-- 返回按钮 -->
-          <el-button @click="goBack" type="primary" link>
-            <IconifyIconOffline :icon="ArrowLeftIcon" class="mr-1" />返回列表
-          </el-button>
+  <div class="min-h-screen competition-detail-page">
+    <!-- 页面头部 -->
+    <div class="page-header mb-6">
+      <el-page-header @back="goBack">
+        <template #content>
+          <div class="flex items-center justify-between w-full">
+            <div class="flex items-center">
+              <span class="text-lg font-medium">大赛详情</span>
+            </div>
+          </div>
+        </template>
+        <template #extra>
+          <!-- 管理操作区 - 放在最右侧 -->
+          <div v-if="!loading && competitionData" class="flex items-center space-x-3">
+            <el-button
+              type="primary"
+              :icon="useRenderIcon('ep:check')"
+              @click="() => reviewCompetition(1)"
+              v-if="competitionData.status === 5"
+            >
+              审核
+            </el-button>
+            <el-button
+              :type="competitionData.isRecommended ? 'warning' : 'default'"
+              :icon="useRenderIcon(competitionData.isRecommended ? 'ep:star-filled' : 'ep:star')"
+              @click="toggleRecommend"
+              v-if="[1, 2, 3].includes(competitionData.status)"
+            >
+              {{ competitionData.isRecommended ? '取消推荐' : '推荐大赛' }}
+            </el-button>
+          </div>
+        </template>
+      </el-page-header>
+    </div>
 
-          <!-- 推荐按钮 -->
-          <el-button
-            :type="competitionData?.isRecommended ? 'warning' : 'success'"
-            @click="toggleRecommend"
-            v-if="competitionData && [1, 2, 3].includes(competitionData.status)"
-            size="default"
-          >
-            {{ competitionData?.isRecommended ? '取消推荐' : '推荐大赛' }}
-          </el-button>
-        </div>
+    <!-- 主内容区域 - 调整padding适合admin端 -->
+    <main class="pb-10">
+      <div class="container mx-auto">
 
         <!-- 加载状态 -->
         <div v-if="loading" class="flex justify-center items-center py-20" v-loading="loading">
@@ -304,10 +327,11 @@ const downloadMaterial = (material: CompetitionMaterial) => {
               <div class="w-full h-64 bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center relative">
                 <!-- 如果有海报图片则显示为背景 -->
                 <img
-                  v-if="competitionData.poster"
+                  v-if="competitionData.poster && !posterError"
                   :src="getFullImageUrl(competitionData.poster)"
                   :alt="competitionData.title"
                   class="absolute inset-0 w-full h-full object-cover"
+                  @error="posterError = true"
                 />
                 <!-- 遮罩层 -->
                 <div class="absolute inset-0 bg-black bg-opacity-30"></div>
@@ -565,6 +589,14 @@ const downloadMaterial = (material: CompetitionMaterial) => {
 </template>
 
 <style scoped>
+/* 页面头部样式 */
+.page-header {
+  background: white;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 /* 添加line-clamp支持 */
 .line-clamp-2 {
   display: -webkit-box;

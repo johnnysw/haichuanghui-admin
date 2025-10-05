@@ -6,7 +6,6 @@ type FormModel = {
   teamName: string;
   contactName: string;
   contactPhone: string;
-  dateRange: string[];
 };
 
 const INITIAL_FORM: FormModel = {
@@ -14,7 +13,6 @@ const INITIAL_FORM: FormModel = {
   teamName: "",
   contactName: "",
   contactPhone: "",
-  dateRange: [],
 };
 
 const STATUS_OPTIONS = Object.entries(REGISTRATION_STATUS_MAP).map(([value, meta]) => ({

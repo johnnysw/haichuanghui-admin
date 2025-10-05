@@ -32,11 +32,6 @@ export function useRegistrationTable() {
 
   const columns: TableColumnList = [
     {
-      label: "ID",
-      prop: "id",
-      minWidth: 80,
-    },
-    {
       label: "团队/项目",
       prop: "teamName",
       minWidth: 200,
@@ -111,7 +106,7 @@ export function useRegistrationTable() {
     {
       label: "操作",
       fixed: "right",
-      width: 180,
+      width: 220,
       slot: "operation",
     },
   ];
@@ -120,7 +115,7 @@ export function useRegistrationTable() {
     loading.value = true;
     try {
       const { data } = await getCompetitionRegistrations(competitionId, params);
-      const payload = data?.data ?? data; // 兼容不同响应格式
+      const payload = data; // 直接使用 data，因为 API 已经返回了正确的类型
 
       if (!payload) {
         dataList.value = [];

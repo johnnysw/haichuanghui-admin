@@ -5,8 +5,6 @@ export interface RegistrationQueryParams {
   teamName?: string;
   contactName?: string;
   contactPhone?: string;
-  startTime?: string;
-  endTime?: string;
 }
 
 export interface ReviewerSummary {
@@ -88,8 +86,6 @@ export interface ProjectSummary {
   businessPlanFile?: { id: string; name?: string | null; url?: string | null } | null;
   presentationFile?: { id: string; name?: string | null; url?: string | null } | null;
   logoFile?: { id: string; name?: string | null; url?: string | null } | null;
-  businessPlanFile?: { id: string; name?: string | null; url?: string | null } | null;
-  presentationFile?: { id: string; name?: string | null; url?: string | null } | null;
 }
 
 export interface CompetitionSummary {
@@ -97,9 +93,14 @@ export interface CompetitionSummary {
   title: string;
 }
 
+export type AttachmentType =
+  | "businessPlanFile"
+  | "businessPlanUrl"
+  | "demoFile";
+
 export interface AttachmentItem {
   id: string;
-  type: "businessPlanFile" | "businessPlanUrl" | "demoFile";
+  type: AttachmentType;
   name: string;
   downloadUrl: string | null;
 }
@@ -146,6 +147,7 @@ export interface RegistrationDetail {
   industry?: IndustrySummary | null;
   project?: ProjectSummary | null;
   attachments: AttachmentItem[];
+  // 兼容历史字段
   reviewHistory: RegistrationReviewHistoryItem[];
   teamMembers?: TeamMember[];
   businessPlanUrl?: string | null;

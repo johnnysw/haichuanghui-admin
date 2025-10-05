@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import editForm from "../components/CompetitionForm.vue";
 import { message } from "@/utils/message";
 import { ElMessageBox } from "element-plus";
-import { getCompetitionList, getIndustryList, recommendCompetition } from "../api";
+import { getCompetitionList, getIndustryList, recommendCompetition, deleteCompetition } from "../api";
 import { addDialog } from "@/components/ReDialog";
 import { deviceDetection } from "@pureadmin/utils";
 import type { PaginationProps } from "@pureadmin/table";
@@ -42,11 +42,6 @@ export function useCompetitionList() {
   };
 
   const columns: TableColumnList = [
-    {
-      label: "ID",
-      prop: "id",
-      minWidth: 80
-    },
     {
       label: "大赛标题",
       prop: "title",
@@ -145,9 +140,31 @@ export function useCompetitionList() {
     }
   };
 
-  function handleDelete(row) {
-    message(`您删除了大赛名为${row.title}的这条数据`, { type: "success" });
-    onSearch();
+  async function handleDelete(row: CompetitionItem) {
+    try {
+      await ElMessageBox.confirm(
+        `确认要删除大赛"${row.title}"吗？`,
+        "删除确认",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      );
+
+      const result = await deleteCompetition(row.id);
+      
+      if (result.code === 200) {
+        message(`删除大赛"${row.title}"成功`, { type: "success" });
+        onSearch();
+      } else {
+        throw new Error(result.message || "删除失败");
+      }
+    } catch (error) {
+      if (error !== "cancel") {
+        message(`删除失败：${error.message || error}`, { type: "error" });
+      }
+    }
   }
 
   function handleSizeChange(val: number) {
