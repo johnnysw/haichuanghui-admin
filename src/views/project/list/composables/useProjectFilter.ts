@@ -1,6 +1,8 @@
 import { reactive, ref, onMounted } from "vue";
 import { getIndustryList, getRegionList, getFundingStageList } from "../api";
 import type { BaseOption } from "../types/types";
+import { PROJECT_STATUS_MAP } from "../types/types";
+import type { ProjectStatus } from "../types/types";
 
 export function useProjectFilter() {
   const form = reactive({
@@ -9,7 +11,7 @@ export function useProjectFilter() {
     industryId: "",
     regionId: "",
     fundingStageId: "",
-    status: "",
+    status: "" as ProjectStatus | "",
     isRecommended: ""
   });
 
@@ -17,6 +19,21 @@ export function useProjectFilter() {
   const industryOptions = ref<BaseOption[]>([]);
   const regionOptions = ref<BaseOption[]>([]);
   const fundingStageOptions = ref<BaseOption[]>([]);
+  
+  // 状态选项（静态枚举）
+  const statusOptions = [
+    { value: "draft" as ProjectStatus, label: PROJECT_STATUS_MAP.draft.text },
+    { value: "approved" as ProjectStatus, label: PROJECT_STATUS_MAP.approved.text },
+    { value: "pending_review" as ProjectStatus, label: PROJECT_STATUS_MAP.pending_review.text },
+    { value: "rejected" as ProjectStatus, label: PROJECT_STATUS_MAP.rejected.text }
+  ];
+
+  // 推荐状态选项
+  const recommendationOptions = [
+    { value: "", label: "全部" },
+    { value: "true", label: "已推荐" },
+    { value: "false", label: "未推荐" }
+  ];
 
   // 获取行业领域选项
   const fetchIndustryOptions = async () => {
@@ -81,6 +98,8 @@ export function useProjectFilter() {
     industryOptions,
     regionOptions,
     fundingStageOptions,
+    statusOptions,
+    recommendationOptions,
     resetForm
   };
 }

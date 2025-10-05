@@ -3,6 +3,7 @@ import { ref, reactive, onMounted } from "vue";
 import { ElMessage, type FormInstance, type FormRules } from "element-plus";
 import { getIndustryList, getRegionList, getFundingStageList } from "../api";
 import type { FormItemProps, BaseOption } from "../types/types";
+import { PROJECT_STATUS_OPTIONS } from "../types/types";
 
 interface Props {
   formInline: FormItemProps;
@@ -32,7 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
     marketAnalysis: "",
     competitiveAdvantage: "",
     foundingDate: "",
-    status: 0,
+    status: "draft",
     isRecommended: false,
     logoUrl: "",
     images: [],
@@ -200,13 +201,15 @@ defineExpose({ getRef });
           <el-select
             v-model="newFormInline.status"
             placeholder="请选择状态"
+            clearable
             class="w-full"
           >
-            <el-option label="草稿" :value="0" />
-            <el-option label="已发布" :value="1" />
-            <el-option label="审核中" :value="2" />
-            <el-option label="已拒绝" :value="3" />
-            <el-option label="已归档" :value="4" />
+            <el-option
+              v-for="option in PROJECT_STATUS_OPTIONS"
+              :key="option.value"
+              :label="option.label"
+              :value="option.value"
+            />
           </el-select>
         </el-form-item>
       </el-col>

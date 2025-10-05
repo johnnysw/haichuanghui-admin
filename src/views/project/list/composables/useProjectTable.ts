@@ -1,23 +1,21 @@
-import dayjs from "dayjs";
 import { message } from "@/utils/message";
 import { ElMessageBox, ElTag } from "element-plus";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { ref, onMounted, reactive, h } from "vue";
+import { useDateFormat } from "@vueuse/core";
 import { PaginationProps } from "@pureadmin/table";
 import type { TableColumns } from "@pureadmin/table";
-import { getProjectList, reviewProject, toggleProjectRecommendation } from "../api";
+import { getProjectList, toggleProjectRecommendation } from "../api";
 import { useProjectFilter } from "./useProjectFilter";
 import { useProjectActions } from "./useProjectActions";
 import type { ProjectInfo, ProjectQueryParams } from "../types/types";
-import { PROJECT_STATUS_MAP, ProjectStatus } from "../types/types";
+import { PROJECT_STATUS_MAP } from "../types/types";
+import type { ProjectStatus } from "../types/types";
 
 import Delete from "@iconify-icons/ep/delete";
-import EditPen from "@iconify-icons/ep/edit-pen";
 import View from "@iconify-icons/ep/view";
 import Star from "@iconify-icons/ep/star";
 import StarFilled from "@iconify-icons/ep/star-filled";
-import Check from "@iconify-icons/ep/check";
-import Close from "@iconify-icons/ep/close";
 
 export function useProjectTable() {
   const {
@@ -26,13 +24,14 @@ export function useProjectTable() {
     industryOptions,
     regionOptions,
     fundingStageOptions,
+    statusOptions,
+    recommendationOptions,
     resetForm
   } = useProjectFilter();
 
   const {
     openDetail,
-    handleDelete: handleDeleteAction,
-    openDialog: openDialogAction
+    handleDelete: handleDeleteAction
   } = useProjectActions(getProjectData);
 
   const dataList = ref<ProjectInfo[]>([]);
@@ -56,24 +55,9 @@ export function useProjectTable() {
       align: "left"
     },
     {
-      label: "序号",
-      type: "index",
-      width: 70
-    },
-    {
       label: "项目名称",
       prop: "name",
-      minWidth: 150,
-      cellRenderer: ({ row }) => h(
-        "el-link",
-        {
-          class: "link-primary",
-          underline: false,
-          type: "primary",
-          onClick: () => openDetail(row)
-        },
-        row.name
-      )
+      minWidth: 150
     },
     {
       label: "企业名称",
@@ -105,6 +89,24 @@ export function useProjectTable() {
       cellRenderer: ({ row }) => row.fundingAmount || "-"
     },
     {
+      label: "是否推荐",
+      prop: "isRecommended",
+      minWidth: 100,
+      cellRenderer: ({ row }) => {
+        return h(
+          ElTag,
+          {
+            type: row.isRecommended ? "warning" : "info",
+            effect: "light",
+            size: "small"
+          },
+          {
+            default: () => row.isRecommended ? "已推荐" : "未推荐"
+          }
+        );
+      }
+    },
+    {
       label: "状态",
       prop: "status",
       minWidth: 100,
@@ -133,15 +135,19 @@ export function useProjectTable() {
     },
     {
       label: "创建时间",
-      prop: "createdTime",
-      minWidth: 180,
-      formatter: ({ createdTime }) =>
-        dayjs(createdTime).format("YYYY-MM-DD HH:mm:ss")
+      prop: "createdAt",
+      minWidth: 120,
+      cellRenderer: ({ row }) => {
+        if (!row.createdAt) return "-";
+        const date = new Date(row.createdAt);
+        if (Number.isNaN(date.getTime())) return "-";
+        return useDateFormat(date, "YYYY-MM-DD").value;
+      }
     },
     {
       label: "操作",
       fixed: "right",
-      width: 280,
+      width: 240,
       slot: "operation"
     }
   ];
@@ -236,44 +242,6 @@ export function useProjectTable() {
     }
   };
 
-  // 审核项目
-  const handleReview = async (row: ProjectInfo, status: number) => {
-    let reviewComment = "";
-    
-    if (status === ProjectStatus.REJECTED) {
-      try {
-        const { value } = await ElMessageBox.prompt(
-          "请输入拒绝原因：",
-          "拒绝项目",
-          {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            inputPattern: /^.{1,200}$/,
-            inputErrorMessage: "拒绝原因长度应在1-200个字符之间"
-          }
-        );
-        reviewComment = value;
-      } catch {
-        return;
-      }
-    }
-
-    try {
-      const result = await reviewProject(row.id, status, reviewComment);
-      if (result.code === 200) {
-        row.status = status;
-        if (reviewComment) {
-          row.reviewComment = reviewComment;
-        }
-        message("审核成功", { type: "success" });
-      } else {
-        message("审核失败: " + result.message, { type: "error" });
-      }
-    } catch (error) {
-      message("审核失败", { type: "error" });
-    }
-  };
-
   // 表格行样式 - 移除行着色，使用状态tag颜色标识
   const rowStyle = () => {
     return {};
@@ -281,7 +249,6 @@ export function useProjectTable() {
 
   // 直接使用actions中的函数，因为已经包含了刷新回调
   const handleDelete = handleDeleteAction;
-  const openDialog = openDialogAction;
 
   // 组件挂载时获取数据
   onMounted(() => {
@@ -300,16 +267,16 @@ export function useProjectTable() {
     industryOptions,
     regionOptions,
     fundingStageOptions,
+    statusOptions,
+    recommendationOptions,
     onSearch,
     resetForm: resetSearchForm,
-    openDialog,
     openDetail,
     handleDelete,
     handleSizeChange,
     handleCurrentChange,
     handleSelectionChange,
     handleToggleRecommend,
-    handleReview,
     rowStyle,
     getProjectData // 导出刷新函数
   };
