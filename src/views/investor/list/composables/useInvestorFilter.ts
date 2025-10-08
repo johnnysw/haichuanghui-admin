@@ -1,105 +1,94 @@
-import { ref, reactive, onMounted } from "vue";
-import type { InvestorQueryParams, BaseOption } from "../types/types";
-import { getRegionList, getIndustryList, getFundingStageList, getInvestorTypeList } from "../api";
+import { reactive, ref, onMounted } from "vue";
+import { 
+  getRegionList, 
+  getIndustryList, 
+  getFundingStageList
+} from "../../api";
+import type { BaseOption, InvestorQueryParams } from "../../types/types";
+import { INVESTOR_STATUS_OPTIONS } from "../../types/types";
 
 export function useInvestorFilter() {
-  const loading = ref(false);
-  
-  // 筛选表单
   const filterForm = reactive<InvestorQueryParams>({
     page: 1,
     limit: 10,
     search: "",
-    field: "",
-    stage: "",
-    region: "",
-    type: "",
-    status: undefined
+    field: "",      // 关注行业 ID
+    stage: "",      // 偏好阶段 ID
+    region: "",     // 地区 ID
+    status: undefined // 状态
   });
 
-  // 选项数据
+  const formRef = ref();
   const regionOptions = ref<BaseOption[]>([]);
   const industryOptions = ref<BaseOption[]>([]);
   const stageOptions = ref<BaseOption[]>([]);
-  const typeOptions = ref<BaseOption[]>([]);
   
   // 状态选项
-  const statusOptions: BaseOption[] = [
-    { label: "全部状态", value: "" },
-    { label: "正常", value: 1 },
-    { label: "审核中", value: 2 },
-    { label: "已拒绝", value: 3 },
-    { label: "禁用", value: 0 }
-  ];
+  const statusOptions = INVESTOR_STATUS_OPTIONS;
 
-  // 认证状态选项
-  const verifiedOptions: BaseOption[] = [
-    { label: "全部认证", value: "" },
-    { label: "已认证", value: "1" },
-    { label: "未认证", value: "0" }
-  ];
-
-  // 获取选项数据
-  const fetchOptions = async () => {
-    loading.value = true;
+  // 获取地区选项
+  const fetchRegionOptions = async () => {
     try {
-      const [regionRes, industryRes, stageRes, typeRes] = await Promise.all([
-        getRegionList(),
-        getIndustryList(), 
-        getFundingStageList(),
-        getInvestorTypeList()
-      ]);
-
-      if (regionRes.success) regionOptions.value = regionRes.data;
-      if (industryRes.success) industryOptions.value = industryRes.data;
-      if (stageRes.success) stageOptions.value = stageRes.data;
-      if (typeRes.success) typeOptions.value = typeRes.data;
+      const result = await getRegionList();
+      if (result.code === 200) {
+        regionOptions.value = result.data;
+      }
     } catch (error) {
-      console.error("获取选项数据失败:", error);
-    } finally {
-      loading.value = false;
+      console.error("获取地区失败:", error);
     }
   };
 
-  // 重置筛选条件
-  const resetFilter = () => {
-    Object.assign(filterForm, {
-      page: 1,
-      limit: 10,
-      search: "",
-      field: "",
-      stage: "",
-      region: "",
-      type: "",
-      status: undefined
-    });
+  // 获取行业选项
+  const fetchIndustryOptions = async () => {
+    try {
+      const result = await getIndustryList();
+      if (result.code === 200) {
+        industryOptions.value = result.data;
+      }
+    } catch (error) {
+      console.error("获取行业失败:", error);
+    }
   };
 
-  // 处理搜索
-  const handleSearch = () => {
-    filterForm.page = 1;
+  // 获取融资阶段选项
+  const fetchStageOptions = async () => {
+    try {
+      const result = await getFundingStageList();
+      if (result.code === 200) {
+        stageOptions.value = result.data;
+      }
+    } catch (error) {
+      console.error("获取融资阶段失败:", error);
+    }
   };
 
-  // 处理筛选变化
-  const handleFilterChange = () => {
-    filterForm.page = 1;
+  // 获取所有选项数据
+  const fetchOptions = async () => {
+    await Promise.all([
+      fetchRegionOptions(),
+      fetchIndustryOptions(),
+      fetchStageOptions()
+    ]);
   };
 
+  // 组件挂载时获取选项数据
   onMounted(() => {
     fetchOptions();
   });
 
+  const resetForm = (formEl) => {
+    if (!formEl) return;
+    formEl.resetFields();
+  };
+
   return {
-    loading,
     filterForm,
+    formRef,
     regionOptions,
     industryOptions,
     stageOptions,
-    typeOptions,
     statusOptions,
-    verifiedOptions,
-    resetFilter,
-    handleSearch,
-    handleFilterChange
+    resetForm,
+    fetchOptions
   };
 }

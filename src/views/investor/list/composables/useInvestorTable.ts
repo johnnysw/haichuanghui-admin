@@ -1,35 +1,30 @@
-import { ref, reactive, onMounted, h } from "vue";
+import { ref, reactive, computed, h, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { ElMessage, ElMessageBox, ElAvatar, ElLink, ElTag } from "element-plus";
-import type { PaginationProps, TableColumns } from "@pureadmin/table";
-import { getInvestorList } from "../api";
-import type { InvestorInfo, InvestorQueryParams } from "../types/types";
-import { INVESTOR_STATUS_MAP } from "../types/types";
+import { ElMessage, ElAvatar, ElTag, ElLink } from "element-plus";
+import { getInvestorList } from "../../api";
+import { useInvestorFilter } from "./useInvestorFilter";
+import { useInvestorActions } from "./useInvestorActions";
+import type { InvestorInfo, InvestorQueryParams, NamedOption } from "../../types/types";
+import { INVESTOR_STATUS_MAP } from "../../types/types";
+import type { PaginationProps } from "@pureadmin/table";
 
 export function useInvestorTable() {
   const router = useRouter();
-  
-  // 表单数据
-  const filterForm = reactive<InvestorQueryParams>({
-    page: 1,
-    limit: 10,
-    search: "",
-    region: "",
-    type: "",
-    status: ""
-  });
-
-  // 状态
   const loading = ref(false);
   const investorList = ref<InvestorInfo[]>([]);
   const total = ref(0);
   const selectedRows = ref<InvestorInfo[]>([]);
-  const isShow = ref(false);
 
-  // 查看详情 - 提前定义
-  const openDetail = (row: InvestorInfo) => {
-    router.push(`/investor/detail/${row.id}`);
-  };
+  // 使用筛选器
+  const {
+    filterForm,
+    formRef,
+    regionOptions,
+    industryOptions,
+    stageOptions,
+    statusOptions,
+    resetForm
+  } = useInvestorFilter();
 
   // 分页配置
   const pagination = reactive<PaginationProps>({
@@ -40,205 +35,30 @@ export function useInvestorTable() {
     pageSizes: [10, 20, 50, 100]
   });
 
-  // 选项数据
-  const regionOptions = ref([
-    { label: "北京", value: "1" },
-    { label: "上海", value: "2" },
-    { label: "深圳", value: "3" },
-    { label: "杭州", value: "4" },
-    { label: "广州", value: "5" }
-  ]);
-
-  const typeOptions = ref([
-    { label: "机构投资者", value: "1" },
-    { label: "个人投资者", value: "2" }
-  ]);
-
-  const statusOptions = ref([
-    { label: "待审核", value: "2" },
-    { label: "已认证", value: "1" },
-    { label: "已拒绝", value: "3" },
-    { label: "草稿", value: "0" }
-  ]);
-
-  // 表格列定义
-  const columns = [
-    {
-      label: "勾选列",
-      type: "selection" as const,
-      width: 55,
-      align: "left" as const
-    },
-    {
-      label: "序号",
-      type: "index" as const,
-      width: 70
-    },
-    {
-      label: "头像",
-      prop: "user.avatar",
-      width: 60,
-      cellRenderer: ({ row }) => h(ElAvatar, {
-        size: 32,
-        src: row.user?.avatar,
-        alt: row.user?.realName || "投资人"
-      })
-    },
-    {
-      label: "姓名",
-      prop: "user.realName",
-      minWidth: 80,
-      cellRenderer: ({ row }) => h(ElLink, {
-        type: "primary",
-        underline: false,
-        onClick: () => openDetail(row)
-      }, () => row.user?.realName || row.user?.username || "-")
-    },
-    {
-      label: "手机号",
-      prop: "user.phone",
-      minWidth: 110,
-      cellRenderer: ({ row }) => {
-        const phone = row.user?.phone;
-        if (!phone) return "-";
-        return phone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
-      }
-    },
-    {
-      label: "投资机构",
-      prop: "investmentInstitution",
-      minWidth: 120,
-      showOverflowTooltip: true
-    },
-    {
-      label: "职位",
-      prop: "position",
-      minWidth: 80,
-      cellRenderer: ({ row }) => {
-        const positionMap: Record<string, string> = {
-          "partner": "合伙人",
-          "director": "投资总监", 
-          "manager": "投资经理",
-          "analyst": "投资分析师",
-          "other": "其他"
-        };
-        return positionMap[row.position] || row.position || "-";
-      }
-    },
-    {
-      label: "地区",
-      prop: "location",
-      minWidth: 60
-    },
-    {
-      label: "类型",
-      prop: "investorType.name",
-      minWidth: 80,
-      cellRenderer: ({ row }) => row.investorType?.name || "-"
-    },
-    {
-      label: "投资金额",
-      prop: "investmentAmount",
-      minWidth: 100,
-      cellRenderer: ({ row }) => {
-        const min = row.investmentAmountMin;
-        const max = row.investmentAmountMax;
-        if (!min && !max) return "-";
-        if (min && max) return `${min}-${max}万`;
-        if (min) return `${min}万+`;
-        return `${max}万内`;
-      }
-    },
-    {
-      label: "关注领域",
-      prop: "focusIndustries",
-      minWidth: 180,
-      cellRenderer: ({ row }) => {
-        if (row.focusIndustries && row.focusIndustries.length > 0) {
-          const industries = row.focusIndustries.slice(0, 3);
-          const hasMore = row.focusIndustries.length > 3;
-          const tags = [
-            ...industries.map(industry => h(ElTag, {
-              key: industry.id,
-              size: "small",
-              type: "info",
-              effect: "light"
-            }, () => industry.name))
-          ];
-          
-          if (hasMore) {
-            tags.push(h(ElTag, {
-              size: "small",
-              type: "info", 
-              effect: "light"
-            }, () => `+${row.focusIndustries.length - 3}`));
-          }
-          
-          return h("div", { style: "display: flex; flex-wrap: wrap; gap: 4px;" }, tags);
-        }
-        return "-";
-      }
-    },
-    {
-      label: "认证状态",
-      prop: "verified",
-      minWidth: 80,
-      align: "center",
-      cellRenderer: ({ row }) => {
-        return h(ElTag, {
-          type: row.verified ? "success" : "warning",
-          effect: "light",
-          size: "small"
-        }, () => row.verified ? "已认证" : "未认证");
-      }
-    },
-    {
-      label: "审核状态",
-      prop: "status",
-      minWidth: 80,
-      align: "center",
-      cellRenderer: ({ row }) => {
-        const statusInfo = INVESTOR_STATUS_MAP[row.status] || { label: "未知", color: "info" };
-        return h(ElTag, {
-          type: statusInfo.color,
-          effect: "light",
-          size: "small"
-        }, () => statusInfo.label);
-      }
-    },
-    {
-      label: "浏览量",
-      prop: "viewCount",
-      minWidth: 60,
-      align: "center"
-    },
-    {
-      label: "创建时间",
-      prop: "createdTime",
-      minWidth: 110,
-      cellRenderer: ({ row }) => 
-        row.createdTime ? row.createdTime.replace(/:\d{2}$/, "") : "-"
-    },
-    {
-      label: "操作",
-      fixed: "right",
-      width: 300,
-      minWidth: 300,
-      slot: "operation"
-    }
-  ];
-
   // 获取投资人数据
-  const getInvestorData = async (params: InvestorQueryParams) => {
+  const getInvestorData = async () => {
     loading.value = true;
     try {
+      const params: InvestorQueryParams = {
+        page: pagination.currentPage,
+        limit: pagination.pageSize,
+        search: filterForm.search || undefined,
+        region: filterForm.region || undefined,
+        field: filterForm.field || undefined,
+        stage: filterForm.stage || undefined,
+        status: filterForm.status !== undefined && filterForm.status !== "" 
+          ? filterForm.status 
+          : undefined // 不传 status 则查询所有状态
+      };
+
       const response = await getInvestorList(params);
-      if (response.success) {
-        investorList.value = response.data.list;
-        total.value = response.data.total;
-        pagination.total = response.data.total;
-        pagination.currentPage = params.page || 1;
-        pagination.pageSize = params.limit || 10;
+      
+      if (response.code === 200 && response.data) {
+        investorList.value = response.data.list || [];
+        total.value = response.data.total || 0;
+        pagination.total = response.data.total || 0;
+        pagination.currentPage = response.data.currentPage || 1;
+        pagination.pageSize = response.data.pageSize || 10;
       } else {
         ElMessage.error(response.message || "获取投资人列表失败");
       }
@@ -250,92 +70,248 @@ export function useInvestorTable() {
     }
   };
 
+  // 使用操作函数
+  const { handleToggleStatus } = useInvestorActions(getInvestorData);
+
   // 搜索
   const handleSearch = () => {
-    filterForm.page = 1;
-    getInvestorData(filterForm);
+    pagination.currentPage = 1;
+    getInvestorData();
   };
 
   // 重置
   const handleReset = () => {
-    Object.assign(filterForm, {
-      page: 1,
-      limit: 10,
-      search: "",
-      region: "",
-      type: "",
-      status: ""
-    });
-    getInvestorData(filterForm);
+    // 重置所有筛选条件为初始值
+    filterForm.search = "";
+    filterForm.region = "";
+    filterForm.field = "";
+    filterForm.stage = "";
+    filterForm.status = undefined;
+    
+    pagination.currentPage = 1;
+    getInvestorData();
   };
 
-  // 筛选条件变化
+  // 筛选条件改变
   const handleFilterChange = () => {
-    filterForm.page = 1;
-    getInvestorData(filterForm);
+    pagination.currentPage = 1;
+    getInvestorData();
   };
 
-  // 分页大小变化
-  const handleSizeChange = (size: number) => {
-    filterForm.limit = size;
-    filterForm.page = 1;
-    getInvestorData(filterForm);
+  // 选择改变
+  const handleSelectionChange = (rows: InvestorInfo[]) => {
+    selectedRows.value = rows;
   };
 
-  // 当前页变化
-  const handleCurrentChange = (page: number) => {
-    filterForm.page = page;
-    getInvestorData(filterForm);
+  // 分页大小改变
+  const handleSizeChange = (val: number) => {
+    pagination.pageSize = val;
+    pagination.currentPage = 1;
+    getInvestorData();
   };
 
-  // 选择变化
-  const handleSelectionChange = (selection: InvestorInfo[]) => {
-    selectedRows.value = selection;
+  // 当前页改变
+  const handleCurrentChange = (val: number) => {
+    pagination.currentPage = val;
+    getInvestorData();
   };
 
-  // 打开对话框
-  const openDialog = (row?: InvestorInfo) => {
-    console.log("打开对话框", row);
-    // 这里可以触发自定义事件或调用父组件方法
+  // 查看详情
+  const openDetail = (row: InvestorInfo) => {
+    router.push(`/investor/detail/${row.id}`);
   };
 
-  // 删除
-  const handleDelete = async (row: InvestorInfo) => {
-    try {
-      await ElMessageBox.confirm(
-        `确认要删除投资人"${row.user?.realName || row.user?.username}"吗？`,
-        "确认删除",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }
-      );
-      
-      // 这里调用删除API
-      console.log("删除投资人:", row);
-      ElMessage.success("删除成功");
-      getInvestorData(filterForm);
-    } catch (error) {
-      if (error !== "cancel") {
-        ElMessage.error("删除失败");
-      }
+  // 构建完整图片 URL
+  const getFullImageUrl = (url: string): string => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
     }
+    // 如果已经包含 /public/，直接拼接 API 基础地址
+    if (url.startsWith('/public/')) {
+      return `${import.meta.env.VITE_API_BASE_URL}${url}`;
+    }
+    // 否则补充 /public 前缀
+    return `${import.meta.env.VITE_API_BASE_URL}/public${url.startsWith('/') ? url : `/${url}`}`;
   };
 
-  // 初始化
+  // 表格列定义
+  const columns: TableColumnList = [
+    {
+      type: "index",
+      width: 55,
+      align: "center",
+      fixed: "left"
+    },
+    {
+      label: "头像",
+      prop: "avatar",
+      width: 60,
+      cellRenderer: ({ row }) => 
+        h(ElAvatar, {
+          size: 32,
+          src: row?.avatar ? getFullImageUrl(row.avatar) : undefined,
+          alt: row?.name || "投资人"
+        })
+    },
+    {
+      label: "姓名",
+      prop: "name",
+      minWidth: 80
+    },
+    {
+      label: "投资机构",
+      prop: "investmentInstitution",
+      minWidth: 120,
+      showOverflowTooltip: true
+    },
+    {
+      label: "职位",
+      prop: "position",
+      minWidth: 100,
+      showOverflowTooltip: true
+    },
+    {
+      label: "关注领域",
+      prop: "focusIndustries",
+      minWidth: 180,
+      cellRenderer: ({ row }) => {
+        if (row?.focusIndustries && row.focusIndustries.length > 0) {
+          const industries = row.focusIndustries.slice(0, 3);
+          const hasMore = row.focusIndustries.length > 3;
+          
+          const tags = [
+            ...industries.map((industry: NamedOption) => 
+              h(ElTag, {
+                key: industry.id,
+                size: "small",
+                type: "info",
+                effect: "light"
+              }, () => industry.name)
+            )
+          ];
+          
+          if (hasMore) {
+            tags.push(
+              h(ElTag, {
+                size: "small",
+                type: "info",
+                effect: "light"
+              }, () => `+${row.focusIndustries!.length - 3}`)
+            );
+          }
+          
+          return h("div", { 
+            style: "display: flex; flex-wrap: wrap; gap: 4px;" 
+          }, tags);
+        }
+        return "-";
+      }
+    },
+    {
+      label: "偏好阶段",
+      prop: "preferredStages",
+      minWidth: 160,
+      cellRenderer: ({ row }) => {
+        if (row?.preferredStages && row.preferredStages.length > 0) {
+          const stages = row.preferredStages.slice(0, 3);
+          const hasMore = row.preferredStages.length > 3;
+          
+          const tags = [
+            ...stages.map((stage: NamedOption) => 
+              h(ElTag, {
+                key: stage.id,
+                size: "small",
+                type: "success",
+                effect: "light"
+              }, () => stage.name)
+            )
+          ];
+          
+          if (hasMore) {
+            tags.push(
+              h(ElTag, {
+                size: "small",
+                type: "success",
+                effect: "light"
+              }, () => `+${row.preferredStages!.length - 3}`)
+            );
+          }
+          
+          return h("div", { 
+            style: "display: flex; flex-wrap: wrap; gap: 4px;" 
+          }, tags);
+        }
+        return "-";
+      }
+    },
+    {
+      label: "投资金额",
+      prop: "investmentRangeText",
+      minWidth: 120,
+      cellRenderer: ({ row }) => (row as any)?.investmentRangeText || row?.investmentRange || "-"
+    },
+    {
+      label: "投资项目数",
+      prop: "investmentCount",
+      width: 100,
+      align: "center",
+      cellRenderer: ({ row }) => row?.investmentCount || 0
+    },
+    {
+      label: "审核状态",
+      prop: "status",
+      minWidth: 80,
+      align: "center",
+      cellRenderer: ({ row }) => {
+        const statusInfo = INVESTOR_STATUS_MAP[row?.status] || { label: "未知", type: "info" } as any;
+        return h(ElTag, {
+          type: (statusInfo as any).type,
+          effect: "light",
+          size: "small"
+        }, () => (statusInfo as any).label);
+      }
+    },
+    {
+      label: "申请时间",
+      prop: "createdTime",
+      minWidth: 120,
+      cellRenderer: ({ row }) => {
+        if (!row?.createdTime) return "-";
+        // 将 ISO 格式转换为日期（YYYY-MM-DD）
+        const date = new Date(row.createdTime);
+        return date.toLocaleDateString('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }).replace(/\//g, '-');
+      }
+    },
+    {
+      label: "操作",
+      fixed: "right",
+      width: 200,
+      slot: "operation"
+    }
+  ];
+
+  // 组件挂载时获取数据
   onMounted(() => {
-    getInvestorData(filterForm);
+    getInvestorData();
   });
+
+  const isShow = ref(false);
 
   return {
     filterForm,
+    formRef,
     loading,
     investorList,
     total,
     selectedRows,
     regionOptions,
-    typeOptions,
+    industryOptions,
+    stageOptions,
     statusOptions,
     columns,
     pagination,
@@ -348,7 +324,6 @@ export function useInvestorTable() {
     handleSizeChange,
     handleCurrentChange,
     openDetail,
-    openDialog,
-    handleDelete
+    handleToggleStatus
   };
 }

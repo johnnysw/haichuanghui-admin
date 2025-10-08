@@ -1,16 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { deviceDetection } from "@pureadmin/utils";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { getApplicationList, getApplicationStats, updateApplication, deleteApplication } from "./api/index";
-import type { ApplicationQueryParams, InvestorApplication } from "./types/types";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { useApplicationTable } from "./composables/useApplicationTable";
+import { useApplicationActions } from "./composables/useApplicationActions";
+import type { InvestorApplication } from "./types/types";
 
-import Refresh from "@iconify-icons/ep/refresh";
 import View from "@iconify-icons/ep/view";
-// Removed quick review icons; approve/reject moved to detail page operations
 
 defineOptions({
   name: "InvestorApplications"
@@ -21,149 +18,29 @@ const router = useRouter();
 // 表格相关
 const formRef = ref();
 const tableRef = ref();
-const loading = ref(false);
-const applicationList = ref<InvestorApplication[]>([]);
+const contentRef = ref();
 
-// 筛选表单
-const filterForm = ref<ApplicationQueryParams>({
-  page: 1,
-  limit: 20,
-  search: "",
-  status: "",
-  dateRange: null,
-  reviewerId: undefined
-});
+// 使用 composables
+const {
+  loading,
+  isShow,
+  applicationList,
+  filterForm,
+  pagination,
+  stats,
+  statusOptions,
+  columns,
+  getStatusType,
+  getStatusText,
+  handleSearch,
+  handleReset,
+  handleRefresh,
+  handleSizeChange,
+  handleCurrentChange
+} = useApplicationTable();
 
-// 分页信息
-const pagination = ref({
-  total: 0,
-  pageSize: 20,
-  currentPage: 1,
-  background: true,
-  layout: "total, sizes, prev, pager, next, jumper"
-});
-
-// 顶部统计
-const stats = ref({ total: 0, pending: 0, approved: 0, rejected: 0, todaySubmitted: 0 });
-
-// 状态选项
-const statusOptions = [
-  { label: "全部状态", value: "" },
-  { label: "待审核", value: "2" },
-  { label: "审核通过", value: "1" },
-  { label: "审核拒绝", value: "3" }
-];
-
-// 表格列配置
-const columns = [
-  {
-    label: "申请人",
-    prop: "user",
-    width: 180,
-    formatter: (row: InvestorApplication) => row.user?.realName || row.user?.username || "未知"
-  },
-  {
-    label: "联系方式",
-    prop: "contact",
-    width: 150,
-    formatter: (row: InvestorApplication) => row.user?.phone || row.user?.email || "-"
-  },
-  {
-    label: "投资机构",
-    prop: "investmentInstitution",
-    minWidth: 200,
-    showOverflowTooltip: true
-  },
-  {
-    label: "投资偏好",
-    prop: "investmentPreference",
-    width: 120,
-    showOverflowTooltip: true
-  },
-  {
-    label: "申请状态",
-    prop: "status",
-    width: 100,
-    slot: "status"
-  },
-  {
-    label: "申请时间",
-    prop: "submittedTime",
-    width: 180,
-    formatter: (row: InvestorApplication) => row.submittedTime?.slice(0, 19) || "-"
-  },
-  {
-    label: "审核人",
-    prop: "reviewer",
-    width: 120,
-    formatter: (row: InvestorApplication) => row.reviewer?.realName || row.reviewer?.username || "-"
-  },
-  {
-    label: "操作",
-    fixed: "right",
-    minWidth: 300,
-    slot: "operation"
-  }
-];
-
-// 获取申请列表数据
-const getApplicationData = async (params?: Partial<ApplicationQueryParams>) => {
-  try {
-    loading.value = true;
-    const queryParams = { ...filterForm.value, ...params };
-    const response = await getApplicationList(queryParams);
-    
-    applicationList.value = response.data.list;
-    pagination.value.total = response.data.total;
-    pagination.value.currentPage = response.data.page;
-  } catch (error) {
-    console.error("获取申请列表失败:", error);
-    ElMessage.error("获取申请列表失败");
-  } finally {
-    loading.value = false;
-  }
-};
-
-// 搜索
-const handleSearch = () => {
-  filterForm.value.page = 1;
-  pagination.value.currentPage = 1;
-  getApplicationData();
-};
-
-// 重置
-const handleReset = () => {
-  formRef.value?.resetFields();
-  filterForm.value = {
-    page: 1,
-    limit: 20,
-    search: "",
-    status: "",
-    dateRange: null,
-    reviewerId: undefined
-  };
-  pagination.value.currentPage = 1;
-  getApplicationData();
-};
-
-// 刷新
-const handleRefresh = () => {
-  getApplicationData();
-  fetchStats();
-};
-
-// 分页处理
-const handleSizeChange = (val: number) => {
-  filterForm.value.limit = val;
-  pagination.value.pageSize = val;
-  getApplicationData();
-};
-
-const handleCurrentChange = (val: number) => {
-  filterForm.value.page = val;
-  pagination.value.currentPage = val;
-  getApplicationData();
-};
+// 使用操作 composable
+const { handleDelete } = useApplicationActions(handleRefresh);
 
 // 查看详情
 const handleViewDetail = (row: InvestorApplication) => {
@@ -172,86 +49,10 @@ const handleViewDetail = (row: InvestorApplication) => {
   });
 };
 
-// 快速审核
-const handleQuickReview = async (row: InvestorApplication, status: number) => {
-  const action = status === 1 ? "通过" : "拒绝";
-  try {
-    await ElMessageBox.confirm(
-      `确认要${action}这个申请吗？`,
-      "确认操作",
-      {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }
-    );
-    
-    // 这里应该调用审核API
-    ElMessage.success(`申请${action}成功`);
-    getApplicationData();
-  } catch (error) {
-    console.log("取消操作");
-  }
-};
-
-// 获取状态类型
-const getStatusType = (status: number) => {
-  const statusMap = {
-    1: "success", // 审核通过
-    2: "warning", // 待审核
-    3: "danger"   // 审核拒绝
-  };
-  return statusMap[status] || "info";
-};
-
-// 获取状态文本
-const getStatusText = (status: number) => {
-  const statusMap = {
-    1: "审核通过",
-    2: "待审核", 
-    3: "审核拒绝"
-  };
-  return statusMap[status] || "未知";
-};
-
-// 初始化数据
-onMounted(() => {
-  getApplicationData();
-  fetchStats();
-});
-
-// 拉取统计
-async function fetchStats() {
-  try {
-    const { data } = await getApplicationStats();
-    stats.value = data as any;
-  } catch {}
-}
-
-// 编辑（示例：打开详情页进行编辑）
-function handleEdit(row: InvestorApplication) {
+// 编辑
+const handleEdit = (row: InvestorApplication) => {
   router.push({ path: `/investor/applications/detail/${row.id}` });
-}
-
-// 删除
-async function handleDelete(row: InvestorApplication) {
-  try {
-    await ElMessageBox.confirm(`是否确认删除申请【${row.user?.realName || row.user?.username}】？`, '提示', { type: 'warning' });
-    loading.value = true;
-    const res = await deleteApplication(row.id);
-    if (res.success) {
-      ElMessage.success('删除成功');
-      getApplicationData();
-      fetchStats();
-    } else {
-      ElMessage.error(res.message || '删除失败');
-    }
-  } catch {
-    // cancel
-  } finally {
-    loading.value = false;
-  }
-}
+};
 </script>
 
 <template>
@@ -309,13 +110,24 @@ async function handleDelete(row: InvestorApplication) {
         >
           搜索
         </el-button>
-        <el-button :icon="useRenderIcon('ri:refresh-line')" @click="handleReset">
+        <el-button :icon="useRenderIcon('ri:refresh-line')" @click="handleReset(formRef)">
           重置
         </el-button>
       </el-form-item>
     </el-form>
 
-    <PureTableBar title="投资人申请列表" :columns="columns" @refresh="handleRefresh">
+    <div
+      ref="contentRef"
+      :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
+    >
+      <div :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']" class="w-full min-w-0">
+        <PureTableBar 
+          class="w-full min-w-0"
+          style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
+          title="投资人申请列表" 
+          :columns="columns" 
+          @refresh="handleRefresh"
+        >
       <template #buttons>
         <el-space wrap>
           <el-tag type="info" effect="light">总数：{{ stats.total }}</el-tag>
@@ -366,7 +178,7 @@ async function handleDelete(row: InvestorApplication) {
                 :icon="useRenderIcon(View)"
                 @click="handleViewDetail(row)"
               >
-                查看详情
+                查看
               </el-button>
               <el-button
                 class="reset-margin"
@@ -387,6 +199,8 @@ async function handleDelete(row: InvestorApplication) {
         </pure-table>
       </template>
     </PureTableBar>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -394,6 +208,25 @@ async function handleDelete(row: InvestorApplication) {
 .search-form {
   .el-form-item {
     margin-bottom: 12px;
+  }
+}
+
+// 增加表格表头高度
+:deep(.el-table__header-wrapper) {
+  .el-table__header {
+    th {
+      height: 60px !important; // 默认约40px，增加到60px
+      padding: 12px 0 !important;
+    }
+  }
+}
+
+// 如果需要调整表格行高度，可以添加：
+:deep(.el-table__body-wrapper) {
+  .el-table__body {
+    tr {
+      height: 50px; // 调整数据行高度
+    }
   }
 }
 </style>
