@@ -7,7 +7,7 @@ import type { ProjectInfo } from "../types/types";
 export function useProjectDetail() {
   const route = useRoute();
   const projectId = Number(route.params.id);
-  
+
   const projectInfo = ref<ProjectInfo | null>(null);
   const loading = ref(true);
 

@@ -9,12 +9,18 @@
         class="w-full h-64 md:h-80 object-cover"
         fit="cover"
       />
-      <div v-else class="w-full h-64 md:h-80 bg-gray-100 flex items-center justify-center">
+      <div
+        v-else
+        class="w-full h-64 md:h-80 bg-gray-100 flex items-center justify-center"
+      >
         <el-icon class="text-gray-400" size="48">
           <component :is="useRenderIcon('ep:picture')" />
         </el-icon>
       </div>
-      <div v-if="news.categoryName" class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm">
+      <div
+        v-if="news.categoryName"
+        class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm"
+      >
         {{ news.categoryName }}
       </div>
     </div>
@@ -23,10 +29,14 @@
     <div class="p-6 md:p-8">
       <div class="flex flex-col md:flex-row md:justify-between md:items-start">
         <div class="md:w-2/3">
-          <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">{{ news.title }}</h1>
-          
+          <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+            {{ news.title }}
+          </h1>
+
           <!-- 副标题 -->
-          <h2 v-if="news.subtitle" class="text-lg text-gray-600 mb-4">{{ news.subtitle }}</h2>
+          <h2 v-if="news.subtitle" class="text-lg text-gray-600 mb-4">
+            {{ news.subtitle }}
+          </h2>
 
           <!-- 资讯元信息 -->
           <div class="space-y-3 mb-6">
@@ -35,16 +45,21 @@
                 <component :is="useRenderIcon('ep:user')" />
               </el-icon>
               <span>作者: {{ news.author }}</span>
-              <span v-if="news.source" class="ml-4">来源: {{ news.source }}</span>
+              <span v-if="news.source" class="ml-4"
+                >来源: {{ news.source }}</span
+              >
             </div>
-            
-            <div v-if="news.publishTime" class="flex items-center text-gray-600">
+
+            <div
+              v-if="news.publishTime"
+              class="flex items-center text-gray-600"
+            >
               <el-icon class="w-5 h-5 text-primary mr-2">
                 <component :is="useRenderIcon('ep:calendar')" />
               </el-icon>
               <span>发布时间: {{ formatDateTime(news.publishTime) }}</span>
             </div>
-            
+
             <div class="flex items-center text-gray-600">
               <el-icon class="w-5 h-5 text-primary mr-2">
                 <component :is="useRenderIcon('ep:view')" />
@@ -61,7 +76,10 @@
           </div>
 
           <!-- 资讯标签 -->
-          <div v-if="news.tags && news.tags.length > 0" class="flex flex-wrap gap-2 mb-6">
+          <div
+            v-if="news.tags && news.tags.length > 0"
+            class="flex flex-wrap gap-2 mb-6"
+          >
             <span
               v-for="(tag, index) in news.tags"
               :key="tag"
@@ -78,13 +96,18 @@
         </div>
 
         <!-- 右侧管理区域 -->
-        <div v-if="isAdmin" class="md:w-1/3 md:border-l md:pl-8 md:ml-4 mt-6 md:mt-0">
+        <div
+          v-if="isAdmin"
+          class="md:w-1/3 md:border-l md:pl-8 md:ml-4 mt-6 md:mt-0"
+        >
           <div class="flex flex-col items-center">
             <!-- 资讯状态 -->
-            <div :class="[
-              'px-4 py-1 rounded-full text-sm font-medium mb-6',
-              getStatusClass(news.status)
-            ]">
+            <div
+              :class="[
+                'px-4 py-1 rounded-full text-sm font-medium mb-6',
+                getStatusClass(news.status)
+              ]"
+            >
               {{ getStatusText(news.status) }}
             </div>
 
@@ -166,7 +189,7 @@
                 <el-icon class="mr-2">
                   <component :is="useRenderIcon('ep:star')" />
                 </el-icon>
-                {{ news.isRecommended ? '取消推荐' : '设为推荐' }}
+                {{ news.isRecommended ? "取消推荐" : "设为推荐" }}
               </el-button>
 
               <el-button
@@ -177,7 +200,7 @@
                 <el-icon class="mr-2">
                   <component :is="useRenderIcon('ep:top')" />
                 </el-icon>
-                {{ news.isTop ? '取消置顶' : '设为置顶' }}
+                {{ news.isTop ? "取消置顶" : "设为置顶" }}
               </el-button>
             </div>
           </div>
@@ -223,24 +246,36 @@ const formatDateTime = (dateStr: string) => {
 // 获取状态样式类
 const getStatusClass = (status: number) => {
   switch (status) {
-    case 0: return "bg-gray-100 text-gray-700";
-    case 1: return "bg-green-100 text-green-700";
-    case 2: return "bg-yellow-100 text-yellow-700";
-    case 3: return "bg-blue-100 text-blue-700";
-    case 4: return "bg-red-100 text-red-700";
-    default: return "bg-gray-100 text-gray-700";
+    case 0:
+      return "bg-gray-100 text-gray-700";
+    case 1:
+      return "bg-green-100 text-green-700";
+    case 2:
+      return "bg-yellow-100 text-yellow-700";
+    case 3:
+      return "bg-blue-100 text-blue-700";
+    case 4:
+      return "bg-red-100 text-red-700";
+    default:
+      return "bg-gray-100 text-gray-700";
   }
 };
 
 // 获取状态文本
 const getStatusText = (status: number) => {
   switch (status) {
-    case 0: return "草稿";
-    case 1: return "已发布";
-    case 2: return "已下线";
-    case 3: return "审核中";
-    case 4: return "已拒绝";
-    default: return "未知";
+    case 0:
+      return "草稿";
+    case 1:
+      return "已发布";
+    case 2:
+      return "已下线";
+    case 3:
+      return "审核中";
+    case 4:
+      return "已拒绝";
+    default:
+      return "未知";
   }
 };
 

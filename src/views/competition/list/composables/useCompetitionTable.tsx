@@ -2,7 +2,12 @@ import dayjs from "dayjs";
 import editForm from "../components/CompetitionForm.vue";
 import { message } from "@/utils/message";
 import { ElMessageBox } from "element-plus";
-import { getCompetitionList, getIndustryList, recommendCompetition, deleteCompetition } from "../api";
+import {
+  getCompetitionList,
+  getIndustryList,
+  recommendCompetition,
+  deleteCompetition
+} from "../api";
 import { addDialog } from "@/components/ReDialog";
 import { deviceDetection } from "@pureadmin/utils";
 import type { PaginationProps } from "@pureadmin/table";
@@ -68,13 +73,21 @@ export function useCompetitionList() {
       minWidth: 100,
       cellRenderer: ({ row, props }) => (
         <el-tag
-          type={row.status === 0 ? "info" : 
-                row.status === 1 ? "primary" : 
-                row.status === 2 ? "success" : 
-                row.status === 3 ? "warning" : 
-                row.status === 4 ? "danger" : 
-                row.status === 5 ? "" : 
-                "danger"}
+          type={
+            row.status === 0
+              ? "info"
+              : row.status === 1
+                ? "primary"
+                : row.status === 2
+                  ? "success"
+                  : row.status === 3
+                    ? "warning"
+                    : row.status === 4
+                      ? "danger"
+                      : row.status === 5
+                        ? ""
+                        : "danger"
+          }
           size={props.size === "small" ? "small" : "default"}
         >
           {statusMap[row.status]}
@@ -89,7 +102,7 @@ export function useCompetitionList() {
         <el-switch
           size={props.size === "small" ? "small" : "default"}
           modelValue={row.isRecommended}
-          onChange={(value) => handleToggleRecommend(row, value)}
+          onChange={value => handleToggleRecommend(row, value)}
         />
       )
     },
@@ -107,8 +120,7 @@ export function useCompetitionList() {
       label: "创建时间",
       prop: "createdTime",
       minWidth: 160,
-      formatter: ({ createdTime }) =>
-        dayjs(createdTime).format("YYYY-MM-DD")
+      formatter: ({ createdTime }) => dayjs(createdTime).format("YYYY-MM-DD")
     },
     {
       label: "操作",
@@ -153,7 +165,7 @@ export function useCompetitionList() {
       );
 
       const result = await deleteCompetition(row.id);
-      
+
       if (result.code === 200) {
         message(`删除大赛"${row.title}"成功`, { type: "success" });
         onSearch();
@@ -185,20 +197,21 @@ export function useCompetitionList() {
   async function handleToggleRecommend(row: CompetitionItem, value: boolean) {
     try {
       // 调用后端API更新推荐状态
-      const result = await recommendCompetition(row.id, { isRecommended: value });
-      
+      const result = await recommendCompetition(row.id, {
+        isRecommended: value
+      });
+
       if (result.code === 200) {
         // 更新本地数据
         row.isRecommended = value;
-        
+
         // 显示成功消息
-        message(`已${value ? '推荐' : '取消推荐'}大赛：${row.title}`, { 
-          type: "success" 
+        message(`已${value ? "推荐" : "取消推荐"}大赛：${row.title}`, {
+          type: "success"
         });
       } else {
-        throw new Error(result.message || '操作失败');
+        throw new Error(result.message || "操作失败");
       }
-      
     } catch (error) {
       // 如果更新失败，回滚状态
       row.isRecommended = !value;
@@ -213,7 +226,7 @@ export function useCompetitionList() {
       pageNum: pagination.currentPage,
       pageSize: pagination.pageSize
     };
-    
+
     try {
       const { data } = await getCompetitionList(params);
       dataList.value = data.list;
@@ -237,8 +250,8 @@ export function useCompetitionList() {
 
   function openDialog(title = "新增", row?: CompetitionItem) {
     // 这里不再使用弹窗，而是通过事件通知父组件打开抽屉
-    const formData: FormItemProps = row 
-      ? { ...row } 
+    const formData: FormItemProps = row
+      ? { ...row }
       : {
           id: undefined,
           title: "",
@@ -261,12 +274,20 @@ export function useCompetitionList() {
           judges: "",
           schedule: ""
         };
-    
+
     // 通过事件通知父组件打开抽屉
     if (title === "新增") {
-      window.dispatchEvent(new CustomEvent('openAddCompetitionDrawer', { detail: { title: "新增大赛", formData } }));
+      window.dispatchEvent(
+        new CustomEvent("openAddCompetitionDrawer", {
+          detail: { title: "新增大赛", formData }
+        })
+      );
     } else {
-      window.dispatchEvent(new CustomEvent('openEditCompetitionDrawer', { detail: { title: "修改大赛", formData } }));
+      window.dispatchEvent(
+        new CustomEvent("openEditCompetitionDrawer", {
+          detail: { title: "修改大赛", formData }
+        })
+      );
     }
   }
 

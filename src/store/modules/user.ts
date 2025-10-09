@@ -7,11 +7,7 @@ import {
   routerArrays,
   storageLocal
 } from "../utils";
-import {
-  getLogin,
-  refreshTokenApi,
-  logoutApi
-} from "@/api/auth";
+import { getLogin, refreshTokenApi, logoutApi } from "@/api/auth";
 import { useMultiTagsStoreHook } from "./multiTags";
 import { setToken, removeToken, userKey } from "@/utils/auth";
 import type { Auth } from "@/types/auth";
@@ -117,7 +113,7 @@ export const useUserStore = defineStore("pure-user", {
         // 调用后端登出接口
         await logoutApi();
       } catch (error) {
-        console.warn('后端登出接口调用失败:', error);
+        console.warn("后端登出接口调用失败:", error);
         // 即使后端接口调用失败，也要清理前端状态
       } finally {
         // 清理前端状态
@@ -131,7 +127,8 @@ export const useUserStore = defineStore("pure-user", {
           .then(response => {
             if (response?.code === 200) {
               // 更新token信息，保留用户信息
-              const currentUser = storageLocal().getItem<Auth.LoginResult>(userKey);
+              const currentUser =
+                storageLocal().getItem<Auth.LoginResult>(userKey);
               const updatedData = {
                 ...currentUser,
                 ...response.data,
@@ -140,7 +137,7 @@ export const useUserStore = defineStore("pure-user", {
               setToken(updatedData);
               resolve(response.data);
             } else {
-              reject(new Error(response.message || '刷新token失败'));
+              reject(new Error(response.message || "刷新token失败"));
             }
           })
           .catch(error => {

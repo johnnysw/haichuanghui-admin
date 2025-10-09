@@ -57,9 +57,13 @@ const fundingStageOptions = ref<BaseOption[]>([]);
 const rules = reactive<FormRules>({
   name: [{ required: true, message: "请输入项目名称", trigger: "blur" }],
   companyName: [{ required: true, message: "请输入企业名称", trigger: "blur" }],
-  industryId: [{ required: true, message: "请选择行业领域", trigger: "change" }],
+  industryId: [
+    { required: true, message: "请选择行业领域", trigger: "change" }
+  ],
   regionId: [{ required: true, message: "请选择地区", trigger: "change" }],
-  fundingStageId: [{ required: true, message: "请选择融资阶段", trigger: "change" }],
+  fundingStageId: [
+    { required: true, message: "请选择融资阶段", trigger: "change" }
+  ],
   contactEmail: [
     { type: "email", message: "请输入正确的邮箱地址", trigger: "blur" }
   ],
@@ -71,11 +75,12 @@ const rules = reactive<FormRules>({
 // 获取选项数据
 const fetchOptions = async () => {
   try {
-    const [industryResult, regionResult, fundingStageResult] = await Promise.all([
-      getIndustryList(),
-      getRegionList(),
-      getFundingStageList()
-    ]);
+    const [industryResult, regionResult, fundingStageResult] =
+      await Promise.all([
+        getIndustryList(),
+        getRegionList(),
+        getFundingStageList()
+      ]);
 
     if (industryResult.code === 200) {
       industryOptions.value = industryResult.data;

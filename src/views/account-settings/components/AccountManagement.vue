@@ -23,8 +23,8 @@ const passwordForm = reactive({
 const { logout } = useNav();
 
 const validatePass2 = (rule: any, value: any, callback: any) => {
-  if (value === '') {
-    callback(new Error('请再次输入新密码'));
+  if (value === "") {
+    callback(new Error("请再次输入新密码"));
   } else if (value !== passwordForm.newPassword) {
     callback(new Error("两次输入的新密码不一致!"));
   } else {
@@ -33,31 +33,34 @@ const validatePass2 = (rule: any, value: any, callback: any) => {
 };
 
 const validatePass = (rule: any, value: any, callback: any) => {
-  if (value === '') {
-    callback(new Error('请输入新密码'));
+  if (value === "") {
+    callback(new Error("请输入新密码"));
   } else if (!REGEXP_PWD.test(value)) {
-    callback(new Error('密码格式应为6-20位，数字、字母、符号的任意两种组合'));
+    callback(new Error("密码格式应为6-20位，数字、字母、符号的任意两种组合"));
   } else {
-    if (passwordForm.confirmPassword !== '') {
+    if (passwordForm.confirmPassword !== "") {
       if (!passwordFormRef.value) return;
-      passwordFormRef.value.validateField('confirmPassword', () => null);
+      passwordFormRef.value.validateField("confirmPassword", () => null);
     }
     callback();
   }
 };
 
 const passwordRules = reactive<FormRules<typeof passwordForm>>({
-  oldPassword: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
-  newPassword: [
-    { required: true, validator: validatePass, trigger: 'blur' }
-  ],
+  oldPassword: [{ required: true, message: "请输入旧密码", trigger: "blur" }],
+  newPassword: [{ required: true, validator: validatePass, trigger: "blur" }],
   confirmPassword: [
-    { required: true, validator: validatePass2, trigger: 'blur' }
-  ],
+    { required: true, validator: validatePass2, trigger: "blur" }
+  ]
 });
 
 const list = ref([
-  { title: "账户密码", illustrate: "及时修改密码，保障账户安全", button: "修改", key: 'password' }
+  {
+    title: "账户密码",
+    illustrate: "及时修改密码，保障账户安全",
+    button: "修改",
+    key: "password"
+  }
   // {
   //   title: "密保手机",
   //   illustrate: "已经绑定手机：158****6789",
@@ -76,9 +79,9 @@ const list = ref([
 ]);
 
 const openPasswordDialog = () => {
-  passwordForm.oldPassword = '';
-  passwordForm.newPassword = '';
-  passwordForm.confirmPassword = '';
+  passwordForm.oldPassword = "";
+  passwordForm.newPassword = "";
+  passwordForm.confirmPassword = "";
   passwordFormRef.value?.resetFields();
   dialogLoading.value = false;
   dialogVisible.value = true;
@@ -86,22 +89,27 @@ const openPasswordDialog = () => {
 
 const handlePasswordSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  await formEl.validate((valid) => {
+  await formEl.validate(valid => {
     if (valid) {
       dialogLoading.value = true;
-      changeUserPassword({ oldPassword: passwordForm.oldPassword, newPassword: passwordForm.newPassword })
-        .then((res) => {
+      changeUserPassword({
+        oldPassword: passwordForm.oldPassword,
+        newPassword: passwordForm.newPassword
+      })
+        .then(res => {
           if (res.code === 200) {
             message("修改密码成功，请重新登录", { type: "success" });
             dialogVisible.value = false;
             logout();
           } else {
-            message(res.message || '修改密码失败', { type: "error" });
+            message(res.message || "修改密码失败", { type: "error" });
           }
         })
         .catch(error => {
           console.error("修改密码失败:", error);
-          message(`修改密码失败: ${error.message || '请稍后重试'}`, { type: "error" });
+          message(`修改密码失败: ${error.message || "请稍后重试"}`, {
+            type: "error"
+          });
         })
         .finally(() => {
           dialogLoading.value = false;
@@ -111,7 +119,7 @@ const handlePasswordSubmit = async (formEl: FormInstance | undefined) => {
 };
 
 function onClick(item) {
-  if (item.key === 'password') {
+  if (item.key === "password") {
     openPasswordDialog();
   } else {
     console.log("onClick", item.title);
@@ -157,13 +165,28 @@ function onClick(item) {
         status-icon
       >
         <el-form-item label="旧密码" prop="oldPassword">
-          <el-input v-model="passwordForm.oldPassword" type="password" show-password placeholder="请输入旧密码" />
+          <el-input
+            v-model="passwordForm.oldPassword"
+            type="password"
+            show-password
+            placeholder="请输入旧密码"
+          />
         </el-form-item>
         <el-form-item label="新密码" prop="newPassword">
-          <el-input v-model="passwordForm.newPassword" type="password" show-password placeholder="6-20位，数字、字母、符号的任意两种组合" />
+          <el-input
+            v-model="passwordForm.newPassword"
+            type="password"
+            show-password
+            placeholder="6-20位，数字、字母、符号的任意两种组合"
+          />
         </el-form-item>
         <el-form-item label="确认新密码" prop="confirmPassword">
-          <el-input v-model="passwordForm.confirmPassword" type="password" show-password placeholder="请再次输入新密码" />
+          <el-input
+            v-model="passwordForm.confirmPassword"
+            type="password"
+            show-password
+            placeholder="请再次输入新密码"
+          />
         </el-form-item>
       </el-form>
       <template #footer>

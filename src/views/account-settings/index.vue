@@ -151,9 +151,9 @@ const handleInfoUpdate = (updatedInfo: { nickname: string }) => {
       />
       <component
         :is="panes.find(item => item.key === whichPane).component"
+        :class="[!isMobile && 'ml-[120px]']"
         @avatarUpdated="handleAvatarUpdate"
         @infoUpdated="handleInfoUpdate"
-        :class="[!isMobile && 'ml-[120px]']"
       />
     </el-main>
   </el-container>

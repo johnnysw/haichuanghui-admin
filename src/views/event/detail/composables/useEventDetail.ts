@@ -1,7 +1,17 @@
 import { ref, computed } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { getEventDetail, getEventStats, updateEventStatus, toggleEventRecommend } from "../api/index";
-import type { EventDetail, EventStats, StatusInfo, TypeInfo } from "../types/types";
+import {
+  getEventDetail,
+  getEventStats,
+  updateEventStatus,
+  toggleEventRecommend
+} from "../api/index";
+import type {
+  EventDetail,
+  EventStats,
+  StatusInfo,
+  TypeInfo
+} from "../types/types";
 
 export function useEventDetail() {
   const loading = ref(false);
@@ -20,7 +30,7 @@ export function useEventDetail() {
       detail.value = response.data;
     } catch (error) {
       console.error("获取活动详情失败:", error);
-      ElMessage.error(`获取详情失败: ${error.message || '数据不存在'}`);
+      ElMessage.error(`获取详情失败: ${error.message || "数据不存在"}`);
       detail.value = null;
     } finally {
       loading.value = false;
@@ -60,7 +70,7 @@ export function useEventDetail() {
   // 取消活动
   const handleCancel = async () => {
     if (!detail.value) return;
-    
+
     try {
       const { value: note } = await ElMessageBox.prompt(
         `请输入取消原因：`,
@@ -70,7 +80,7 @@ export function useEventDetail() {
           cancelButtonText: "取消操作",
           inputType: "textarea",
           inputPlaceholder: "请输入取消原因",
-          inputValidator: (value) => {
+          inputValidator: value => {
             if (!value || value.trim().length === 0) {
               return "请输入取消原因";
             }
@@ -78,7 +88,7 @@ export function useEventDetail() {
           }
         }
       );
-      
+
       await updateStatus(detail.value.id, 3, note);
     } catch (error) {
       // 用户取消操作
@@ -88,7 +98,7 @@ export function useEventDetail() {
   // 重新激活活动
   const handleReactivate = async () => {
     if (!detail.value) return;
-    
+
     try {
       await ElMessageBox.confirm(
         `确认重新激活活动「${detail.value.title}」吗？`,
@@ -99,7 +109,7 @@ export function useEventDetail() {
           type: "success"
         }
       );
-      
+
       await updateStatus(detail.value.id, 0);
     } catch (error) {
       // 用户取消操作
@@ -109,10 +119,10 @@ export function useEventDetail() {
   // 切换推荐状态
   const handleToggleRecommend = async () => {
     if (!detail.value) return;
-    
+
     const newRecommendStatus = !detail.value.isRecommended;
     const action = newRecommendStatus ? "推荐" : "取消推荐";
-    
+
     try {
       await ElMessageBox.confirm(
         `确认${action}活动「${detail.value.title}」吗？`,
@@ -123,11 +133,11 @@ export function useEventDetail() {
           type: newRecommendStatus ? "success" : "warning"
         }
       );
-      
+
       actionLoading.value = true;
       await toggleEventRecommend(detail.value.id, newRecommendStatus);
       ElMessage.success(`${action}成功`);
-      
+
       // 重新获取详情
       await fetchDetail(detail.value.id);
     } catch (error) {
@@ -141,7 +151,7 @@ export function useEventDetail() {
   // 获取状态信息
   const getStatusInfo = computed((): StatusInfo => {
     if (!detail.value) return { label: "未知", type: "info" };
-    
+
     switch (detail.value.status) {
       case 0:
         return { label: "报名中", type: "primary" };
@@ -213,21 +223,23 @@ export function useEventDetail() {
   // 计算进度百分比
   const getProgressPercentage = computed((): number => {
     if (!detail.value) return 0;
-    
+
     const now = new Date().getTime();
     const startTime = new Date(detail.value.startTime).getTime();
     const endTime = new Date(detail.value.endTime).getTime();
-    
+
     if (now < startTime) return 0;
     if (now > endTime) return 100;
-    
+
     return Math.round(((now - startTime) / (endTime - startTime)) * 100);
   });
 
   // 计算报名进度
   const getRegistrationProgress = computed((): number => {
     if (!detail.value || !detail.value.maxParticipants) return 0;
-    return Math.round((detail.value.participantCount / detail.value.maxParticipants) * 100);
+    return Math.round(
+      (detail.value.participantCount / detail.value.maxParticipants) * 100
+    );
   });
 
   return {

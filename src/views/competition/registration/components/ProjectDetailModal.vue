@@ -9,7 +9,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
-  project: null,
+  project: null
 });
 
 const emit = defineEmits<{
@@ -18,7 +18,7 @@ const emit = defineEmits<{
 
 const visible = computed({
   get: () => props.modelValue,
-  set: (value: boolean) => emit("update:modelValue", value),
+  set: (value: boolean) => emit("update:modelValue", value)
 });
 
 const handleClose = () => {
@@ -54,10 +54,13 @@ const basicItems = computed(() => {
     { label: "地址", value: project.address },
     { label: "浏览量", value: project.viewCount?.toString() },
     { label: "点赞数", value: project.likeCount?.toString() },
-    { label: "状态", value: project.status ? String(project.status) : undefined },
+    {
+      label: "状态",
+      value: project.status ? String(project.status) : undefined
+    },
     { label: "商业计划书链接", value: project.businessPlanUrl },
     { label: "创建时间", value: project.createdTime },
-    { label: "更新时间", value: project.updatedTime },
+    { label: "更新时间", value: project.updatedTime }
   ];
 });
 
@@ -68,7 +71,7 @@ const contactItems = computed(() => {
     { label: "联系人", value: project.contactPerson },
     { label: "联系人职位", value: project.contactPosition },
     { label: "联系电话", value: project.contactPhone },
-    { label: "联系邮箱", value: project.contactEmail },
+    { label: "联系邮箱", value: project.contactEmail }
   ];
 });
 
@@ -76,15 +79,19 @@ const richFields = computed(() => {
   const project = props.project;
   if (!project) return [];
   return [
-    { label: "项目介绍", value: project.introduction || project.fullDescription || project.description },
+    {
+      label: "项目介绍",
+      value:
+        project.introduction || project.fullDescription || project.description
+    },
     { label: "核心技术", value: project.coreTechnology },
     { label: "商业模式", value: project.businessModel },
     { label: "团队情况", value: project.teamInfo },
     { label: "融资历史", value: project.fundingHistory },
     { label: "发展规划", value: project.developmentPlan },
     { label: "市场分析", value: project.marketAnalysis },
-    { label: "竞争优势", value: project.competitiveAdvantage },
-  ].filter((item) => !!item.value);
+    { label: "竞争优势", value: project.competitiveAdvantage }
+  ].filter(item => !!item.value);
 });
 
 const fileItems = computed(() => {
@@ -94,19 +101,19 @@ const fileItems = computed(() => {
     {
       label: "商业计划书",
       value: project.businessPlanFile?.name,
-      url: project.businessPlanFile?.url || project.businessPlanUrl,
+      url: project.businessPlanFile?.url || project.businessPlanUrl
     },
     {
       label: "项目演示文档",
       value: project.presentationFile?.name,
-      url: project.presentationFile?.url,
+      url: project.presentationFile?.url
     },
     {
       label: "Logo 文件",
       value: project.logoFile?.name,
-      url: project.logoFile?.url,
-    },
-  ].filter((item) => item.value || item.url);
+      url: project.logoFile?.url
+    }
+  ].filter(item => item.value || item.url);
 });
 </script>
 
@@ -124,7 +131,7 @@ const fileItems = computed(() => {
     <template #header>
       <div class="modal-header">
         <div class="modal-title">{{ formatTitle(project) }}</div>
-        <div class="modal-subtitle" v-if="project?.shortDescription">
+        <div v-if="project?.shortDescription" class="modal-subtitle">
           {{ project?.shortDescription }}
         </div>
       </div>
@@ -149,7 +156,11 @@ const fileItems = computed(() => {
             </div>
           </el-card>
 
-          <el-card v-if="contactItems.length" shadow="never" class="project-card">
+          <el-card
+            v-if="contactItems.length"
+            shadow="never"
+            class="project-card"
+          >
             <template #header>
               <div class="card-header">联系人信息</div>
             </template>
@@ -170,10 +181,16 @@ const fileItems = computed(() => {
               <div class="card-header">附件与链接</div>
             </template>
             <div class="file-list">
-              <div class="file-item" v-for="item in fileItems" :key="item.label">
+              <div
+                v-for="item in fileItems"
+                :key="item.label"
+                class="file-item"
+              >
                 <div class="file-info">
                   <span class="file-label">{{ item.label }}</span>
-                  <span class="file-name">{{ formatNullable(item.value) }}</span>
+                  <span class="file-name">{{
+                    formatNullable(item.value)
+                  }}</span>
                 </div>
                 <el-link
                   v-if="item.url"
@@ -200,7 +217,10 @@ const fileItems = computed(() => {
             <div class="rich-text">{{ field.value }}</div>
           </el-card>
 
-          <el-empty v-if="basicItems.length === 0 && richFields.length === 0" description="暂无更多项目信息" />
+          <el-empty
+            v-if="basicItems.length === 0 && richFields.length === 0"
+            description="暂无更多项目信息"
+          />
         </el-col>
       </el-row>
     </div>
@@ -241,7 +261,6 @@ const fileItems = computed(() => {
   font-size: 14px;
   color: var(--el-text-color-secondary);
 }
-
 
 .modal-body {
   padding: 0 12px 16px;
@@ -294,7 +313,6 @@ const fileItems = computed(() => {
   white-space: pre-wrap;
 }
 
-
 .file-list {
   display: flex;
   flex-direction: column;
@@ -332,4 +350,3 @@ const fileItems = computed(() => {
   padding: 32px 0;
 }
 </style>
-

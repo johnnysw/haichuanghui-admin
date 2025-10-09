@@ -12,7 +12,7 @@ import uploadLine from "@iconify-icons/ri/upload-line";
 import { getFullImageUrl } from "@/utils/image";
 import { useNav } from "@/layout/hooks/useNav";
 
-const emit = defineEmits(['avatarUpdated', 'infoUpdated']);
+const emit = defineEmits(["avatarUpdated", "infoUpdated"]);
 
 const { logout } = useNav();
 
@@ -86,10 +86,15 @@ const handleSubmitImage = async () => {
     return;
   }
 
-  const avatarFile = new File([cropperBlob.value], "avatar.png", { type: cropperBlob.value.type });
+  const avatarFile = new File([cropperBlob.value], "avatar.png", {
+    type: cropperBlob.value.type
+  });
 
   try {
-    const res: Response<FileUploadResult> = await uploadImage(avatarFile, 'avatar');
+    const res: Response<FileUploadResult> = await uploadImage(
+      avatarFile,
+      "avatar"
+    );
 
     if (res && res.success === true && res.data?.url) {
       const fullAvatarUrl = getFullImageUrl(res.data.url);
@@ -102,21 +107,25 @@ const handleSubmitImage = async () => {
       try {
         const updateRes = await updateUserAvatar(avatarPathForBackend);
         if (updateRes.code === 200) {
-          emit('avatarUpdated', fullAvatarUrl);
+          emit("avatarUpdated", fullAvatarUrl);
         } else {
-          message(updateRes.message || '保存头像信息失败', { type: "error" });
+          message(updateRes.message || "保存头像信息失败", { type: "error" });
         }
       } catch (saveError: any) {
         console.error("保存头像信息失败:", saveError);
-        const saveErrorMsg = saveError?.response?.data?.message || saveError.message || '未知错误';
+        const saveErrorMsg =
+          saveError?.response?.data?.message || saveError.message || "未知错误";
         message(`保存头像失败: ${saveErrorMsg}`, { type: "error" });
       }
     } else {
-      message(`上传头像失败: ${res?.message || '未知错误'}`, { type: "error" });
+      message(`上传头像失败: ${res?.message || "未知错误"}`, { type: "error" });
     }
   } catch (error: any) {
     console.error("更新头像请求失败:", error);
-    const errorMsg = error?.response?.data?.message || error.message || '请检查网络或联系管理员';
+    const errorMsg =
+      error?.response?.data?.message ||
+      error.message ||
+      "请检查网络或联系管理员";
     message(`更新头像失败: ${errorMsg}`, { type: "error" });
   }
 };
@@ -124,45 +133,43 @@ const handleSubmitImage = async () => {
 const onSubmit = async (formEl: FormInstance) => {
   if (!formEl) return;
 
-  ElMessageBox.confirm(
-    '确认更新用户信息吗？更新后需要重新登录。',
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  )
-  .then(async () => {
-    submitLoading.value = true;
-    await formEl.validate((valid, fields) => {
-      if (valid) {
-        updateCurrentUserInfo(userInfos)
-          .then((res) => {
-            if (res.code === 200) {
-              emit('infoUpdated', { nickname: userInfos.nickname });
-              message("更新信息成功，请重新登录", { type: "success" });
-              logout();
-            } else {
-              message(res.message || '更新信息失败', { type: "error" });
-            }
-          })
-          .catch((error) => {
-            console.error("更新信息失败:", error);
-            message(`更新信息失败: ${error.message || '请稍后重试'}`, { type: "error" });
-          })
-          .finally(() => {
-            submitLoading.value = false;
-          });
-      } else {
-        console.log("error submit!", fields);
-        submitLoading.value = false;
-      }
-    });
+  ElMessageBox.confirm("确认更新用户信息吗？更新后需要重新登录。", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning"
   })
-  .catch(() => {
-    // 用户点击"取消"或关闭弹窗，不做任何操作
-  });
+    .then(async () => {
+      submitLoading.value = true;
+      await formEl.validate((valid, fields) => {
+        if (valid) {
+          updateCurrentUserInfo(userInfos)
+            .then(res => {
+              if (res.code === 200) {
+                emit("infoUpdated", { nickname: userInfos.nickname });
+                message("更新信息成功，请重新登录", { type: "success" });
+                logout();
+              } else {
+                message(res.message || "更新信息失败", { type: "error" });
+              }
+            })
+            .catch(error => {
+              console.error("更新信息失败:", error);
+              message(`更新信息失败: ${error.message || "请稍后重试"}`, {
+                type: "error"
+              });
+            })
+            .finally(() => {
+              submitLoading.value = false;
+            });
+        } else {
+          console.log("error submit!", fields);
+          submitLoading.value = false;
+        }
+      });
+    })
+    .catch(() => {
+      // 用户点击"取消"或关闭弹窗，不做任何操作
+    });
 };
 
 onMounted(async () => {
@@ -178,12 +185,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
-    :class="[
-      'min-w-[180px]',
-      isMobile ? 'max-w-[100%]' : 'max-w-[70%]'
-    ]"
-  >
+  <div :class="['min-w-[180px]', isMobile ? 'max-w-[100%]' : 'max-w-[70%]']">
     <h3 class="my-8">个人信息</h3>
     <el-form
       ref="userInfoFormRef"

@@ -6,11 +6,18 @@ import type { User } from "@/types/system";
 
 /** 账户设置-个人信息 */
 export const getMine = (data?: object) => {
-  return http.request<Response<User.UserInfo>>("get", "/api/v1/admin/user/current", { data });
+  return http.request<Response<User.UserInfo>>(
+    "get",
+    "/api/v1/admin/user/current",
+    { data }
+  );
 };
 
 /** 账户设置-个人安全日志 */
-export const getMineLogs = (params?: { pageNum?: number, pageSize?: number }) => {
+export const getMineLogs = (params?: {
+  pageNum?: number;
+  pageSize?: number;
+}) => {
   return http.request<PageResponse>("get", "/api/v1/admin/user/user-logs", {
     params // 将参数作为 query string 传递
   });
@@ -32,13 +39,20 @@ export const updateCurrentUserInfo = (data: Partial<User.UserInfo>) => {
     phone: data.phone,
     remark: data.remark
   };
-  return http.request<Response<User.UserInfo>>("put", "/api/v1/admin/user/current", {
-    data: updateData
-  });
+  return http.request<Response<User.UserInfo>>(
+    "put",
+    "/api/v1/admin/user/current",
+    {
+      data: updateData
+    }
+  );
 };
 
 /** 修改当前用户密码 */
-export const changeUserPassword = (data: { oldPassword: string, newPassword: string }) => {
+export const changeUserPassword = (data: {
+  oldPassword: string;
+  newPassword: string;
+}) => {
   return http.request<Response<null>>("put", "/api/v1/admin/user/password", {
     data // 发送旧密码和新密码
   });

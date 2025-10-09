@@ -7,20 +7,13 @@
     :before-close="handleClose"
   >
     <template #default>
-      <InvestorFormComponent
-        ref="formRef"
-        v-model="formData"
-      />
+      <InvestorFormComponent ref="formRef" v-model="formData" />
     </template>
-    
+
     <template #footer>
       <div style="flex: auto">
         <el-button @click="handleClose">取消</el-button>
-        <el-button
-          type="primary"
-          :loading="loading"
-          @click="handleSubmit"
-        >
+        <el-button type="primary" :loading="loading" @click="handleSubmit">
           确定
         </el-button>
       </div>
@@ -66,13 +59,13 @@ const formData = ref<InvestorForm>({
 
 const visible = computed({
   get: () => props.modelValue,
-  set: (value) => emit("update:modelValue", value)
+  set: value => emit("update:modelValue", value)
 });
 
 // 监听投资人数据变化
 watch(
   () => props.investor,
-  (newValue) => {
+  newValue => {
     if (newValue) {
       formData.value = {
         id: newValue.id,
@@ -135,7 +128,7 @@ const handleSubmit = async () => {
   loading.value = true;
   try {
     let response;
-    
+
     if (props.isEdit && formData.value.id) {
       // 更新投资人
       response = await updateInvestor(formData.value.id, formData.value);

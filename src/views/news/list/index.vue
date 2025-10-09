@@ -74,7 +74,10 @@
         >
           搜索
         </el-button>
-        <el-button :icon="useRenderIcon('ri:refresh-line')" @click="resetSearch">
+        <el-button
+          :icon="useRenderIcon('ri:refresh-line')"
+          @click="resetSearch"
+        >
           重置
         </el-button>
       </el-form-item>
@@ -84,7 +87,10 @@
       ref="contentRef"
       :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
     >
-      <div :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']" class="w-full min-w-0">
+      <div
+        :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']"
+        class="w-full min-w-0"
+      >
         <PureTableBar
           class="w-full min-w-0"
           style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
@@ -144,7 +150,10 @@
                   :preview-src-list="[row.coverImage]"
                   preview-teleported
                 />
-                <div v-else class="w-16 h-12 bg-gray-100 rounded flex items-center justify-center">
+                <div
+                  v-else
+                  class="w-16 h-12 bg-gray-100 rounded flex items-center justify-center"
+                >
                   <el-icon class="text-gray-400" size="16">
                     <component :is="useRenderIcon('ep:picture')" />
                   </el-icon>
@@ -153,13 +162,22 @@
 
               <template #title="{ row }">
                 <div class="flex flex-col">
-                  <div class="font-medium text-gray-900 mb-1">{{ row.title }}</div>
-                  <div v-if="row.subtitle" class="text-sm text-gray-500">{{ row.subtitle }}</div>
+                  <div class="font-medium text-gray-900 mb-1">
+                    {{ row.title }}
+                  </div>
+                  <div v-if="row.subtitle" class="text-sm text-gray-500">
+                    {{ row.subtitle }}
+                  </div>
                 </div>
               </template>
 
               <template #category="{ row }">
-                <el-tag v-if="row.categoryName" type="info" effect="plain" size="small">
+                <el-tag
+                  v-if="row.categoryName"
+                  type="info"
+                  effect="plain"
+                  size="small"
+                >
                   {{ row.categoryName }}
                 </el-tag>
                 <span v-else class="text-gray-400">-</span>
@@ -200,7 +218,7 @@
               </template>
 
               <template #publishTime="{ row }">
-                {{ row.publishTime ? formatDateTime(row.publishTime) : '-' }}
+                {{ row.publishTime ? formatDateTime(row.publishTime) : "-" }}
               </template>
 
               <template #stats="{ row }">
@@ -242,10 +260,10 @@
                   <template #dropdown>
                     <el-dropdown-menu>
                       <el-dropdown-item @click="handleToggleRecommend(row)">
-                        {{ row.isRecommended ? '取消推荐' : '设为推荐' }}
+                        {{ row.isRecommended ? "取消推荐" : "设为推荐" }}
                       </el-dropdown-item>
                       <el-dropdown-item @click="handleToggleTop(row)">
-                        {{ row.isTop ? '取消置顶' : '设为置顶' }}
+                        {{ row.isTop ? "取消置顶" : "设为置顶" }}
                       </el-dropdown-item>
                       <el-dropdown-item
                         v-if="row.status === 0 || row.status === 2"
@@ -271,7 +289,7 @@
         </PureTableBar>
       </div>
     </div>
-    
+
     <!-- 新增/编辑弹窗 -->
     <NewsDialog
       v-model:visible="dialogVisible"
@@ -292,7 +310,15 @@ import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 import NewsDialog from "./components/NewsDialog.vue";
-import { getNewsList, deleteNews, batchDeleteNews, getCategoryList, toggleNewsRecommend, toggleNewsTop, updateNewsStatus } from "./api/index";
+import {
+  getNewsList,
+  deleteNews,
+  batchDeleteNews,
+  getCategoryList,
+  toggleNewsRecommend,
+  toggleNewsTop,
+  updateNewsStatus
+} from "./api/index";
 import type { NewsItem, NewsListParams, NewsCategory } from "./types/types";
 
 defineOptions({ name: "NewsList" });
@@ -341,7 +367,7 @@ const columns: TableColumnList = [
     type: "selection",
     width: 55,
     align: "left",
-    hide: (opts) => !opts?.checkList?.includes("勾选列")
+    hide: opts => !opts?.checkList?.includes("勾选列")
   },
   {
     label: "ID",
@@ -418,7 +444,7 @@ const getData = async () => {
       pageSize: pagination.pageSize,
       ...searchForm
     };
-    
+
     const { data } = await getNewsList(params);
     dataList.value = data.list;
     pagination.total = data.total;
@@ -503,12 +529,12 @@ const handleDelete = async (id: number) => {
         type: "warning"
       }
     );
-    
+
     await deleteNews(id);
     ElMessage.success("删除成功");
     getData();
   } catch (error) {
-    if (error !== 'cancel') {
+    if (error !== "cancel") {
       console.error("删除失败:", error);
       ElMessage.error("删除失败");
     }
@@ -521,7 +547,7 @@ const handleBatchDelete = async () => {
     ElMessage.warning("请选择要删除的资讯");
     return;
   }
-  
+
   try {
     await ElMessageBox.confirm(
       `此操作将永久删除选中的 ${selectedIds.value.length} 条资讯，是否继续？`,
@@ -532,13 +558,13 @@ const handleBatchDelete = async () => {
         type: "warning"
       }
     );
-    
+
     await batchDeleteNews(selectedIds.value);
     ElMessage.success("批量删除成功");
     selectedIds.value = [];
     getData();
   } catch (error) {
-    if (error !== 'cancel') {
+    if (error !== "cancel") {
       console.error("批量删除失败:", error);
       ElMessage.error("批量删除失败");
     }
@@ -596,23 +622,35 @@ const handleOffline = async (row: NewsItem) => {
 // 工具函数
 const getStatusType = (status: number) => {
   switch (status) {
-    case 0: return "info";
-    case 1: return "success";
-    case 2: return "warning";
-    case 3: return "primary";
-    case 4: return "danger";
-    default: return "info";
+    case 0:
+      return "info";
+    case 1:
+      return "success";
+    case 2:
+      return "warning";
+    case 3:
+      return "primary";
+    case 4:
+      return "danger";
+    default:
+      return "info";
   }
 };
 
 const getStatusText = (status: number) => {
   switch (status) {
-    case 0: return "草稿";
-    case 1: return "已发布";
-    case 2: return "已下线";
-    case 3: return "审核中";
-    case 4: return "已拒绝";
-    default: return "未知";
+    case 0:
+      return "草稿";
+    case 1:
+      return "已发布";
+    case 2:
+      return "已下线";
+    case 3:
+      return "审核中";
+    case 4:
+      return "已拒绝";
+    default:
+      return "未知";
   }
 };
 

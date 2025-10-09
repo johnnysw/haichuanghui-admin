@@ -76,7 +76,8 @@ function handleChildMenu(menu, index) {
   router.push(menu.path);
   curActive.value = index;
 
-  const shouldShowDouble = childMenu.value.length > 1 || childMenu.value[0]?.meta?.showParent;
+  const shouldShowDouble =
+    childMenu.value.length > 1 || childMenu.value[0]?.meta?.showParent;
   useAppStoreHook().showDouble(shouldShowDouble);
 
   // 新增：如果二级导航区域要显示，则确保二级导航是展开状态

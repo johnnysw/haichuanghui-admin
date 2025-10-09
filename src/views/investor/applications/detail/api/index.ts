@@ -47,10 +47,14 @@ const mockReviewHistory: ReviewHistory[] = [
 ];
 
 // 获取审核历史
-export const getReviewHistory = (applicationId: number): Promise<ApiResponse<ReviewHistory[]>> => {
-  return new Promise((resolve) => {
+export const getReviewHistory = (
+  applicationId: number
+): Promise<ApiResponse<ReviewHistory[]>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
-      const history = mockReviewHistory.filter(item => item.applicationId === applicationId);
+      const history = mockReviewHistory.filter(
+        item => item.applicationId === applicationId
+      );
       resolve({
         code: 200,
         success: true,
@@ -62,8 +66,11 @@ export const getReviewHistory = (applicationId: number): Promise<ApiResponse<Rev
 };
 
 // 添加审核记录
-export const addReviewRecord = (applicationId: number, comment: string): Promise<ApiResponse<ReviewHistory>> => {
-  return new Promise((resolve) => {
+export const addReviewRecord = (
+  applicationId: number,
+  comment: string
+): Promise<ApiResponse<ReviewHistory>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const newRecord: ReviewHistory = {
         id: Date.now(),
@@ -71,16 +78,16 @@ export const addReviewRecord = (applicationId: number, comment: string): Promise
         reviewerId: 1, // 当前用户ID
         status: 2,
         comment,
-        reviewTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
+        reviewTime: new Date().toISOString().slice(0, 19).replace("T", " "),
         reviewer: {
           id: 1,
           username: "admin",
           realName: "管理员"
         }
       };
-      
+
       mockReviewHistory.push(newRecord);
-      
+
       resolve({
         code: 200,
         success: true,
@@ -92,12 +99,14 @@ export const addReviewRecord = (applicationId: number, comment: string): Promise
 };
 
 // 下载文档
-export const downloadDocument = (documentId: number): Promise<ApiResponse<{ downloadUrl: string }>> => {
-  return new Promise((resolve) => {
+export const downloadDocument = (
+  documentId: number
+): Promise<ApiResponse<{ downloadUrl: string }>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       // 模拟生成下载链接
       const downloadUrl = `/api/documents/${documentId}/download?token=${Date.now()}`;
-      
+
       resolve({
         code: 200,
         success: true,
@@ -109,12 +118,14 @@ export const downloadDocument = (documentId: number): Promise<ApiResponse<{ down
 };
 
 // 预览文档
-export const previewDocument = (documentId: number): Promise<ApiResponse<{ previewUrl: string }>> => {
-  return new Promise((resolve) => {
+export const previewDocument = (
+  documentId: number
+): Promise<ApiResponse<{ previewUrl: string }>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       // 模拟生成预览链接
       const previewUrl = `https://picsum.photos/seed/doc${documentId}/800/600`;
-      
+
       resolve({
         code: 200,
         success: true,
@@ -126,8 +137,11 @@ export const previewDocument = (documentId: number): Promise<ApiResponse<{ previ
 };
 
 // 发送通知给申请人
-export const sendNotificationToApplicant = (applicationId: number, message: string): Promise<ApiResponse<null>> => {
-  return new Promise((resolve) => {
+export const sendNotificationToApplicant = (
+  applicationId: number,
+  message: string
+): Promise<ApiResponse<null>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       resolve({
         code: 200,
@@ -140,8 +154,11 @@ export const sendNotificationToApplicant = (applicationId: number, message: stri
 };
 
 // 要求补充材料
-export const requestAdditionalDocuments = (applicationId: number, requirements: string[]): Promise<ApiResponse<null>> => {
-  return new Promise((resolve) => {
+export const requestAdditionalDocuments = (
+  applicationId: number,
+  requirements: string[]
+): Promise<ApiResponse<null>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       resolve({
         code: 200,

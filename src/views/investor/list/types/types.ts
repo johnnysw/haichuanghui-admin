@@ -46,7 +46,13 @@ export enum InvestorStatus {
   REJECTED = 3
 }
 
-export type TagType = "primary" | "success" | "warning" | "danger" | "info" | "default";
+export type TagType =
+  | "primary"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info"
+  | "default";
 
 export interface InvestorStatusInfo {
   label: string;

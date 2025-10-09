@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<Dept.FormProps>(), {
     sort: undefined,
     status: 1,
     remark: "",
-    type: 3, // 类型（1：公司，2：分公司，3：部门）
+    type: 3 // 类型（1：公司，2：分公司，3：部门）
   })
 });
 

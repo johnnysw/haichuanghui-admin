@@ -12,7 +12,9 @@
         <div class="preview-content">
           <div class="preview-item">
             <span class="label">申请人：</span>
-            <span>{{ application?.user.realName || application?.user.username }}</span>
+            <span>{{
+              application?.user.realName || application?.user.username
+            }}</span>
           </div>
           <div class="preview-item">
             <span class="label">投资机构：</span>
@@ -63,14 +65,25 @@
               v-model="reviewForm.comment"
               type="textarea"
               :rows="4"
-              :placeholder="reviewForm.status === 1 ? '请输入通过理由（可选）' : '请输入拒绝原因'"
+              :placeholder="
+                reviewForm.status === 1
+                  ? '请输入通过理由（可选）'
+                  : '请输入拒绝原因'
+              "
               maxlength="500"
               show-word-limit
             />
           </el-form-item>
 
           <!-- 文档审核（仅单个审核时显示） -->
-          <div v-if="!isBatch && application?.documents && application.documents.length > 0" class="document-review">
+          <div
+            v-if="
+              !isBatch &&
+              application?.documents &&
+              application.documents.length > 0
+            "
+            class="document-review"
+          >
             <el-form-item label="文档审核">
               <div class="document-list">
                 <div
@@ -126,11 +139,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="handleClose">取消</el-button>
-        <el-button
-          type="primary"
-          :loading="loading"
-          @click="handleSubmit"
-        >
+        <el-button type="primary" :loading="loading" @click="handleSubmit">
           确认审核
         </el-button>
       </div>
@@ -143,7 +152,11 @@ import { ref, reactive, computed, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { Check, Close, Document } from "@element-plus/icons-vue";
 import type { FormInstance, FormRules } from "element-plus";
-import type { InvestorApplication, ReviewForm, ApplicationDocument } from "../types/types";
+import type {
+  InvestorApplication,
+  ReviewForm,
+  ApplicationDocument
+} from "../types/types";
 
 interface Props {
   modelValue: boolean;
@@ -181,7 +194,7 @@ const dialogTitle = computed(() => {
 // 控制对话框显示
 const visible = computed({
   get: () => props.modelValue,
-  set: (value) => emit("update:modelValue", value)
+  set: value => emit("update:modelValue", value)
 });
 
 // 审核表单
@@ -193,9 +206,7 @@ const reviewForm = reactive<ReviewForm>({
 
 // 表单验证规则
 const rules: FormRules = {
-  status: [
-    { required: true, message: "请选择审核结果", trigger: "change" }
-  ],
+  status: [{ required: true, message: "请选择审核结果", trigger: "change" }],
   comment: [
     {
       validator: (rule, value, callback) => {
@@ -213,7 +224,7 @@ const rules: FormRules = {
 // 监听审核状态变化，自动清空评论
 watch(
   () => reviewForm.status,
-  (newStatus) => {
+  newStatus => {
     if (newStatus === 1) {
       reviewForm.comment = "";
     }
@@ -223,20 +234,28 @@ watch(
 // 获取文档状态颜色
 const getDocumentStatusColor = (status: string) => {
   switch (status) {
-    case 'approved': return 'success';
-    case 'rejected': return 'danger';
-    case 'pending': return 'warning';
-    default: return 'info';
+    case "approved":
+      return "success";
+    case "rejected":
+      return "danger";
+    case "pending":
+      return "warning";
+    default:
+      return "info";
   }
 };
 
 // 获取文档状态文本
 const getDocumentStatusText = (status: string) => {
   switch (status) {
-    case 'approved': return '已通过';
-    case 'rejected': return '已拒绝';
-    case 'pending': return '待审核';
-    default: return '未知';
+    case "approved":
+      return "已通过";
+    case "rejected":
+      return "已拒绝";
+    case "pending":
+      return "待审核";
+    default:
+      return "未知";
   }
 };
 
@@ -249,7 +268,9 @@ const previewDocument = (doc: ApplicationDocument) => {
 // 审核文档
 const reviewDocument = (doc: ApplicationDocument, status: string) => {
   // 更新文档审核状态
-  const existingReview = reviewForm.documentReviews?.find(r => r.documentId === doc.id);
+  const existingReview = reviewForm.documentReviews?.find(
+    r => r.documentId === doc.id
+  );
   if (existingReview) {
     existingReview.status = status;
   } else {
@@ -262,8 +283,8 @@ const reviewDocument = (doc: ApplicationDocument, status: string) => {
       comment: ""
     });
   }
-  
-  ElMessage.success(`文档${status === 'approved' ? '通过' : '拒绝'}审核`);
+
+  ElMessage.success(`文档${status === "approved" ? "通过" : "拒绝"}审核`);
 };
 
 // 处理关闭
@@ -297,7 +318,7 @@ const handleSubmit = async () => {
 // 监听对话框打开，重置表单
 watch(
   () => props.modelValue,
-  (newValue) => {
+  newValue => {
     if (newValue) {
       resetForm();
     }
@@ -399,13 +420,13 @@ watch(
   .preview-content {
     grid-template-columns: 1fr;
   }
-  
+
   .document-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .document-actions {
     align-self: flex-end;
   }

@@ -1,7 +1,17 @@
 import { ref, reactive, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
-import type { ApplicationDetailState, InvestorApplication, ReviewHistory, ApplicationDocument } from "../types/types";
-import { getApplicationDetail, getReviewHistory, previewDocument, downloadDocument } from "../api";
+import type {
+  ApplicationDetailState,
+  InvestorApplication,
+  ReviewHistory,
+  ApplicationDocument
+} from "../types/types";
+import {
+  getApplicationDetail,
+  getReviewHistory,
+  previewDocument,
+  downloadDocument
+} from "../api";
 
 export function useApplicationDetail() {
   const route = useRoute();
@@ -92,7 +102,7 @@ export function useApplicationDetail() {
       const response = await downloadDocument(doc.id);
       if (response.success) {
         // 创建下载链接
-        const link = window.document.createElement('a');
+        const link = window.document.createElement("a");
         link.href = response.data.downloadUrl;
         link.download = doc.fileName;
         window.document.body.appendChild(link);
@@ -113,39 +123,44 @@ export function useApplicationDetail() {
 
   // 获取文档大小显示
   const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return "0 B";
     const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   // 获取文档状态颜色
   const getDocumentStatusColor = (status: string) => {
     switch (status) {
-      case 'approved': return 'success';
-      case 'rejected': return 'danger';
-      case 'pending': return 'warning';
-      default: return 'info';
+      case "approved":
+        return "success";
+      case "rejected":
+        return "danger";
+      case "pending":
+        return "warning";
+      default:
+        return "info";
     }
   };
 
   // 获取文档状态文本
   const getDocumentStatusText = (status: string) => {
     switch (status) {
-      case 'approved': return '已通过';
-      case 'rejected': return '已拒绝';
-      case 'pending': return '待审核';
-      default: return '未知';
+      case "approved":
+        return "已通过";
+      case "rejected":
+        return "已拒绝";
+      case "pending":
+        return "待审核";
+      default:
+        return "未知";
     }
   };
 
   // 刷新所有数据
   const refreshData = async () => {
-    await Promise.all([
-      fetchApplicationDetail(),
-      fetchReviewHistory()
-    ]);
+    await Promise.all([fetchApplicationDetail(), fetchReviewHistory()]);
   };
 
   // 初始化数据

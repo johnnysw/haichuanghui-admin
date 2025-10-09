@@ -1,12 +1,20 @@
 import type { ApiResponse } from "../../list/types/types";
-import type { EventDetail, EventStats, Speaker, Sponsor, Material, Gallery } from "../types/types";
+import type {
+  EventDetail,
+  EventStats,
+  Speaker,
+  Sponsor,
+  Material,
+  Gallery
+} from "../types/types";
 
 // 模拟详情数据 - 扩展到包含所有8个活动
 const mockDetailData: Record<number, EventDetail> = {
   1: {
     id: 1,
     title: "2024全球创业者大会",
-    description: "聚焦全球创业趋势，汇聚顶尖创业者、投资人和行业专家的年度盛会。",
+    description:
+      "聚焦全球创业趋势，汇聚顶尖创业者、投资人和行业专家的年度盛会。",
     detailedIntro: `
       <h3>关于全球创业者大会</h3>
       <p>2024全球创业者大会是创业邦主办的年度顶级创业盛会，汇聚了全球最具影响力的创业者、投资人和行业专家。</p>
@@ -92,7 +100,7 @@ const mockDetailData: Record<number, EventDetail> = {
       {
         id: 2,
         name: "投资指南手册.pdf",
-        type: "document", 
+        type: "document",
         url: "/files/investment-guide.pdf",
         size: 1536000,
         description: "投资人必备的项目评估指南",
@@ -104,7 +112,8 @@ const mockDetailData: Record<number, EventDetail> = {
         id: 1,
         title: "大会现场",
         url: "https://via.placeholder.com/400x300/4285f4/ffffff?text=大会现场",
-        thumbnail: "https://via.placeholder.com/200x150/4285f4/ffffff?text=大会现场",
+        thumbnail:
+          "https://via.placeholder.com/200x150/4285f4/ffffff?text=大会现场",
         description: "2023年大会现场盛况",
         uploadTime: "2023-06-15T10:30:00Z"
       },
@@ -112,7 +121,8 @@ const mockDetailData: Record<number, EventDetail> = {
         id: 2,
         title: "嘉宾演讲",
         url: "https://via.placeholder.com/400x300/34a853/ffffff?text=嘉宾演讲",
-        thumbnail: "https://via.placeholder.com/200x150/34a853/ffffff?text=嘉宾演讲",
+        thumbnail:
+          "https://via.placeholder.com/200x150/34a853/ffffff?text=嘉宾演讲",
         description: "知名企业家主题演讲",
         uploadTime: "2023-06-15T14:20:00Z"
       }
@@ -125,7 +135,8 @@ const mockDetailData: Record<number, EventDetail> = {
   2: {
     id: 2,
     title: "AI创业项目路演专场",
-    description: "专注人工智能领域的创业项目路演活动，邀请知名AI投资机构现场点评。",
+    description:
+      "专注人工智能领域的创业项目路演活动，邀请知名AI投资机构现场点评。",
     detailedIntro: `
       <h3>关于AI创业项目路演专场</h3>
       <p>这是专门为人工智能创业项目打造的路演平台，汇聚了最具前瞻性的AI项目和最专业的投资机构。</p>
@@ -191,7 +202,8 @@ const mockDetailData: Record<number, EventDetail> = {
   3: {
     id: 3,
     title: "女性创业者成长训练营",
-    description: "专为女性创业者设计的成长训练营，涵盖商业模式、团队管理、融资技巧等。",
+    description:
+      "专为女性创业者设计的成长训练营，涵盖商业模式、团队管理、融资技巧等。",
     detailedIntro: `
       <h3>关于女性创业者成长训练营</h3>
       <p>这是专门为女性创业者量身定制的系统性成长训练营，旨在帮助女性创业者提升综合能力。</p>
@@ -285,7 +297,8 @@ const mockDetailData: Record<number, EventDetail> = {
   5: {
     id: 5,
     title: "大学生创业大赛启动仪式",
-    description: "第十届全国大学生创业大赛正式启动，鼓励在校大学生参与创新创业。",
+    description:
+      "第十届全国大学生创业大赛正式启动，鼓励在校大学生参与创新创业。",
     detailedIntro: `
       <h3>关于大学生创业大赛</h3>
       <p>全国大学生创业大赛是面向全国高校学生的权威创业竞赛，旨在激发大学生创新创业热情。</p>
@@ -423,7 +436,8 @@ const mockDetailData: Record<number, EventDetail> = {
   8: {
     id: 8,
     title: "科技创业政策解读会",
-    description: "详细解读最新的科技创业扶持政策，为创业者提供政策指导和申报建议。",
+    description:
+      "详细解读最新的科技创业扶持政策，为创业者提供政策指导和申报建议。",
     detailedIntro: `
       <h3>关于科技创业政策解读会</h3>
       <p>本次解读会由科技部火炬中心主办，专门解读2024年最新的科技创业扶持政策。</p>
@@ -561,7 +575,9 @@ const mockStatsData: Record<number, EventStats> = {
 };
 
 // 获取活动详情
-export const getEventDetail = (id: number): Promise<ApiResponse<EventDetail>> => {
+export const getEventDetail = (
+  id: number
+): Promise<ApiResponse<EventDetail>> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       const detail = mockDetailData[id];
@@ -585,7 +601,7 @@ export const getEventDetail = (id: number): Promise<ApiResponse<EventDetail>> =>
 
 // 获取活动统计数据
 export const getEventStats = (id: number): Promise<ApiResponse<EventStats>> => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const stats = mockStatsData[id] || {
         totalViews: 0,
@@ -598,7 +614,7 @@ export const getEventStats = (id: number): Promise<ApiResponse<EventStats>> => {
         averageRating: 0,
         feedbackCount: 0
       };
-      
+
       resolve({
         code: 200,
         success: true,
@@ -610,18 +626,22 @@ export const getEventStats = (id: number): Promise<ApiResponse<EventStats>> => {
 };
 
 // 更新活动状态
-export const updateEventStatus = (id: number, status: number, note?: string): Promise<ApiResponse<null>> => {
-  return new Promise((resolve) => {
+export const updateEventStatus = (
+  id: number,
+  status: number,
+  note?: string
+): Promise<ApiResponse<null>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟更新活动状态:", { id, status, note });
-      
+
       // 在模拟数据中更新状态
       const target = mockDetailData[id];
       if (target) {
         target.status = status;
         target.updatedTime = new Date().toISOString();
       }
-      
+
       resolve({
         code: 200,
         success: true,
@@ -633,18 +653,21 @@ export const updateEventStatus = (id: number, status: number, note?: string): Pr
 };
 
 // 推荐/取消推荐活动
-export const toggleEventRecommend = (id: number, isRecommended: boolean): Promise<ApiResponse<null>> => {
-  return new Promise((resolve) => {
+export const toggleEventRecommend = (
+  id: number,
+  isRecommended: boolean
+): Promise<ApiResponse<null>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟切换活动推荐状态:", { id, isRecommended });
-      
+
       // 在模拟数据中更新推荐状态
       const target = mockDetailData[id];
       if (target) {
         target.isRecommended = isRecommended;
         target.updatedTime = new Date().toISOString();
       }
-      
+
       resolve({
         code: 200,
         success: true,

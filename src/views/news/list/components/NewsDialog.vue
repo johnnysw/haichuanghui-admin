@@ -1,7 +1,7 @@
 <template>
   <el-dialog
-    :title="dialogTitle"
     v-model="dialogVisible"
+    :title="dialogTitle"
     width="900px"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -18,7 +18,7 @@
       <!-- 基本信息 -->
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3"></div>
+          <div class="w-1 h-5 bg-primary rounded mr-3" />
           基本信息
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -26,7 +26,10 @@
             <el-input v-model="form.title" placeholder="请输入资讯标题" />
           </el-form-item>
           <el-form-item label="副标题" prop="subtitle">
-            <el-input v-model="form.subtitle" placeholder="请输入副标题（可选）" />
+            <el-input
+              v-model="form.subtitle"
+              placeholder="请输入副标题（可选）"
+            />
           </el-form-item>
           <el-form-item label="作者" prop="author">
             <el-input v-model="form.author" placeholder="请输入作者" />
@@ -35,7 +38,11 @@
             <el-input v-model="form.source" placeholder="请输入来源（可选）" />
           </el-form-item>
           <el-form-item label="分类" prop="categoryId">
-            <el-select v-model="form.categoryId" placeholder="请选择分类" class="w-full">
+            <el-select
+              v-model="form.categoryId"
+              placeholder="请选择分类"
+              class="w-full"
+            >
               <el-option
                 v-for="category in categories"
                 :key="category.id"
@@ -67,7 +74,7 @@
       <!-- 封面图片 -->
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3"></div>
+          <div class="w-1 h-5 bg-primary rounded mr-3" />
           封面图片
         </h3>
         <el-form-item label="封面图片" prop="coverImage">
@@ -79,7 +86,11 @@
               :before-upload="beforeUpload"
               accept="image/*"
             >
-              <img v-if="form.coverImage" :src="form.coverImage" class="cover-image" />
+              <img
+                v-if="form.coverImage"
+                :src="form.coverImage"
+                class="cover-image"
+              />
               <el-icon v-else class="cover-uploader-icon"><Plus /></el-icon>
             </el-upload>
             <div class="text-xs text-gray-500 mt-2">
@@ -92,7 +103,7 @@
       <!-- 内容编辑 -->
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3"></div>
+          <div class="w-1 h-5 bg-primary rounded mr-3" />
           内容编辑
         </h3>
         <el-form-item label="正文内容" prop="content">
@@ -109,7 +120,11 @@
               :mode="mode"
               style="height: 360px; overflow-y: hidden"
               @onCreated="handleCreated"
-              @onBlur="() => formRef?.value?.validateField && formRef.value?.validateField('content')"
+              @onBlur="
+                () =>
+                  formRef?.value?.validateField &&
+                  formRef.value?.validateField('content')
+              "
             />
           </div>
         </el-form-item>
@@ -118,7 +133,7 @@
       <!-- 状态设置 -->
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3"></div>
+          <div class="w-1 h-5 bg-primary rounded mr-3" />
           状态设置
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -142,14 +157,20 @@
       <!-- SEO设置 -->
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3"></div>
+          <div class="w-1 h-5 bg-primary rounded mr-3" />
           SEO设置
         </h3>
         <el-form-item label="SEO标题" prop="seoTitle">
-          <el-input v-model="form.seoTitle" placeholder="请输入SEO标题（可选）" />
+          <el-input
+            v-model="form.seoTitle"
+            placeholder="请输入SEO标题（可选）"
+          />
         </el-form-item>
         <el-form-item label="SEO关键词" prop="seoKeywords">
-          <el-input v-model="form.seoKeywords" placeholder="请输入SEO关键词，用逗号分隔（可选）" />
+          <el-input
+            v-model="form.seoKeywords"
+            placeholder="请输入SEO关键词，用逗号分隔（可选）"
+          />
         </el-form-item>
         <el-form-item label="SEO描述" prop="seoDescription">
           <el-input
@@ -164,7 +185,7 @@
       <!-- 资讯标签 -->
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3"></div>
+          <div class="w-1 h-5 bg-primary rounded mr-3" />
           资讯标签
         </h3>
         <el-form-item label="标签">
@@ -183,8 +204,8 @@
               <el-input
                 v-model="tagInput"
                 placeholder="输入标签后按回车添加"
-                @keyup.enter="addTag"
                 style="width: 200px"
+                @keyup.enter="addTag"
               />
               <el-button @click="addTag">添加标签</el-button>
             </div>
@@ -210,7 +231,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, onBeforeUnmount, shallowRef } from "vue";
+import {
+  ref,
+  computed,
+  watch,
+  nextTick,
+  onBeforeUnmount,
+  shallowRef
+} from "vue";
 import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import type { FormInstance, FormRules } from "element-plus";
@@ -253,17 +281,21 @@ onBeforeUnmount(() => {
 // 弹窗标题
 const dialogTitle = computed(() => {
   switch (props.mode) {
-    case "add": return "新增资讯";
-    case "edit": return "编辑资讯";
-    case "view": return "查看资讯";
-    default: return "";
+    case "add":
+      return "新增资讯";
+    case "edit":
+      return "编辑资讯";
+    case "view":
+      return "查看资讯";
+    default:
+      return "";
   }
 });
 
 // 弹窗显示状态
 const dialogVisible = computed({
   get: () => props.visible,
-  set: (value) => emit("update:visible", value)
+  set: value => emit("update:visible", value)
 });
 
 // 表单数据
@@ -294,32 +326,35 @@ const rules: FormRules = {
 };
 
 // 监听弹窗显示状态
-watch(() => props.visible, (visible) => {
-  if (visible) {
-    if (props.mode === 'add') {
-      resetForm();
-    } else if (props.formData) {
-      // 编辑或查看模式，填充表单数据
-      form.value = {
-        title: props.formData.title,
-        subtitle: props.formData.subtitle || "",
-        author: props.formData.author,
-        source: props.formData.source || "",
-        summary: props.formData.summary || "",
-        content: props.formData.content || "",
-        coverImage: props.formData.coverImage || "",
-        publishTime: props.formData.publishTime || "",
-        categoryId: props.formData.categoryId,
-        isRecommended: props.formData.isRecommended,
-        isTop: props.formData.isTop,
-        seoTitle: props.formData.seoTitle || "",
-        seoKeywords: props.formData.seoKeywords || "",
-        seoDescription: props.formData.seoDescription || "",
-        tags: [...(props.formData.tags || [])]
-      };
+watch(
+  () => props.visible,
+  visible => {
+    if (visible) {
+      if (props.mode === "add") {
+        resetForm();
+      } else if (props.formData) {
+        // 编辑或查看模式，填充表单数据
+        form.value = {
+          title: props.formData.title,
+          subtitle: props.formData.subtitle || "",
+          author: props.formData.author,
+          source: props.formData.source || "",
+          summary: props.formData.summary || "",
+          content: props.formData.content || "",
+          coverImage: props.formData.coverImage || "",
+          publishTime: props.formData.publishTime || "",
+          categoryId: props.formData.categoryId,
+          isRecommended: props.formData.isRecommended,
+          isTop: props.formData.isTop,
+          seoTitle: props.formData.seoTitle || "",
+          seoKeywords: props.formData.seoKeywords || "",
+          seoDescription: props.formData.seoDescription || "",
+          tags: [...(props.formData.tags || [])]
+        };
+      }
     }
   }
-});
+);
 
 // 重置表单
 const resetForm = () => {
@@ -348,25 +383,25 @@ const resetForm = () => {
 
 // 文件上传前的处理
 const beforeUpload = (file: File) => {
-  const isImage = file.type.startsWith('image/');
+  const isImage = file.type.startsWith("image/");
   const isLt2M = file.size / 1024 / 1024 < 2;
-  
+
   if (!isImage) {
-    ElMessage.error('只能上传图片格式的文件!');
+    ElMessage.error("只能上传图片格式的文件!");
     return false;
   }
   if (!isLt2M) {
-    ElMessage.error('上传图片大小不能超过 2MB!');
+    ElMessage.error("上传图片大小不能超过 2MB!");
     return false;
   }
-  
+
   // 模拟上传成功，生成一个临时URL
   const reader = new FileReader();
-  reader.onload = (e) => {
+  reader.onload = e => {
     form.value.coverImage = e.target?.result as string;
   };
   reader.readAsDataURL(file);
-  
+
   return false; // 阻止默认上传行为
 };
 
@@ -390,11 +425,11 @@ const removeTag = (index: number) => {
 // 提交表单
 const handleSubmit = async () => {
   if (!formRef.value) return;
-  
+
   try {
     await formRef.value.validate();
     loading.value = true;
-    
+
     if (props.mode === "add") {
       await createNews(form.value);
       ElMessage.success("新增成功");
@@ -402,7 +437,7 @@ const handleSubmit = async () => {
       await updateNews(props.formData!.id, form.value);
       ElMessage.success("修改成功");
     }
-    
+
     emit("success");
     handleCancel();
   } catch (error) {
@@ -435,7 +470,7 @@ const handleCancel = () => {
     position: relative;
     overflow: hidden;
     transition: var(--el-transition-duration-fast);
-    
+
     &:hover {
       border-color: var(--el-color-primary);
     }

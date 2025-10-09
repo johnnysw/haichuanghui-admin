@@ -4,7 +4,7 @@ import type { PageParams } from "./page";
 
 /** 通用状态枚举 */
 export const statusOptions = [0, 1] as const;
-export type Status = typeof statusOptions[number];
+export type Status = (typeof statusOptions)[number];
 
 /** 用户相关类型 */
 export namespace User {
@@ -64,14 +64,14 @@ export namespace User {
 export namespace Dept {
   /** 部门基础信息 */
   export interface BaseDept {
-    id: number;           // 部门ID
-    parentId: number;     // 父部门ID
-    name: string;         // 部门名称
-    sort: number;         // 显示顺序
-    principalId: number;  // 负责人ID
-    status: Status;       // 部门状态（0：禁用，1：启用）
-    type: number;         // 类型（1：公司，2：分公司，3：部门）
-    remark: string;       // 备注信息
+    id: number; // 部门ID
+    parentId: number; // 父部门ID
+    name: string; // 部门名称
+    sort: number; // 显示顺序
+    principalId: number; // 负责人ID
+    status: Status; // 部门状态（0：禁用，1：启用）
+    type: number; // 类型（1：公司，2：分公司，3：部门）
+    remark: string; // 备注信息
   }
 
   /** 查询参数 */
@@ -81,7 +81,7 @@ export namespace Dept {
   }
 
   /** 表单相关类型 */
-  export interface FormData extends Omit<BaseDept, 'id'> {
+  export interface FormData extends Omit<BaseDept, "id"> {
     id?: number;
     higherDeptOptions: Record<string, unknown>[];
   }
@@ -92,8 +92,8 @@ export namespace Dept {
 }
 
 /** 日志类型枚举 */
-export const logTypeOptions = ['login', 'operation', 'system'] as const;
-export type LogType = typeof logTypeOptions[number];
+export const logTypeOptions = ["login", "operation", "system"] as const;
+export type LogType = (typeof logTypeOptions)[number];
 
 /** 日志相关类型 */
 export namespace Log {
@@ -153,7 +153,7 @@ export namespace Role {
   }
 
   /** 角色表单数据 */
-  export interface FormData extends Omit<BaseRole, 'id'> {
+  export interface FormData extends Omit<BaseRole, "id"> {
     id?: number;
     username?: string;
     nickname?: string;
@@ -170,7 +170,7 @@ export namespace Role {
 export namespace Menu {
   /** 菜单类型枚举 */
   export const menuTypeOptions = [0, 1, 2, 3] as const;
-  export type MenuType = typeof menuTypeOptions[number];
+  export type MenuType = (typeof menuTypeOptions)[number];
 
   /** 菜单基础信息 */
   export interface BaseMenu {
@@ -229,7 +229,7 @@ export namespace Menu {
   }
 
   /** 表单数据 */
-  export interface FormData extends Omit<BaseMenu, 'id' | 'children'> {
+  export interface FormData extends Omit<BaseMenu, "id" | "children"> {
     id?: number;
     /** 上级菜单选项 */
     higherMenuOptions: BaseMenu[];
@@ -239,6 +239,3 @@ export namespace Menu {
     formInline: FormData;
   }
 }
-
-
-

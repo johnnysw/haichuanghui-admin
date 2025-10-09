@@ -12,14 +12,16 @@
             v-if="incubator.detailedIntro"
             class="text-gray-700 leading-relaxed mb-6 rich-text-content"
             v-html="incubator.detailedIntro"
-          ></div>
+          />
           <div
             v-else-if="incubator.description"
             class="text-gray-700 leading-relaxed mb-6"
           >
             {{ incubator.description }}
           </div>
-          <div v-else class="text-center py-10 text-gray-500">暂无详细介绍信息</div>
+          <div v-else class="text-center py-10 text-gray-500">
+            暂无详细介绍信息
+          </div>
         </div>
       </el-tab-pane>
 
@@ -29,8 +31,10 @@
             v-if="incubator.environmentShowcase"
             class="text-gray-700 leading-relaxed rich-text-content"
             v-html="incubator.environmentShowcase"
-          ></div>
-          <div v-else class="text-center py-10 text-gray-500">暂无环境展示信息</div>
+          />
+          <div v-else class="text-center py-10 text-gray-500">
+            暂无环境展示信息
+          </div>
         </div>
       </el-tab-pane>
 
@@ -40,18 +44,24 @@
             v-if="incubator.residentEnterprises"
             class="text-gray-700 leading-relaxed rich-text-content"
             v-html="incubator.residentEnterprises"
-          ></div>
+          />
           <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-gray-50 rounded-lg p-6 text-center">
-              <div class="text-3xl font-bold text-primary mb-2">{{ incubator.companyCount || 0 }}家</div>
+              <div class="text-3xl font-bold text-primary mb-2">
+                {{ incubator.companyCount || 0 }}家
+              </div>
               <div class="text-gray-600">当前入驻企业</div>
             </div>
             <div class="bg-gray-50 rounded-lg p-6 text-center">
-              <div class="text-3xl font-bold text-green-600 mb-2">{{ incubator.graduatedCount || 0 }}家</div>
+              <div class="text-3xl font-bold text-green-600 mb-2">
+                {{ incubator.graduatedCount || 0 }}家
+              </div>
               <div class="text-gray-600">成功毕业企业</div>
             </div>
             <div class="bg-gray-50 rounded-lg p-6 text-center">
-              <div class="text-3xl font-bold text-orange-600 mb-2">{{ incubator.successStoryCount || 0 }}个</div>
+              <div class="text-3xl font-bold text-orange-600 mb-2">
+                {{ incubator.successStoryCount || 0 }}个
+              </div>
               <div class="text-gray-600">成功案例</div>
             </div>
             <div class="bg-gray-50 rounded-lg p-6 text-center">
@@ -68,8 +78,10 @@
             v-if="incubator.serviceContent"
             class="text-gray-700 leading-relaxed rich-text-content"
             v-html="incubator.serviceContent"
-          ></div>
-          <div v-else class="text-center py-10 text-gray-500">暂无服务内容信息</div>
+          />
+          <div v-else class="text-center py-10 text-gray-500">
+            暂无服务内容信息
+          </div>
         </div>
       </el-tab-pane>
 
@@ -79,8 +91,10 @@
             v-if="incubator.policySupport"
             class="text-gray-700 leading-relaxed rich-text-content"
             v-html="incubator.policySupport"
-          ></div>
-          <div v-else class="text-center py-10 text-gray-500">暂无政策支持信息</div>
+          />
+          <div v-else class="text-center py-10 text-gray-500">
+            暂无政策支持信息
+          </div>
         </div>
       </el-tab-pane>
 
@@ -93,13 +107,19 @@
               </el-icon>
               <span class="text-gray-700">{{ incubator.address }}</span>
             </div>
-            <div v-if="incubator.contactPhone" class="flex items-center space-x-3">
+            <div
+              v-if="incubator.contactPhone"
+              class="flex items-center space-x-3"
+            >
               <el-icon class="text-gray-500 w-5 h-5 flex-shrink-0">
                 <component :is="useRenderIcon(Phone)" />
               </el-icon>
               <span class="text-gray-700">{{ incubator.contactPhone }}</span>
             </div>
-            <div v-if="incubator.contactEmail" class="flex items-center space-x-3">
+            <div
+              v-if="incubator.contactEmail"
+              class="flex items-center space-x-3"
+            >
               <el-icon class="text-gray-500 w-5 h-5 flex-shrink-0">
                 <component :is="useRenderIcon(Message)" />
               </el-icon>
@@ -109,7 +129,11 @@
               <el-icon class="text-gray-500 w-5 h-5 flex-shrink-0">
                 <component :is="useRenderIcon(Link)" />
               </el-icon>
-              <a :href="incubator.website" class="text-primary hover:underline" target="_blank">
+              <a
+                :href="incubator.website"
+                class="text-primary hover:underline"
+                target="_blank"
+              >
                 {{ incubator.website }}
               </a>
             </div>
@@ -137,20 +161,23 @@ const props = defineProps<{
 
 // Emits
 const emit = defineEmits<{
-  'tab-change': [tab: string];
+  "tab-change": [tab: string];
 }>();
 
 const currentTab = ref(props.activeTab);
 
 // 监听外部activeTab变化
-watch(() => props.activeTab, (newTab) => {
-  currentTab.value = newTab;
-});
+watch(
+  () => props.activeTab,
+  newTab => {
+    currentTab.value = newTab;
+  }
+);
 
 // 方法
 const handleTabChange = (tabName: string) => {
   currentTab.value = tabName;
-  emit('tab-change', tabName);
+  emit("tab-change", tabName);
 };
 </script>
 

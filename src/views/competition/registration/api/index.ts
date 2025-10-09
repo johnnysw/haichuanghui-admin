@@ -3,7 +3,7 @@ import type { Response } from "@/types/response";
 import type {
   RegistrationQueryParams,
   RegistrationListResponse,
-  RegistrationDetail,
+  RegistrationDetail
 } from "../types/types";
 
 export const getCompetitionRegistrations = (

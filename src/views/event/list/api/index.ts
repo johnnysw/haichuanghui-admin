@@ -1,8 +1,8 @@
-import type { 
-  Event, 
-  EventCreateForm, 
+import type {
+  Event,
+  EventCreateForm,
   EventListParams,
-  ApiResponse, 
+  ApiResponse,
   PaginationResponse
 } from "../types/types";
 
@@ -11,7 +11,8 @@ const mockEventData: Event[] = [
   {
     id: 1,
     title: "2024全球创业者大会",
-    description: "聚焦全球创业趋势，汇聚顶尖创业者、投资人和行业专家的年度盛会。",
+    description:
+      "聚焦全球创业趋势，汇聚顶尖创业者、投资人和行业专家的年度盛会。",
     type: "行业论坛",
     organizer: "创业邦",
     poster: "https://via.placeholder.com/300x200/4285f4/ffffff?text=创业者大会",
@@ -38,7 +39,8 @@ const mockEventData: Event[] = [
   {
     id: 2,
     title: "AI创业项目路演专场",
-    description: "专注人工智能领域的创业项目路演活动，邀请知名AI投资机构现场点评。",
+    description:
+      "专注人工智能领域的创业项目路演活动，邀请知名AI投资机构现场点评。",
     type: "项目路演",
     organizer: "AI创投联盟",
     poster: "https://via.placeholder.com/300x200/34a853/ffffff?text=AI路演",
@@ -65,7 +67,8 @@ const mockEventData: Event[] = [
   {
     id: 3,
     title: "女性创业者成长训练营",
-    description: "专为女性创业者设计的成长训练营，涵盖商业模式、团队管理、融资技巧等。",
+    description:
+      "专为女性创业者设计的成长训练营，涵盖商业模式、团队管理、融资技巧等。",
     type: "创业培训",
     organizer: "女性创业联盟",
     poster: "https://via.placeholder.com/300x200/ff6d01/ffffff?text=女性创业",
@@ -119,7 +122,8 @@ const mockEventData: Event[] = [
   {
     id: 5,
     title: "大学生创业大赛启动仪式",
-    description: "第十届全国大学生创业大赛正式启动，鼓励在校大学生参与创新创业。",
+    description:
+      "第十届全国大学生创业大赛正式启动，鼓励在校大学生参与创新创业。",
     type: "政策宣讲",
     organizer: "教育部创业司",
     poster: "https://via.placeholder.com/300x200/795548/ffffff?text=创业大赛",
@@ -200,7 +204,8 @@ const mockEventData: Event[] = [
   {
     id: 8,
     title: "科技创业政策解读会",
-    description: "详细解读最新的科技创业扶持政策，为创业者提供政策指导和申报建议。",
+    description:
+      "详细解读最新的科技创业扶持政策，为创业者提供政策指导和申报建议。",
     type: "政策宣讲",
     organizer: "科技部火炬中心",
     poster: "https://via.placeholder.com/300x200/e91e63/ffffff?text=政策解读",
@@ -227,71 +232,82 @@ const mockEventData: Event[] = [
 ];
 
 // 获取活动列表
-export const getEventList = (params: EventListParams): Promise<ApiResponse<PaginationResponse<Event>>> => {
+export const getEventList = (
+  params: EventListParams
+): Promise<ApiResponse<PaginationResponse<Event>>> => {
   return new Promise(resolve => {
     setTimeout(() => {
       let filteredData = [...mockEventData];
-      
+
       // 活动名称搜索
       if (params.title) {
         const title = params.title.toLowerCase();
-        filteredData = filteredData.filter(item =>
-          item.title.toLowerCase().includes(title) ||
-          item.description?.toLowerCase().includes(title)
+        filteredData = filteredData.filter(
+          item =>
+            item.title.toLowerCase().includes(title) ||
+            item.description?.toLowerCase().includes(title)
         );
       }
-      
+
       // 活动类型筛选
       if (params.type) {
         filteredData = filteredData.filter(item => item.type === params.type);
       }
-      
+
       // 主办方筛选
       if (params.organizer) {
         const organizer = params.organizer.toLowerCase();
-        filteredData = filteredData.filter(item => 
+        filteredData = filteredData.filter(item =>
           item.organizer.toLowerCase().includes(organizer)
         );
       }
-      
+
       // 状态筛选
       if (params.status !== undefined) {
-        filteredData = filteredData.filter(item => item.status === params.status);
+        filteredData = filteredData.filter(
+          item => item.status === params.status
+        );
       }
-      
+
       // 推荐筛选
       if (params.isRecommended !== undefined) {
-        filteredData = filteredData.filter(item => item.isRecommended === params.isRecommended);
+        filteredData = filteredData.filter(
+          item => item.isRecommended === params.isRecommended
+        );
       }
-      
+
       // 地区筛选
       if (params.location) {
-        filteredData = filteredData.filter(item => item.location.includes(params.location!));
+        filteredData = filteredData.filter(item =>
+          item.location.includes(params.location!)
+        );
       }
-      
+
       // 排序
-      const sortBy = params.sortBy || 'createdTime';
-      const sortOrder = params.sortOrder || 'desc';
+      const sortBy = params.sortBy || "createdTime";
+      const sortOrder = params.sortOrder || "desc";
       filteredData.sort((a, b) => {
         let aValue = a[sortBy as keyof Event];
         let bValue = b[sortBy as keyof Event];
-        
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return sortOrder === 'desc' ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
+
+        if (typeof aValue === "string" && typeof bValue === "string") {
+          return sortOrder === "desc"
+            ? bValue.localeCompare(aValue)
+            : aValue.localeCompare(bValue);
         }
-        if (typeof aValue === 'number' && typeof bValue === 'number') {
-          return sortOrder === 'desc' ? bValue - aValue : aValue - bValue;
+        if (typeof aValue === "number" && typeof bValue === "number") {
+          return sortOrder === "desc" ? bValue - aValue : aValue - bValue;
         }
         return 0;
       });
-      
+
       // 分页
       const page = params.page || 1;
       const pageSize = params.pageSize || 10;
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
       const list = filteredData.slice(start, end);
-      
+
       resolve({
         code: 200,
         success: true,
@@ -308,7 +324,9 @@ export const getEventList = (params: EventListParams): Promise<ApiResponse<Pagin
 };
 
 // 创建活动
-export const createEvent = (formData: EventCreateForm): Promise<ApiResponse<null>> => {
+export const createEvent = (
+  formData: EventCreateForm
+): Promise<ApiResponse<null>> => {
   return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟创建活动:", formData);
@@ -323,7 +341,10 @@ export const createEvent = (formData: EventCreateForm): Promise<ApiResponse<null
 };
 
 // 更新活动
-export const updateEvent = (id: number, formData: Partial<EventCreateForm>): Promise<ApiResponse<null>> => {
+export const updateEvent = (
+  id: number,
+  formData: Partial<EventCreateForm>
+): Promise<ApiResponse<null>> => {
   return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟更新活动:", id, formData);
@@ -353,18 +374,21 @@ export const deleteEvent = (id: number): Promise<ApiResponse<null>> => {
 };
 
 // 更新活动状态
-export const updateEventStatus = (id: number, status: number): Promise<ApiResponse<null>> => {
+export const updateEventStatus = (
+  id: number,
+  status: number
+): Promise<ApiResponse<null>> => {
   return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟更新活动状态:", id, status);
-      
+
       // 在模拟数据中更新状态
       const target = mockEventData.find(item => item.id === id);
       if (target) {
         target.status = status;
         target.updatedTime = new Date().toISOString();
       }
-      
+
       resolve({
         code: 200,
         success: true,
@@ -376,18 +400,21 @@ export const updateEventStatus = (id: number, status: number): Promise<ApiRespon
 };
 
 // 推荐/取消推荐活动
-export const toggleEventRecommend = (id: number, isRecommended: boolean): Promise<ApiResponse<null>> => {
+export const toggleEventRecommend = (
+  id: number,
+  isRecommended: boolean
+): Promise<ApiResponse<null>> => {
   return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟切换活动推荐状态:", id, isRecommended);
-      
+
       // 在模拟数据中更新推荐状态
       const target = mockEventData.find(item => item.id === id);
       if (target) {
         target.isRecommended = isRecommended;
         target.updatedTime = new Date().toISOString();
       }
-      
+
       resolve({
         code: 200,
         success: true,

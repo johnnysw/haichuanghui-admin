@@ -25,11 +25,7 @@
         <el-card shadow="never">
           <div class="header-content">
             <div class="header-left">
-              <el-button
-                type="primary"
-                :icon="ArrowLeft"
-                @click="goBack"
-              >
+              <el-button type="primary" :icon="ArrowLeft" @click="goBack">
                 返回列表
               </el-button>
             </div>
@@ -43,7 +39,7 @@
               >
                 审核通过
               </el-button>
-              
+
               <el-button
                 v-if="state.application.status === 2"
                 type="danger"
@@ -53,7 +49,7 @@
               >
                 审核拒绝
               </el-button>
-              
+
               <el-button
                 type="warning"
                 :icon="DocumentAdd"
@@ -62,7 +58,7 @@
               >
                 要求补充
               </el-button>
-              
+
               <el-dropdown @command="handleDropdownCommand">
                 <el-button type="info" :icon="More">
                   更多操作
@@ -102,17 +98,34 @@
               <span class="card-title">申请进度</span>
             </div>
           </template>
-          
-          <el-steps :active="getStepActive()" finish-status="success" align-center>
-            <el-step title="提交申请" :description="`${state.application.submittedTime}`" />
-            <el-step 
-              title="资料审核" 
-              :description="state.application.status === 2 ? '审核中' : (state.application.reviewTime || '')"
+
+          <el-steps
+            :active="getStepActive()"
+            finish-status="success"
+            align-center
+          >
+            <el-step
+              title="提交申请"
+              :description="`${state.application.submittedTime}`"
+            />
+            <el-step
+              title="资料审核"
+              :description="
+                state.application.status === 2
+                  ? '审核中'
+                  : state.application.reviewTime || ''
+              "
               :status="getStepStatus(1)"
             />
-            <el-step 
-              title="审核完成" 
-              :description="state.application.status === 1 ? '审核通过' : (state.application.status === 3 ? '审核拒绝' : '')"
+            <el-step
+              title="审核完成"
+              :description="
+                state.application.status === 1
+                  ? '审核通过'
+                  : state.application.status === 3
+                    ? '审核拒绝'
+                    : ''
+              "
               :status="getStepStatus(2)"
             />
           </el-steps>
@@ -134,16 +147,26 @@
               </el-tag>
             </div>
           </template>
-          
+
           <div class="basic-info-content">
             <div class="applicant-section">
               <el-avatar
                 :size="80"
-                :src="state.application.user.avatar || getPlaceholderImage(state.application.user.realName || '申请人')"
+                :src="
+                  state.application.user.avatar ||
+                  getPlaceholderImage(
+                    state.application.user.realName || '申请人'
+                  )
+                "
                 :alt="state.application.user.realName || '申请人'"
               />
               <div class="applicant-info">
-                <h3>{{ state.application.user.realName || state.application.user.username }}</h3>
+                <h3>
+                  {{
+                    state.application.user.realName ||
+                    state.application.user.username
+                  }}
+                </h3>
                 <div class="contact-info">
                   <div class="contact-item">
                     <el-icon><Message /></el-icon>
@@ -169,16 +192,26 @@
                 </div>
                 <div class="info-item">
                   <label>所在地区：</label>
-                  <span>{{ state.application.location || state.application.region?.name || "-" }}</span>
+                  <span>{{
+                    state.application.location ||
+                    state.application.region?.name ||
+                    "-"
+                  }}</span>
                 </div>
               </div>
-              
+
               <div class="info-row">
                 <div class="info-item">
                   <label>投资金额：</label>
                   <span>
-                    <template v-if="state.application.investmentAmountMin || state.application.investmentAmountMax">
-                      {{ state.application.investmentAmountMin || 0 }}万 - {{ state.application.investmentAmountMax || "不限" }}万
+                    <template
+                      v-if="
+                        state.application.investmentAmountMin ||
+                        state.application.investmentAmountMax
+                      "
+                    >
+                      {{ state.application.investmentAmountMin || 0 }}万 -
+                      {{ state.application.investmentAmountMax || "不限" }}万
                     </template>
                     <template v-else>-</template>
                   </span>
@@ -200,7 +233,11 @@
                 </div>
                 <div class="info-item">
                   <label>审核员：</label>
-                  <span>{{ state.application.reviewer?.realName || state.application.reviewer?.username || "-" }}</span>
+                  <span>{{
+                    state.application.reviewer?.realName ||
+                    state.application.reviewer?.username ||
+                    "-"
+                  }}</span>
                 </div>
                 <div class="info-item">
                   <label>审核意见：</label>
@@ -221,7 +258,13 @@
               <div class="preferences-content">
                 <div class="preference-item">
                   <h4>关注领域</h4>
-                  <div v-if="state.application.focusIndustries && state.application.focusIndustries.length > 0" class="tags-container">
+                  <div
+                    v-if="
+                      state.application.focusIndustries &&
+                      state.application.focusIndustries.length > 0
+                    "
+                    class="tags-container"
+                  >
                     <el-tag
                       v-for="industry in state.application.focusIndustries"
                       :key="industry.id"
@@ -237,7 +280,13 @@
 
                 <div class="preference-item">
                   <h4>偏好阶段</h4>
-                  <div v-if="state.application.preferredStages && state.application.preferredStages.length > 0" class="tags-container">
+                  <div
+                    v-if="
+                      state.application.preferredStages &&
+                      state.application.preferredStages.length > 0
+                    "
+                    class="tags-container"
+                  >
                     <el-tag
                       v-for="stage in state.application.preferredStages"
                       :key="stage.id"
@@ -254,7 +303,10 @@
                 <div class="preference-item">
                   <h4>投资偏好</h4>
                   <div class="text-content">
-                    <el-text v-if="state.application.investmentPreference" size="large">
+                    <el-text
+                      v-if="state.application.investmentPreference"
+                      size="large"
+                    >
                       {{ state.application.investmentPreference }}
                     </el-text>
                     <el-text v-else type="info">暂无描述</el-text>
@@ -279,7 +331,10 @@
                 <div class="bio-item">
                   <h4>机构信息</h4>
                   <div class="text-content">
-                    <el-text v-if="state.application.institutionInfo" size="large">
+                    <el-text
+                      v-if="state.application.institutionInfo"
+                      size="large"
+                    >
                       {{ state.application.institutionInfo }}
                     </el-text>
                     <el-text v-else type="info">暂无机构信息</el-text>
@@ -301,7 +356,13 @@
             <!-- 申请文档 -->
             <el-tab-pane label="申请文档" name="documents">
               <div class="documents-content">
-                <div v-if="state.application.documents && state.application.documents.length > 0" class="documents-grid">
+                <div
+                  v-if="
+                    state.application.documents &&
+                    state.application.documents.length > 0
+                  "
+                  class="documents-grid"
+                >
                   <div
                     v-for="doc in state.application.documents"
                     :key="doc.id"
@@ -321,7 +382,7 @@
                           {{ getDocumentStatusText(doc.status) }}
                         </el-tag>
                       </div>
-                      
+
                       <div class="document-info">
                         <div class="document-name" :title="doc.fileName">
                           {{ doc.fileName }}
@@ -331,10 +392,12 @@
                           <span>{{ doc.uploadTime }}</span>
                         </div>
                         <div v-if="doc.comment" class="document-comment">
-                          <el-text type="warning" size="small">{{ doc.comment }}</el-text>
+                          <el-text type="warning" size="small">{{
+                            doc.comment
+                          }}</el-text>
                         </div>
                       </div>
-                      
+
                       <div class="document-actions">
                         <el-button
                           size="small"
@@ -377,7 +440,9 @@
                           >
                             {{ getStatusInfo(record.status).label }}
                           </el-tag>
-                          <span class="reviewer">{{ record.reviewer.realName || record.reviewer.username }}</span>
+                          <span class="reviewer">{{
+                            record.reviewer.realName || record.reviewer.username
+                          }}</span>
                         </div>
                         <div class="history-comment">
                           {{ record.comment }}
@@ -402,14 +467,20 @@
       :before-close="closePreview"
     >
       <div v-loading="previewState.loading" class="preview-container">
-        <div v-if="previewState.previewUrl && !previewState.loading" class="preview-content">
+        <div
+          v-if="previewState.previewUrl && !previewState.loading"
+          class="preview-content"
+        >
           <img
             :src="previewState.previewUrl"
             :alt="previewState.document?.fileName"
-            style="max-width: 100%; height: auto;"
+            style="max-width: 100%; height: auto"
           />
         </div>
-        <el-empty v-else-if="!previewState.loading" description="无法预览此文档" />
+        <el-empty
+          v-else-if="!previewState.loading"
+          description="无法预览此文档"
+        />
       </div>
     </el-dialog>
   </div>
@@ -417,10 +488,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { 
-  ArrowLeft, 
-  Check, 
-  Close, 
+import {
+  ArrowLeft,
+  Check,
+  Close,
   DocumentAdd,
   More,
   ArrowDown,
@@ -479,40 +550,45 @@ const getDocumentTypeText = (type: string) => {
 // 获取步骤激活状态
 const getStepActive = () => {
   if (!state.application) return 0;
-  
+
   switch (state.application.status) {
-    case 0: return 0; // 草稿
-    case 2: return 1; // 审核中
-    case 1: case 3: return 2; // 已通过/已拒绝
-    default: return 0;
+    case 0:
+      return 0; // 草稿
+    case 2:
+      return 1; // 审核中
+    case 1:
+    case 3:
+      return 2; // 已通过/已拒绝
+    default:
+      return 0;
   }
 };
 
 // 获取步骤状态
 const getStepStatus = (step: number) => {
-  if (!state.application) return 'wait';
-  
+  if (!state.application) return "wait";
+
   const status = state.application.status;
-  
+
   switch (step) {
     case 1: // 资料审核步骤
-      if (status === 2) return 'process'; // 审核中
-      if (status === 1) return 'finish';  // 已通过
-      if (status === 3) return 'error';   // 已拒绝
-      return 'wait';
+      if (status === 2) return "process"; // 审核中
+      if (status === 1) return "finish"; // 已通过
+      if (status === 3) return "error"; // 已拒绝
+      return "wait";
     case 2: // 审核完成步骤
-      if (status === 1) return 'finish';  // 已通过
-      if (status === 3) return 'error';   // 已拒绝
-      return 'wait';
+      if (status === 1) return "finish"; // 已通过
+      if (status === 3) return "error"; // 已拒绝
+      return "wait";
     default:
-      return 'wait';
+      return "wait";
   }
 };
 
 // 处理下拉菜单命令
 const handleDropdownCommand = (command: string) => {
   if (!state.application) return;
-  
+
   switch (command) {
     case "sendNotification":
       handleSendNotification(state.application);
@@ -783,20 +859,20 @@ const handleDropdownCommand = (command: string) => {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .info-row {
     grid-template-columns: 1fr;
   }
-  
+
   .documents-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .header-content {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .header-right {
     flex-wrap: wrap;
     justify-content: center;

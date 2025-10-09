@@ -2,7 +2,12 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { InvestorApplication, ReviewForm } from "../types/types";
-import { reviewApplication, sendNotificationToApplicant, requestAdditionalDocuments, addReviewRecord } from "../api";
+import {
+  reviewApplication,
+  sendNotificationToApplicant,
+  requestAdditionalDocuments,
+  addReviewRecord
+} from "../api";
 
 export function useApplicationDetailActions(onRefresh: () => void) {
   const router = useRouter();
@@ -14,7 +19,11 @@ export function useApplicationDetailActions(onRefresh: () => void) {
   };
 
   // 审核申请
-  const handleReview = async (application: InvestorApplication, status: number, comment?: string) => {
+  const handleReview = async (
+    application: InvestorApplication,
+    status: number,
+    comment?: string
+  ) => {
     try {
       const statusText = status === 1 ? "通过" : "拒绝";
       let reviewComment = comment;
@@ -52,7 +61,7 @@ export function useApplicationDetailActions(onRefresh: () => void) {
       };
 
       const response = await reviewApplication(application.id, reviewData);
-      
+
       if (response.success) {
         ElMessage.success(`审核${statusText}成功`);
         onRefresh();
@@ -86,9 +95,12 @@ export function useApplicationDetailActions(onRefresh: () => void) {
 
       actionLoading.value = true;
       const requirements = [value]; // 简化处理，实际可以支持多个要求
-      
-      const response = await requestAdditionalDocuments(application.id, requirements);
-      
+
+      const response = await requestAdditionalDocuments(
+        application.id,
+        requirements
+      );
+
       if (response.success) {
         ElMessage.success("补充材料要求已发送");
         // 添加审核记录
@@ -123,9 +135,9 @@ export function useApplicationDetailActions(onRefresh: () => void) {
       );
 
       actionLoading.value = true;
-      
+
       const response = await sendNotificationToApplicant(application.id, value);
-      
+
       if (response.success) {
         ElMessage.success("通知发送成功");
         // 添加审核记录
@@ -160,9 +172,9 @@ export function useApplicationDetailActions(onRefresh: () => void) {
       );
 
       actionLoading.value = true;
-      
+
       const response = await addReviewRecord(application.id, value);
-      
+
       if (response.success) {
         ElMessage.success("备注添加成功");
         onRefresh();

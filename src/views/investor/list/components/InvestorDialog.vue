@@ -17,8 +17,10 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- 基本信息 -->
         <div class="col-span-1 md:col-span-2">
-          <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <div class="w-1 h-5 bg-primary rounded mr-3"></div>
+          <h3
+            class="text-lg font-semibold text-gray-800 mb-4 flex items-center"
+          >
+            <div class="w-1 h-5 bg-primary rounded mr-3" />
             基本信息
           </h3>
         </div>
@@ -77,7 +79,11 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="头像" prop="avatar" class="col-span-1 md:col-span-2">
+        <el-form-item
+          label="头像"
+          prop="avatar"
+          class="col-span-1 md:col-span-2"
+        >
           <el-input
             v-model="form.avatar"
             placeholder="请输入头像图片URL"
@@ -95,8 +101,10 @@
 
         <!-- 联系信息 -->
         <div class="col-span-1 md:col-span-2 mt-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <div class="w-1 h-5 bg-primary rounded mr-3"></div>
+          <h3
+            class="text-lg font-semibold text-gray-800 mb-4 flex items-center"
+          >
+            <div class="w-1 h-5 bg-primary rounded mr-3" />
             联系信息
           </h3>
         </div>
@@ -119,13 +127,19 @@
 
         <!-- 投资偏好 -->
         <div class="col-span-1 md:col-span-2 mt-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <div class="w-1 h-5 bg-primary rounded mr-3"></div>
+          <h3
+            class="text-lg font-semibold text-gray-800 mb-4 flex items-center"
+          >
+            <div class="w-1 h-5 bg-primary rounded mr-3" />
             投资偏好
           </h3>
         </div>
 
-        <el-form-item label="关注行业" prop="focusIndustries" class="col-span-1 md:col-span-2">
+        <el-form-item
+          label="关注行业"
+          prop="focusIndustries"
+          class="col-span-1 md:col-span-2"
+        >
           <el-select
             v-model="form.focusIndustries"
             multiple
@@ -142,7 +156,11 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="偏好阶段" prop="preferredStages" class="col-span-1 md:col-span-2">
+        <el-form-item
+          label="偏好阶段"
+          prop="preferredStages"
+          class="col-span-1 md:col-span-2"
+        >
           <el-select
             v-model="form.preferredStages"
             multiple
@@ -161,13 +179,19 @@
 
         <!-- 个人简介 -->
         <div class="col-span-1 md:col-span-2 mt-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <div class="w-1 h-5 bg-primary rounded mr-3"></div>
+          <h3
+            class="text-lg font-semibold text-gray-800 mb-4 flex items-center"
+          >
+            <div class="w-1 h-5 bg-primary rounded mr-3" />
             个人简介
           </h3>
         </div>
 
-        <el-form-item label="简短介绍" prop="bio" class="col-span-1 md:col-span-2">
+        <el-form-item
+          label="简短介绍"
+          prop="bio"
+          class="col-span-1 md:col-span-2"
+        >
           <el-input
             v-model="form.bio"
             type="textarea"
@@ -179,7 +203,11 @@
           />
         </el-form-item>
 
-        <el-form-item label="详细描述" prop="description" class="col-span-1 md:col-span-2">
+        <el-form-item
+          label="详细描述"
+          prop="description"
+          class="col-span-1 md:col-span-2"
+        >
           <el-input
             v-model="form.description"
             type="textarea"
@@ -193,8 +221,10 @@
 
         <!-- 其他设置 -->
         <div class="col-span-1 md:col-span-2 mt-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <div class="w-1 h-5 bg-primary rounded mr-3"></div>
+          <h3
+            class="text-lg font-semibold text-gray-800 mb-4 flex items-center"
+          >
+            <div class="w-1 h-5 bg-primary rounded mr-3" />
             其他设置
           </h3>
         </div>
@@ -231,7 +261,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="handleCancel">
-          {{ props.mode === 'view' ? '关闭' : '取消' }}
+          {{ props.mode === "view" ? "关闭" : "取消" }}
         </el-button>
         <el-button
           v-if="props.mode !== 'view'"
@@ -239,7 +269,7 @@
           :loading="submitLoading"
           @click="handleSubmit"
         >
-          {{ props.mode === 'add' ? '创建' : '更新' }}
+          {{ props.mode === "add" ? "创建" : "更新" }}
         </el-button>
       </div>
     </template>
@@ -298,24 +328,22 @@ const form = reactive<InvestorCreateForm>({
 
 // 表单验证规则
 const formRules: FormRules = {
-  name: [
-    { required: true, message: "请输入投资人姓名", trigger: "blur" }
-  ],
+  name: [{ required: true, message: "请输入投资人姓名", trigger: "blur" }],
   institution: [
     { required: true, message: "请输入投资机构名称", trigger: "blur" }
   ],
-  position: [
-    { required: true, message: "请输入职位", trigger: "blur" }
-  ],
-  location: [
-    { required: true, message: "请输入地区", trigger: "blur" }
-  ],
+  position: [{ required: true, message: "请输入职位", trigger: "blur" }],
+  location: [{ required: true, message: "请输入地区", trigger: "blur" }],
   investmentRange: [
     { required: true, message: "请输入投资范围", trigger: "blur" }
   ],
   phone: [
     { required: true, message: "请输入联系电话", trigger: "blur" },
-    { pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" }
+    {
+      pattern: /^1[3-9]\d{9}$/,
+      message: "请输入正确的手机号码",
+      trigger: "blur"
+    }
   ],
   email: [
     { required: true, message: "请输入邮箱地址", trigger: "blur" },
@@ -327,19 +355,15 @@ const formRules: FormRules = {
   preferredStages: [
     { required: true, message: "请选择偏好投资阶段", trigger: "change" }
   ],
-  bio: [
-    { required: true, message: "请输入简短介绍", trigger: "blur" }
-  ],
-  description: [
-    { required: true, message: "请输入详细描述", trigger: "blur" }
-  ]
+  bio: [{ required: true, message: "请输入简短介绍", trigger: "blur" }],
+  description: [{ required: true, message: "请输入详细描述", trigger: "blur" }]
 };
 
 // 弹窗标题
 const dialogTitle = computed(() => {
   const titleMap = {
     add: "新增投资人",
-    edit: "编辑投资人", 
+    edit: "编辑投资人",
     view: "查看投资人"
   };
   return titleMap[props.mode];
@@ -348,7 +372,7 @@ const dialogTitle = computed(() => {
 // 弹窗显示状态
 const dialogVisible = computed({
   get: () => props.visible,
-  set: (value) => emit("update:visible", value)
+  set: value => emit("update:visible", value)
 });
 
 // 重置表单
@@ -374,36 +398,42 @@ const resetForm = () => {
 };
 
 // 监听弹窗显示状态
-watch(() => props.visible, (visible) => {
-  if (visible) {
-    if (props.mode === "add") {
-      resetForm();
-    } else if (props.formData && (props.mode === "edit" || props.mode === "view")) {
-      Object.assign(form, {
-        name: props.formData.name,
-        avatar: props.formData.avatar,
-        institution: props.formData.institution,
-        position: props.formData.position,
-        location: props.formData.location,
-        investmentRange: props.formData.investmentRange,
-        focusIndustries: [...props.formData.focusIndustries],
-        preferredStages: [...props.formData.preferredStages],
-        phone: props.formData.phone,
-        email: props.formData.email,
-        bio: props.formData.bio,
-        description: props.formData.description,
-        verified: props.formData.verified,
-        status: props.formData.status,
-        isRecommended: props.formData.isRecommended,
-        isFeatured: props.formData.isFeatured
+watch(
+  () => props.visible,
+  visible => {
+    if (visible) {
+      if (props.mode === "add") {
+        resetForm();
+      } else if (
+        props.formData &&
+        (props.mode === "edit" || props.mode === "view")
+      ) {
+        Object.assign(form, {
+          name: props.formData.name,
+          avatar: props.formData.avatar,
+          institution: props.formData.institution,
+          position: props.formData.position,
+          location: props.formData.location,
+          investmentRange: props.formData.investmentRange,
+          focusIndustries: [...props.formData.focusIndustries],
+          preferredStages: [...props.formData.preferredStages],
+          phone: props.formData.phone,
+          email: props.formData.email,
+          bio: props.formData.bio,
+          description: props.formData.description,
+          verified: props.formData.verified,
+          status: props.formData.status,
+          isRecommended: props.formData.isRecommended,
+          isFeatured: props.formData.isFeatured
+        });
+      }
+
+      nextTick(() => {
+        formRef.value?.clearValidate();
       });
     }
-    
-    nextTick(() => {
-      formRef.value?.clearValidate();
-    });
   }
-});
+);
 
 // 提交表单
 const handleSubmit = async () => {

@@ -18,7 +18,7 @@ export function useProjectDetailActions() {
   // 审核项目
   const handleReview = async (project: ProjectInfo, status: number) => {
     let reviewComment = "";
-    
+
     if (status === ProjectStatus.REJECTED) {
       try {
         const { value } = await ElMessageBox.prompt(
@@ -52,7 +52,7 @@ export function useProjectDetailActions() {
 
       actionLoading.value = true;
       const result = await reviewProject(project.id, status, reviewComment);
-      
+
       if (result.code === 200) {
         project.status = status;
         if (reviewComment) {
@@ -89,8 +89,11 @@ export function useProjectDetailActions() {
       );
 
       actionLoading.value = true;
-      const response = await toggleProjectRecommendation(project.id, newRecommended);
-      
+      const response = await toggleProjectRecommendation(
+        project.id,
+        newRecommended
+      );
+
       if (response.code === 200) {
         project.isRecommended = newRecommended;
         message(`${action}成功`, { type: "success" });

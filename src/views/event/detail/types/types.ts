@@ -53,7 +53,7 @@ export interface Sponsor {
   id: number;
   name: string;
   logo: string;
-  level: 'title' | 'gold' | 'silver' | 'bronze'; // 赞助级别
+  level: "title" | "gold" | "silver" | "bronze"; // 赞助级别
   website?: string;
   description?: string;
 }
@@ -62,7 +62,7 @@ export interface Sponsor {
 export interface Material {
   id: number;
   name: string;
-  type: 'document' | 'video' | 'image' | 'link';
+  type: "document" | "video" | "image" | "link";
   url: string;
   size?: number;
   description?: string;
@@ -104,7 +104,7 @@ export interface EventStats {
 // 状态信息接口
 export interface StatusInfo {
   label: string;
-  type: 'success' | 'info' | 'warning' | 'danger' | 'primary';
+  type: "success" | "info" | "warning" | "danger" | "primary";
   color?: string;
 }
 
@@ -132,7 +132,7 @@ export interface Participant {
   company?: string;
   position?: string;
   registrationTime: string;
-  attendanceStatus: 'registered' | 'confirmed' | 'attended' | 'absent';
+  attendanceStatus: "registered" | "confirmed" | "attended" | "absent";
   notes?: string;
 }
 

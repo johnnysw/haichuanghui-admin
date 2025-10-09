@@ -10,9 +10,9 @@ import type { PaginationProps } from "@pureadmin/table";
 export function useEventTable() {
   const loading = ref(false);
   const dataList = ref<EventItem[]>([]);
-  
+
   // 搜索表单
-  const searchForm = reactive<Omit<EventListParams, 'page' | 'pageSize'>>({
+  const searchForm = reactive<Omit<EventListParams, "page" | "pageSize">>({
     title: "",
     location: "",
     category: "",
@@ -114,7 +114,7 @@ export function useEventTable() {
         pageSize: pagination.pageSize,
         ...searchForm
       };
-      
+
       const { data } = await getEventList(params);
       dataList.value = data.list;
       pagination.total = data.total;
@@ -156,15 +156,11 @@ export function useEventTable() {
   // 删除活动
   const handleDelete = async (row: EventItem) => {
     try {
-      await ElMessageBox.confirm(
-        `确认删除活动"${row.title}"吗？`,
-        "删除确认",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }
-      );
+      await ElMessageBox.confirm(`确认删除活动"${row.title}"吗？`, "删除确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      });
 
       await deleteEvent(row.id);
       ElMessage.success("删除成功");

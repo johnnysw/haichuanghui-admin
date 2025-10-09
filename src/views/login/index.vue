@@ -102,7 +102,12 @@ const onLogin = async (formEl: FormInstance | undefined) => {
           // 网络错误或其他异常情况
           // 尝试从错误对象中获取后端返回的错误信息
           let errorMessage = t("login.pureLoginFail");
-          if (err && err.response && err.response.data && err.response.data.message) {
+          if (
+            err &&
+            err.response &&
+            err.response.data &&
+            err.response.data.message
+          ) {
             errorMessage = err.response.data.message;
           } else if (err && err.message) {
             errorMessage = err.message;

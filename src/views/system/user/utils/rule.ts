@@ -8,17 +8,19 @@ export const formRules = reactive(<FormRules>{
   username: [{ required: true, message: "名称为必填项", trigger: "blur" }],
   password: [{ required: true, message: "密码为必填项", trigger: "blur" }],
   wechat: [{ required: false, message: "微信号为必填项", trigger: "blur" }],
-  deptId: [{
-    required: true,
-    validator: (rule, value, callback) => {
-      if (value === undefined || value === null || value === '') {
-        callback(new Error('归属部门为必填项'));
-      } else {
-        callback();
-      }
-    },
-    trigger: ['blur', 'change']
-  }],
+  deptId: [
+    {
+      required: true,
+      validator: (rule, value, callback) => {
+        if (value === undefined || value === null || value === "") {
+          callback(new Error("归属部门为必填项"));
+        } else {
+          callback();
+        }
+      },
+      trigger: ["blur", "change"]
+    }
+  ],
   phone: [
     { required: true, message: "手机号为必填项", trigger: "blur" },
     {

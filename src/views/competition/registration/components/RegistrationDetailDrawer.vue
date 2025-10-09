@@ -2,7 +2,10 @@
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
-import { REGISTRATION_STATUS_MAP, type RegistrationDetail } from "../types/types";
+import {
+  REGISTRATION_STATUS_MAP,
+  type RegistrationDetail
+} from "../types/types";
 
 interface Props {
   modelValue: boolean;
@@ -12,7 +15,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
-  detail: null,
+  detail: null
 });
 
 const emit = defineEmits<{
@@ -24,7 +27,7 @@ const emit = defineEmits<{
 
 const visible = computed({
   get: () => props.modelValue,
-  set: (value: boolean) => emit("update:modelValue", value),
+  set: (value: boolean) => emit("update:modelValue", value)
 });
 
 const isPending = computed(() => props.detail?.status === 1);
@@ -41,7 +44,7 @@ const attachments = computed(() => props.detail?.attachments ?? []);
 const attachmentTypeMap: Record<string, string> = {
   businessPlanFile: "商业计划书",
   businessPlanUrl: "计划书链接",
-  demoFile: "演示材料",
+  demoFile: "演示材料"
 };
 const detailTitle = computed(() => {
   const d = props.detail;
@@ -76,7 +79,6 @@ const handleOpenProject = () => {
 
 // 项目信息展开/折叠状态
 const projectExpanded = ref(false);
-
 </script>
 
 <template>
@@ -88,7 +90,7 @@ const projectExpanded = ref(false);
     title="报名详情"
     @close="handleClose"
   >
-    <div class="detail-container" v-loading="loading">
+    <div v-loading="loading" class="detail-container">
       <el-empty v-if="!loading && !detail" description="暂无数据" />
 
       <template v-else>
@@ -96,7 +98,11 @@ const projectExpanded = ref(false);
           <div>
             <div class="detail-title">
               {{ detailTitle }}
-              <el-tag v-if="statusMeta" :type="statusMeta.type" class="title-status-tag">
+              <el-tag
+                v-if="statusMeta"
+                :type="statusMeta.type"
+                class="title-status-tag"
+              >
                 {{ statusMeta.text }}
               </el-tag>
             </div>
@@ -120,19 +126,27 @@ const projectExpanded = ref(false);
               </div>
               <div class="info-item">
                 <span class="info-label">公司/机构</span>
-                <span class="info-value">{{ detail?.companyName || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.companyName || "--"
+                }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">联系人</span>
-                <span class="info-value">{{ detail?.contactName || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.contactName || "--"
+                }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">手机号</span>
-                <span class="info-value">{{ detail?.contactPhone || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.contactPhone || "--"
+                }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">邮箱</span>
-                <span class="info-value">{{ detail?.contactEmail || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.contactEmail || "--"
+                }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">职位</span>
@@ -144,23 +158,33 @@ const projectExpanded = ref(false);
               </div>
               <div class="info-item">
                 <span class="info-label">创业经验</span>
-                <span class="info-value">{{ detail?.startupExperience || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.startupExperience || "--"
+                }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">所属行业</span>
-                <span class="info-value">{{ detail?.industryName || detail?.industry?.name || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.industryName || detail?.industry?.name || "--"
+                }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">登录账号</span>
-                <span class="info-value">{{ detail?.account?.username || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.account?.username || "--"
+                }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">账号邮箱</span>
-                <span class="info-value">{{ detail?.account?.email || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.account?.email || "--"
+                }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">账号手机</span>
-                <span class="info-value">{{ detail?.account?.phone || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.account?.phone || "--"
+                }}</span>
               </div>
             </div>
           </div>
@@ -184,48 +208,86 @@ const projectExpanded = ref(false);
             <div class="info-grid">
               <div class="info-item">
                 <span class="info-label">项目名称</span>
-                <span class="info-value">{{ detail?.project?.name || detail?.projectName || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.project?.name || detail?.projectName || "--"
+                }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">项目所属公司</span>
-                <span class="info-value">{{ detail?.project?.companyName || detail?.companyName || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.project?.companyName || detail?.companyName || "--"
+                }}</span>
               </div>
               <div class="info-item info-span-2">
                 <span class="info-label">项目简介</span>
                 <span class="info-value text-preline">
-                  {{ detail?.project?.shortDescription || detail?.projectDescription || "--" }}
+                  {{
+                    detail?.project?.shortDescription ||
+                    detail?.projectDescription ||
+                    "--"
+                  }}
                 </span>
               </div>
-              
+
               <!-- 可折叠的详细信息 -->
               <template v-if="projectExpanded">
-                <div class="info-item info-span-2" v-if="detail?.project?.introduction">
+                <div
+                  v-if="detail?.project?.introduction"
+                  class="info-item info-span-2"
+                >
                   <span class="info-label">项目介绍</span>
-                  <span class="info-value text-preline">{{ detail?.project?.introduction }}</span>
+                  <span class="info-value text-preline">{{
+                    detail?.project?.introduction
+                  }}</span>
                 </div>
-                <div class="info-item info-span-2" v-if="detail?.project?.coreTechnology">
+                <div
+                  v-if="detail?.project?.coreTechnology"
+                  class="info-item info-span-2"
+                >
                   <span class="info-label">核心技术</span>
-                  <span class="info-value text-preline">{{ detail?.project?.coreTechnology }}</span>
+                  <span class="info-value text-preline">{{
+                    detail?.project?.coreTechnology
+                  }}</span>
                 </div>
-                <div class="info-item info-span-2" v-if="detail?.project?.businessModel">
+                <div
+                  v-if="detail?.project?.businessModel"
+                  class="info-item info-span-2"
+                >
                   <span class="info-label">商业模式</span>
-                  <span class="info-value text-preline">{{ detail?.project?.businessModel }}</span>
+                  <span class="info-value text-preline">{{
+                    detail?.project?.businessModel
+                  }}</span>
                 </div>
-                <div class="info-item info-span-2" v-if="detail?.project?.teamInfo">
+                <div
+                  v-if="detail?.project?.teamInfo"
+                  class="info-item info-span-2"
+                >
                   <span class="info-label">团队情况</span>
-                  <span class="info-value text-preline">{{ detail?.project?.teamInfo }}</span>
+                  <span class="info-value text-preline">{{
+                    detail?.project?.teamInfo
+                  }}</span>
                 </div>
-                <div class="info-item info-span-2" v-if="detail?.project?.marketAnalysis">
+                <div
+                  v-if="detail?.project?.marketAnalysis"
+                  class="info-item info-span-2"
+                >
                   <span class="info-label">市场分析</span>
-                  <span class="info-value text-preline">{{ detail?.project?.marketAnalysis }}</span>
+                  <span class="info-value text-preline">{{
+                    detail?.project?.marketAnalysis
+                  }}</span>
                 </div>
-                <div class="info-item info-span-2" v-if="detail?.project?.competitiveAdvantage">
+                <div
+                  v-if="detail?.project?.competitiveAdvantage"
+                  class="info-item info-span-2"
+                >
                   <span class="info-label">竞争优势</span>
-                  <span class="info-value text-preline">{{ detail?.project?.competitiveAdvantage }}</span>
+                  <span class="info-value text-preline">{{
+                    detail?.project?.competitiveAdvantage
+                  }}</span>
                 </div>
               </template>
             </div>
-            
+
             <!-- 折叠/展开按钮 -->
             <div class="collapse-toggle">
               <el-button
@@ -233,7 +295,7 @@ const projectExpanded = ref(false);
                 link
                 @click="projectExpanded = !projectExpanded"
               >
-                {{ projectExpanded ? '收起' : '展开' }}
+                {{ projectExpanded ? "收起" : "展开" }}
                 <el-icon :class="{ 'rotate-icon': projectExpanded }">
                   <arrow-down />
                 </el-icon>
@@ -252,19 +314,27 @@ const projectExpanded = ref(false);
             <div class="info-grid">
               <div class="info-item">
                 <span class="info-label">创建时间</span>
-                <span class="info-value">{{ formatTime(detail?.createdTime) }}</span>
+                <span class="info-value">{{
+                  formatTime(detail?.createdTime)
+                }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">审核时间</span>
-                <span class="info-value">{{ formatTime(detail?.reviewTime) }}</span>
+                <span class="info-value">{{
+                  formatTime(detail?.reviewTime)
+                }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">审核人</span>
-                <span class="info-value">{{ detail?.reviewer?.name || "--" }}</span>
+                <span class="info-value">{{
+                  detail?.reviewer?.name || "--"
+                }}</span>
               </div>
               <div class="info-item info-span-2">
                 <span class="info-label">审核意见</span>
-                <span class="info-value text-preline">{{ detail?.reviewComment || "--" }}</span>
+                <span class="info-value text-preline">{{
+                  detail?.reviewComment || "--"
+                }}</span>
               </div>
             </div>
           </div>
@@ -277,7 +347,11 @@ const projectExpanded = ref(false);
             </div>
           </template>
           <div class="card-body">
-            <el-empty v-if="attachments.length === 0" description="暂无附件" :image-size="80" />
+            <el-empty
+              v-if="attachments.length === 0"
+              description="暂无附件"
+              :image-size="80"
+            />
             <el-timeline v-else>
               <el-timeline-item
                 v-for="item in attachments"
@@ -295,7 +369,8 @@ const projectExpanded = ref(false);
                       :href="item.downloadUrl"
                       type="primary"
                       target="_blank"
-                    >下载</el-link>
+                      >下载</el-link
+                    >
                     <el-tag v-else type="danger" size="small">文件缺失</el-tag>
                   </div>
                 </div>
@@ -304,12 +379,12 @@ const projectExpanded = ref(false);
           </div>
         </el-card>
 
-        <footer class="detail-footer" v-if="isPending">
+        <footer v-if="isPending" class="detail-footer">
           <el-button type="success" @click="handleApprove">通过</el-button>
           <el-button type="danger" @click="handleReject">拒绝</el-button>
           <el-button @click="handleClose">关闭</el-button>
         </footer>
-        <footer class="detail-footer" v-else>
+        <footer v-else class="detail-footer">
           <el-button type="primary" @click="handleClose">关闭</el-button>
         </footer>
       </template>

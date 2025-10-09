@@ -6,19 +6,19 @@
         <button
           v-for="tab in tabs"
           :key="tab.key"
-          @click="handleTabClick(tab.key)"
           :class="[
             'px-6 py-4 whitespace-nowrap font-medium transition-colors',
             activeTab === tab.key
               ? 'border-b-2 border-primary text-primary'
               : 'text-gray-600 hover:text-primary'
           ]"
+          @click="handleTabClick(tab.key)"
         >
           {{ tab.label }}
         </button>
       </nav>
     </div>
-    
+
     <!-- 标签页内容 -->
     <div class="p-8">
       <slot :activeTab="currentTab" />
@@ -40,7 +40,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  defaultTab: 'details'
+  defaultTab: "details"
 });
 
 const emit = defineEmits<{
@@ -53,7 +53,7 @@ const activeTab = ref(props.defaultTab);
 // 监听 defaultTab 的变化
 watch(
   () => props.defaultTab,
-  (newTab) => {
+  newTab => {
     if (newTab && newTab !== currentTab.value) {
       currentTab.value = newTab;
       activeTab.value = newTab;

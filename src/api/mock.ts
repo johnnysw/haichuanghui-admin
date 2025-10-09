@@ -11,14 +11,16 @@ export const mockError = (message: string, delay = 0): Promise<never> => {
   });
 };
 
-// Mock data exports  
-export const mapJson = () => Promise.resolve({ 
-  data: [
-    { lng: 116.405285, lat: 39.904989, id: 1, name: "北京" },
-    { lng: 121.473701, lat: 31.230416, id: 2, name: "上海" }
-  ]
-});
-export const formUpload = (data: any) => Promise.resolve({ success: true, data: { url: "" } });
+// Mock data exports
+export const mapJson = () =>
+  Promise.resolve({
+    data: [
+      { lng: 116.405285, lat: 39.904989, id: 1, name: "北京" },
+      { lng: 121.473701, lat: 31.230416, id: 2, name: "上海" }
+    ]
+  });
+export const formUpload = (data: any) =>
+  Promise.resolve({ success: true, data: { url: "" } });
 
 export default {
   mockResponse,

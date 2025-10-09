@@ -24,7 +24,7 @@ export function useInvestorActions(onRefresh: () => void) {
       );
 
       const response = await toggleInvestorStatus(investor.id);
-      
+
       if (response.code === 200) {
         ElMessage.success(response.message || `${actionText}成功`);
         onRefresh();

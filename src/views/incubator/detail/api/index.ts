@@ -8,7 +8,11 @@ export const getIncubatorDetail = (id: number) => {
   return http.request<Response<IncubatorDetail>>("get", `${API_PREFIX}/${id}`);
 };
 
-export const updateIncubatorStatus = (id: number, status: number, reason?: string) => {
+export const updateIncubatorStatus = (
+  id: number,
+  status: number,
+  reason?: string
+) => {
   return http.request<Response<null>>("put", `${API_PREFIX}/${id}`, {
     data: { status, reason }
   });

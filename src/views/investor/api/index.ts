@@ -9,32 +9,47 @@ import type {
 /**
  * 获取投资人列表
  */
-export const getInvestorList = (params: InvestorQueryParams): Promise<PageResponse<InvestorInfo>> => {
-  return http.get<PageResponse<InvestorInfo>, any>("/api/v1/admin/investors", { params });
+export const getInvestorList = (
+  params: InvestorQueryParams
+): Promise<PageResponse<InvestorInfo>> => {
+  return http.get<PageResponse<InvestorInfo>, any>("/api/v1/admin/investors", {
+    params
+  });
 };
 
 /**
  * 获取单个投资人详情
  */
-export const getInvestorDetail = (id: number): Promise<Response<InvestorInfo>> => {
+export const getInvestorDetail = (
+  id: number
+): Promise<Response<InvestorInfo>> => {
   return http.get<Response<InvestorInfo>, any>(`/api/v1/admin/investors/${id}`);
 };
 
 /**
  * 切换投资人状态（禁用/恢复）
  */
-export const toggleInvestorStatus = (id: number): Promise<Response<{ status: number }>> => {
-  return http.request<Response<{ status: number }>>("put", `/api/v1/admin/investors/${id}/toggle-status`);
+export const toggleInvestorStatus = (
+  id: number
+): Promise<Response<{ status: number }>> => {
+  return http.request<Response<{ status: number }>>(
+    "put",
+    `/api/v1/admin/investors/${id}/toggle-status`
+  );
 };
 
 /**
  * 审核投资人（通过或拒绝）
  */
 export const reviewInvestor = (
-  id: number, 
+  id: number,
   payload: { status: 1 | 3; reviewComment?: string }
 ): Promise<Response<InvestorInfo>> => {
-  return http.request<Response<InvestorInfo>>("put", `/api/v1/admin/investors/${id}/review`, { data: payload });
+  return http.request<Response<InvestorInfo>>(
+    "put",
+    `/api/v1/admin/investors/${id}/review`,
+    { data: payload }
+  );
 };
 
 /**
@@ -75,4 +90,3 @@ export const getInvestorTypeList = (): Promise<Response<BaseOption[]>> => {
     ]
   } as Response<BaseOption[]>);
 };
-

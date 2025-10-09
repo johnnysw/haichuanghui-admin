@@ -11,29 +11,47 @@ import type {
 /**
  * 获取项目列表
  */
-export const getProjectList = (params: ProjectQueryParams): Promise<PageResponse<ProjectInfo>> => {
-  return http.get<PageResponse<ProjectInfo>, any>("/api/v1/admin/projects", { params });
+export const getProjectList = (
+  params: ProjectQueryParams
+): Promise<PageResponse<ProjectInfo>> => {
+  return http.get<PageResponse<ProjectInfo>, any>("/api/v1/admin/projects", {
+    params
+  });
 };
 
 /**
  * 获取单个项目详情
  */
-export const getProjectDetail = (id: number): Promise<Response<ProjectInfo>> => {
+export const getProjectDetail = (
+  id: number
+): Promise<Response<ProjectInfo>> => {
   return http.get<Response<ProjectInfo>, any>(`/api/v1/admin/projects/${id}`);
 };
 
 /**
  * 创建项目
  */
-export const createProject = (data: ProjectForm): Promise<Response<ProjectInfo>> => {
-  return http.post<Response<ProjectInfo>, ProjectForm>("/api/v1/admin/projects", { data });
+export const createProject = (
+  data: ProjectForm
+): Promise<Response<ProjectInfo>> => {
+  return http.post<Response<ProjectInfo>, ProjectForm>(
+    "/api/v1/admin/projects",
+    { data }
+  );
 };
 
 /**
  * 更新项目
  */
-export const updateProject = (id: number, data: Partial<ProjectForm>): Promise<Response<ProjectInfo>> => {
-  return http.request<Response<ProjectInfo>>("put", `/api/v1/admin/projects/${id}`, { data });
+export const updateProject = (
+  id: number,
+  data: Partial<ProjectForm>
+): Promise<Response<ProjectInfo>> => {
+  return http.request<Response<ProjectInfo>>(
+    "put",
+    `/api/v1/admin/projects/${id}`,
+    { data }
+  );
 };
 
 /**
@@ -51,9 +69,12 @@ export const reviewProject = (
   status: ProjectStatus,
   reviewComment?: string
 ): Promise<Response<ProjectInfo>> => {
-  return http.post<Response<ProjectInfo>, any>(`/api/v1/admin/projects/${id}/review`, {
-    data: { status, reviewComment }
-  });
+  return http.post<Response<ProjectInfo>, any>(
+    `/api/v1/admin/projects/${id}/review`,
+    {
+      data: { status, reviewComment }
+    }
+  );
 };
 
 /**
@@ -63,9 +84,12 @@ export const toggleProjectRecommendation = (
   id: number,
   isRecommended: boolean
 ): Promise<Response<ProjectInfo>> => {
-  return http.post<Response<ProjectInfo>, any>(`/api/v1/admin/projects/${id}/recommend`, {
-    data: { isRecommended }
-  });
+  return http.post<Response<ProjectInfo>, any>(
+    `/api/v1/admin/projects/${id}/recommend`,
+    {
+      data: { isRecommended }
+    }
+  );
 };
 
 /**

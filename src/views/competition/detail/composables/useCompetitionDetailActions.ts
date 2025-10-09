@@ -1,5 +1,9 @@
 import { ref } from "vue";
-import { updateCompetition, reviewCompetition, recommendCompetition } from "../../list/api";
+import {
+  updateCompetition,
+  reviewCompetition,
+  recommendCompetition
+} from "../../list/api";
 import { message } from "@/utils/message";
 import { ElMessageBox } from "element-plus";
 import type { CompetitionForm } from "../../list/types/types";
@@ -25,7 +29,11 @@ export function useCompetitionDetailActions() {
   }
 
   // 审核大赛
-  async function reviewCompetitionAction(id: number, status: number, reviewComment?: string) {
+  async function reviewCompetitionAction(
+    id: number,
+    status: number,
+    reviewComment?: string
+  ) {
     try {
       const result = await reviewCompetition(id, { status, reviewComment });
       if (result.code === 200) {
@@ -50,11 +58,16 @@ export function useCompetitionDetailActions() {
         message(`${action}成功`, { type: "success" });
         return { success: true, data: result.data };
       } else {
-        message(`${isRecommended ? "推荐" : "取消推荐"}失败: ` + result.message, { type: "error" });
+        message(
+          `${isRecommended ? "推荐" : "取消推荐"}失败: ` + result.message,
+          { type: "error" }
+        );
         return { success: false, message: result.message };
       }
     } catch (error) {
-      message(`${isRecommended ? "推荐" : "取消推荐"}失败: ` + error.message, { type: "error" });
+      message(`${isRecommended ? "推荐" : "取消推荐"}失败: ` + error.message, {
+        type: "error"
+      });
       return { success: false, message: error.message };
     }
   }

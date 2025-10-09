@@ -1,7 +1,10 @@
 import { ref, reactive, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import type { PaginationProps } from "@pureadmin/table";
-import type { InvestorApplication, ApplicationQueryParams } from "../types/types";
+import type {
+  InvestorApplication,
+  ApplicationQueryParams
+} from "../types/types";
 import { getApplicationList, getApplicationStats } from "../api";
 
 export function useApplicationTable() {
@@ -29,12 +32,12 @@ export function useApplicationTable() {
   });
 
   // 统计数据
-  const stats = ref({ 
-    total: 0, 
-    pending: 0, 
-    approved: 0, 
-    rejected: 0, 
-    todaySubmitted: 0 
+  const stats = ref({
+    total: 0,
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+    todaySubmitted: 0
   });
 
   // 状态选项
@@ -51,13 +54,15 @@ export function useApplicationTable() {
       label: "申请人",
       prop: "user",
       width: 180,
-      formatter: (row: InvestorApplication) => row.user?.realName || row.user?.username || "未知"
+      formatter: (row: InvestorApplication) =>
+        row.user?.realName || row.user?.username || "未知"
     },
     {
       label: "联系方式",
       prop: "contact",
       width: 150,
-      formatter: (row: InvestorApplication) => row.user?.phone || row.user?.email || "-"
+      formatter: (row: InvestorApplication) =>
+        row.user?.phone || row.user?.email || "-"
     },
     {
       label: "投资机构",
@@ -81,13 +86,15 @@ export function useApplicationTable() {
       label: "申请时间",
       prop: "submittedTime",
       width: 180,
-      formatter: (row: InvestorApplication) => row.submittedTime?.slice(0, 19) || "-"
+      formatter: (row: InvestorApplication) =>
+        row.submittedTime?.slice(0, 19) || "-"
     },
     {
       label: "审核人",
       prop: "reviewer",
       width: 120,
-      formatter: (row: InvestorApplication) => row.reviewer?.realName || row.reviewer?.username || "-"
+      formatter: (row: InvestorApplication) =>
+        row.reviewer?.realName || row.reviewer?.username || "-"
     },
     {
       label: "操作",
@@ -102,7 +109,7 @@ export function useApplicationTable() {
     const statusMap = {
       1: "success", // 审核通过
       2: "warning", // 待审核
-      3: "danger"   // 审核拒绝
+      3: "danger" // 审核拒绝
     };
     return statusMap[status] || "info";
   };
@@ -118,7 +125,9 @@ export function useApplicationTable() {
   };
 
   // 获取申请列表数据
-  const getApplicationData = async (params?: Partial<ApplicationQueryParams>) => {
+  const getApplicationData = async (
+    params?: Partial<ApplicationQueryParams>
+  ) => {
     try {
       loading.value = true;
       const queryParams = { ...filterForm.value, ...params };
@@ -213,4 +222,3 @@ export function useApplicationTable() {
     handleCurrentChange
   };
 }
-

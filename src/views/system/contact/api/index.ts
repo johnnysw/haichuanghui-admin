@@ -15,6 +15,9 @@ export const getContactInfo = (): Promise<Response<ContactInfo>> => {
 export const updateContactInfo = (
   data: ContactFormModel
 ): Promise<Response<ContactInfo>> => {
-  return http.request<Response<ContactInfo>>("put", "/api/v1/admin/system/contact", { data });
+  return http.request<Response<ContactInfo>>(
+    "put",
+    "/api/v1/admin/system/contact",
+    { data }
+  );
 };
-

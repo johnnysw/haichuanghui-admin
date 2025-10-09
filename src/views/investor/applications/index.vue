@@ -71,7 +71,7 @@ const handleEdit = (row: InvestorApplication) => {
           class="!w-[200px]"
         />
       </el-form-item>
-      
+
       <el-form-item label="状态：" prop="status">
         <el-select
           v-model="filterForm.status"
@@ -100,7 +100,7 @@ const handleEdit = (row: InvestorApplication) => {
           class="!w-[300px]"
         />
       </el-form-item>
-      
+
       <el-form-item>
         <el-button
           type="primary"
@@ -110,7 +110,10 @@ const handleEdit = (row: InvestorApplication) => {
         >
           搜索
         </el-button>
-        <el-button :icon="useRenderIcon('ri:refresh-line')" @click="handleReset(formRef)">
+        <el-button
+          :icon="useRenderIcon('ri:refresh-line')"
+          @click="handleReset(formRef)"
+        >
           重置
         </el-button>
       </el-form-item>
@@ -120,85 +123,107 @@ const handleEdit = (row: InvestorApplication) => {
       ref="contentRef"
       :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
     >
-      <div :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']" class="w-full min-w-0">
-        <PureTableBar 
+      <div
+        :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']"
+        class="w-full min-w-0"
+      >
+        <PureTableBar
           class="w-full min-w-0"
           style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
-          title="投资人申请列表" 
-          :columns="columns" 
+          title="投资人申请列表"
+          :columns="columns"
           @refresh="handleRefresh"
         >
-      <template #buttons>
-        <el-space wrap>
-          <el-tag type="info" effect="light">总数：{{ stats.total }}</el-tag>
-          <el-tag type="warning" effect="light">待审：{{ stats.pending }}</el-tag>
-          <el-tag type="success" effect="light">通过：{{ stats.approved }}</el-tag>
-          <el-tag type="danger" effect="light">拒绝：{{ stats.rejected }}</el-tag>
-          <el-tag type="primary" effect="light">今日：{{ stats.todaySubmitted }}</el-tag>
-        </el-space>
-      </template>
-      
-      <template v-slot="{ size, dynamicColumns }">
-        <pure-table
-          ref="tableRef"
-          adaptive
-          :adaptiveConfig="{ offsetBottom: 108 }"
-          align-whole="center"
-          table-layout="auto"
-          :loading="loading"
-          :size="size as any"
-          :data="applicationList"
-          :columns="dynamicColumns"
-          :pagination="pagination"
-          :paginationSmall="size === 'small' ? true : false"
-          :header-cell-style="{
-            background: 'var(--el-fill-color-light)',
-            color: 'var(--el-text-color-primary)'
-          }"
-          @page-size-change="handleSizeChange"
-          @page-current-change="handleCurrentChange"
-        >
-          <template #status="{ row }">
-            <el-tag
-              :type="getStatusType(row.status)"
-              effect="light"
-              size="small"
-            >
-              {{ getStatusText(row.status) }}
-            </el-tag>
+          <template #buttons>
+            <el-space wrap>
+              <el-tag type="info" effect="light"
+                >总数：{{ stats.total }}</el-tag
+              >
+              <el-tag type="warning" effect="light"
+                >待审：{{ stats.pending }}</el-tag
+              >
+              <el-tag type="success" effect="light"
+                >通过：{{ stats.approved }}</el-tag
+              >
+              <el-tag type="danger" effect="light"
+                >拒绝：{{ stats.rejected }}</el-tag
+              >
+              <el-tag type="primary" effect="light"
+                >今日：{{ stats.todaySubmitted }}</el-tag
+              >
+            </el-space>
           </template>
 
-          <template #operation="{ row }">
-            <div class="flex items-center gap-2 justify-center">
-              <el-button
-                class="reset-margin"
-                link
-                type="primary"
-                :size="size as any"
-                :icon="useRenderIcon(View)"
-                @click="handleViewDetail(row)"
-              >
-                查看
-              </el-button>
-              <el-button
-                class="reset-margin"
-                link
-                type="warning"
-                :size="size as any"
-                @click="handleEdit(row)"
-              >
-                编辑
-              </el-button>
-              <el-popconfirm :title="`确认删除该申请吗？`" @confirm="handleDelete(row)">
-                <template #reference>
-                  <el-button class="reset-margin" link type="danger" :size="size as any">删除</el-button>
-                </template>
-              </el-popconfirm>
-            </div>
+          <template v-slot="{ size, dynamicColumns }">
+            <pure-table
+              ref="tableRef"
+              adaptive
+              :adaptiveConfig="{ offsetBottom: 108 }"
+              align-whole="center"
+              table-layout="auto"
+              :loading="loading"
+              :size="size as any"
+              :data="applicationList"
+              :columns="dynamicColumns"
+              :pagination="pagination"
+              :paginationSmall="size === 'small' ? true : false"
+              :header-cell-style="{
+                background: 'var(--el-fill-color-light)',
+                color: 'var(--el-text-color-primary)'
+              }"
+              @page-size-change="handleSizeChange"
+              @page-current-change="handleCurrentChange"
+            >
+              <template #status="{ row }">
+                <el-tag
+                  :type="getStatusType(row.status)"
+                  effect="light"
+                  size="small"
+                >
+                  {{ getStatusText(row.status) }}
+                </el-tag>
+              </template>
+
+              <template #operation="{ row }">
+                <div class="flex items-center gap-2 justify-center">
+                  <el-button
+                    class="reset-margin"
+                    link
+                    type="primary"
+                    :size="size as any"
+                    :icon="useRenderIcon(View)"
+                    @click="handleViewDetail(row)"
+                  >
+                    查看
+                  </el-button>
+                  <el-button
+                    class="reset-margin"
+                    link
+                    type="warning"
+                    :size="size as any"
+                    @click="handleEdit(row)"
+                  >
+                    编辑
+                  </el-button>
+                  <el-popconfirm
+                    :title="`确认删除该申请吗？`"
+                    @confirm="handleDelete(row)"
+                  >
+                    <template #reference>
+                      <el-button
+                        class="reset-margin"
+                        link
+                        type="danger"
+                        :size="size as any"
+                        >删除</el-button
+                      >
+                    </template>
+                  </el-popconfirm>
+                </div>
+              </template>
+            </pure-table>
           </template>
-        </pure-table>
-      </template>
-    </PureTableBar>
+        </PureTableBar>
       </div>
     </div>
   </div>

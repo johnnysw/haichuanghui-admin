@@ -1,9 +1,9 @@
-import type { 
-  NewsItem, 
-  NewsCreateForm, 
+import type {
+  NewsItem,
+  NewsCreateForm,
   NewsListParams,
   NewsCategory,
-  ApiResponse, 
+  ApiResponse,
   PaginationResponse
 } from "../types/types";
 
@@ -15,9 +15,11 @@ const mockNewsData: NewsItem[] = [
     subtitle: "聚焦数字经济新趋势，助力创新创业新发展",
     author: "海创荟编辑部",
     source: "海创荟官网",
-    summary: "2024年度创业大会在深圳成功举办，来自全国各地的500余名创业者、投资人和行业专家齐聚一堂，共话创新创业新趋势。",
+    summary:
+      "2024年度创业大会在深圳成功举办，来自全国各地的500余名创业者、投资人和行业专家齐聚一堂，共话创新创业新趋势。",
     content: "<p>2024年度海创荟创业大会于近日在深圳国际会展中心成功举办...</p>",
-    coverImage: "https://via.placeholder.com/400x240/4285f4/ffffff?text=创业大会",
+    coverImage:
+      "https://via.placeholder.com/400x240/4285f4/ffffff?text=创业大会",
     publishTime: "2024-03-15T09:00:00Z",
     status: 1,
     reviewComment: null,
@@ -30,7 +32,8 @@ const mockNewsData: NewsItem[] = [
     favoriteCount: 234,
     seoTitle: "海创荟2024年度创业大会 - 数字经济创新趋势",
     seoKeywords: "海创荟,创业大会,数字经济,创新创业",
-    seoDescription: "海创荟2024年度创业大会聚焦数字经济新趋势，500余名行业精英共话创新发展",
+    seoDescription:
+      "海创荟2024年度创业大会聚焦数字经济新趋势，500余名行业精英共话创新发展",
     categoryId: 1,
     categoryName: "重大活动",
     tags: ["创业大会", "数字经济", "创新创业", "深圳"],
@@ -43,8 +46,10 @@ const mockNewsData: NewsItem[] = [
     subtitle: "多家海创荟合作孵化器成功入选",
     author: "张小明",
     source: "科技日报",
-    summary: "科技部公布2024年国家级科技企业孵化器认定结果，海创荟生态体系内多家孵化器成功入选。",
-    coverImage: "https://via.placeholder.com/400x240/34a853/ffffff?text=孵化器认定",
+    summary:
+      "科技部公布2024年国家级科技企业孵化器认定结果，海创荟生态体系内多家孵化器成功入选。",
+    coverImage:
+      "https://via.placeholder.com/400x240/34a853/ffffff?text=孵化器认定",
     publishTime: "2024-03-12T10:30:00Z",
     status: 1,
     reviewComment: null,
@@ -57,7 +62,8 @@ const mockNewsData: NewsItem[] = [
     favoriteCount: 89,
     seoTitle: "2024年国家级科技企业孵化器认定结果",
     seoKeywords: "科技企业孵化器,认定结果,科技部,海创荟",
-    seoDescription: "科技部公布2024年国家级科技企业孵化器认定结果，多家合作机构成功入选",
+    seoDescription:
+      "科技部公布2024年国家级科技企业孵化器认定结果，多家合作机构成功入选",
     categoryId: 2,
     categoryName: "政策动态",
     tags: ["孵化器", "认定", "科技部", "政策"],
@@ -70,8 +76,10 @@ const mockNewsData: NewsItem[] = [
     subtitle: "2024年一季度AI领域投资热点分析",
     author: "李投资",
     source: "投资界",
-    summary: "最新发布的人工智能产业投融资报告显示，2024年一季度AI领域投资持续升温，多个细分赛道表现亮眼。",
-    coverImage: "https://via.placeholder.com/400x240/ff6d01/ffffff?text=AI投融资",
+    summary:
+      "最新发布的人工智能产业投融资报告显示，2024年一季度AI领域投资持续升温，多个细分赛道表现亮眼。",
+    coverImage:
+      "https://via.placeholder.com/400x240/ff6d01/ffffff?text=AI投融资",
     publishTime: "2024-03-10T14:15:00Z",
     status: 1,
     reviewComment: null,
@@ -84,7 +92,8 @@ const mockNewsData: NewsItem[] = [
     favoriteCount: 156,
     seoTitle: "2024年Q1人工智能产业投融资报告",
     seoKeywords: "人工智能,投融资,报告,AI投资,风险投资",
-    seoDescription: "深度分析2024年一季度人工智能产业投融资趋势，解读AI投资热点",
+    seoDescription:
+      "深度分析2024年一季度人工智能产业投融资趋势，解读AI投资热点",
     categoryId: 3,
     categoryName: "行业报告",
     tags: ["人工智能", "投融资", "报告", "AI"],
@@ -97,8 +106,10 @@ const mockNewsData: NewsItem[] = [
     subtitle: "聚焦智能网联与绿色出行新趋势",
     author: "王编辑",
     source: "汽车之家",
-    summary: "新能源汽车产业链创新发展论坛将于本月底举办，届时将有众多行业专家分享最新技术趋势。",
-    coverImage: "https://via.placeholder.com/400x240/9c27b0/ffffff?text=新能源汽车",
+    summary:
+      "新能源汽车产业链创新发展论坛将于本月底举办，届时将有众多行业专家分享最新技术趋势。",
+    coverImage:
+      "https://via.placeholder.com/400x240/9c27b0/ffffff?text=新能源汽车",
     publishTime: "2024-03-08T16:20:00Z",
     status: 1,
     reviewComment: null,
@@ -121,8 +132,10 @@ const mockNewsData: NewsItem[] = [
     subtitle: "数字化转型助力中小企业融资",
     author: "赵技术",
     source: "金融科技周刊",
-    summary: "区块链技术在供应链金融领域的应用越来越广泛，为中小企业提供了新的融资解决方案。",
-    coverImage: "https://via.placeholder.com/400x240/795548/ffffff?text=区块链金融",
+    summary:
+      "区块链技术在供应链金融领域的应用越来越广泛，为中小企业提供了新的融资解决方案。",
+    coverImage:
+      "https://via.placeholder.com/400x240/795548/ffffff?text=区块链金融",
     publishTime: "2024-03-06T11:45:00Z",
     status: 1,
     reviewComment: null,
@@ -145,8 +158,10 @@ const mockNewsData: NewsItem[] = [
     subtitle: "助力天使投资和创业投资健康发展",
     author: "财政部",
     source: "财政部官网",
-    summary: "财政部发布创业投资税收优惠政策解读，进一步明确相关税收优惠适用条件和申报流程。",
-    coverImage: "https://via.placeholder.com/400x240/607d8b/ffffff?text=税收政策",
+    summary:
+      "财政部发布创业投资税收优惠政策解读，进一步明确相关税收优惠适用条件和申报流程。",
+    coverImage:
+      "https://via.placeholder.com/400x240/607d8b/ffffff?text=税收政策",
     publishTime: "2024-03-05T09:30:00Z",
     status: 1,
     reviewComment: null,
@@ -169,8 +184,10 @@ const mockNewsData: NewsItem[] = [
     subtitle: "多地出台扶持政策促进产业集群发展",
     author: "健康时报",
     source: "健康时报",
-    summary: "全国多地加快生物医药产业园区建设步伐，通过政策扶持和资源整合，促进产业集群化发展。",
-    coverImage: "https://via.placeholder.com/400x240/3f51b5/ffffff?text=生物医药",
+    summary:
+      "全国多地加快生物医药产业园区建设步伐，通过政策扶持和资源整合，促进产业集群化发展。",
+    coverImage:
+      "https://via.placeholder.com/400x240/3f51b5/ffffff?text=生物医药",
     publishTime: "2024-03-03T15:10:00Z",
     status: 1,
     reviewComment: null,
@@ -193,8 +210,10 @@ const mockNewsData: NewsItem[] = [
     subtitle: "工业互联网平台赋能智能制造",
     author: "制造业观察",
     source: "制造业观察",
-    summary: "数字化转型正成为传统制造业转型升级的重要抓手，工业互联网平台发挥着越来越重要的作用。",
-    coverImage: "https://via.placeholder.com/400x240/e91e63/ffffff?text=数字化制造",
+    summary:
+      "数字化转型正成为传统制造业转型升级的重要抓手，工业互联网平台发挥着越来越重要的作用。",
+    coverImage:
+      "https://via.placeholder.com/400x240/e91e63/ffffff?text=数字化制造",
     publishTime: "2024-03-01T13:20:00Z",
     status: 3,
     reviewComment: null,
@@ -298,11 +317,13 @@ const mockCategoryData: NewsCategory[] = [
 ];
 
 // 获取资讯列表
-export const getNewsList = (params: NewsListParams): Promise<ApiResponse<PaginationResponse<NewsItem>>> => {
+export const getNewsList = (
+  params: NewsListParams
+): Promise<ApiResponse<PaginationResponse<NewsItem>>> => {
   return new Promise(resolve => {
     setTimeout(() => {
       let filteredData = [...mockNewsData];
-      
+
       // 标题搜索
       if (params.title) {
         const title = params.title.toLowerCase();
@@ -310,7 +331,7 @@ export const getNewsList = (params: NewsListParams): Promise<ApiResponse<Paginat
           item.title.toLowerCase().includes(title)
         );
       }
-      
+
       // 作者筛选
       if (params.author) {
         const author = params.author.toLowerCase();
@@ -318,61 +339,70 @@ export const getNewsList = (params: NewsListParams): Promise<ApiResponse<Paginat
           item.author.toLowerCase().includes(author)
         );
       }
-      
+
       // 分类筛选
       if (params.categoryId) {
-        filteredData = filteredData.filter(item => item.categoryId === params.categoryId);
+        filteredData = filteredData.filter(
+          item => item.categoryId === params.categoryId
+        );
       }
-      
+
       // 状态筛选
       if (params.status !== undefined) {
-        filteredData = filteredData.filter(item => item.status === params.status);
+        filteredData = filteredData.filter(
+          item => item.status === params.status
+        );
       }
-      
+
       // 推荐筛选
       if (params.isRecommended !== undefined) {
-        filteredData = filteredData.filter(item => item.isRecommended === params.isRecommended);
+        filteredData = filteredData.filter(
+          item => item.isRecommended === params.isRecommended
+        );
       }
-      
+
       // 置顶筛选
       if (params.isTop !== undefined) {
         filteredData = filteredData.filter(item => item.isTop === params.isTop);
       }
-      
+
       // 关键词搜索
       if (params.keyword) {
         const keyword = params.keyword.toLowerCase();
-        filteredData = filteredData.filter(item =>
-          item.title.toLowerCase().includes(keyword) ||
-          item.summary?.toLowerCase().includes(keyword) ||
-          item.author.toLowerCase().includes(keyword) ||
-          item.tags?.some(tag => tag.toLowerCase().includes(keyword))
+        filteredData = filteredData.filter(
+          item =>
+            item.title.toLowerCase().includes(keyword) ||
+            item.summary?.toLowerCase().includes(keyword) ||
+            item.author.toLowerCase().includes(keyword) ||
+            item.tags?.some(tag => tag.toLowerCase().includes(keyword))
         );
       }
-      
+
       // 排序
-      const sortBy = params.sortBy || 'publishTime';
-      const sortOrder = params.sortOrder || 'desc';
+      const sortBy = params.sortBy || "publishTime";
+      const sortOrder = params.sortOrder || "desc";
       filteredData.sort((a, b) => {
         let aValue = a[sortBy as keyof NewsItem];
         let bValue = b[sortBy as keyof NewsItem];
-        
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return sortOrder === 'desc' ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
+
+        if (typeof aValue === "string" && typeof bValue === "string") {
+          return sortOrder === "desc"
+            ? bValue.localeCompare(aValue)
+            : aValue.localeCompare(bValue);
         }
-        if (typeof aValue === 'number' && typeof bValue === 'number') {
-          return sortOrder === 'desc' ? bValue - aValue : aValue - bValue;
+        if (typeof aValue === "number" && typeof bValue === "number") {
+          return sortOrder === "desc" ? bValue - aValue : aValue - bValue;
         }
         return 0;
       });
-      
+
       // 分页
       const page = params.page || 1;
       const pageSize = params.pageSize || 10;
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
       const list = filteredData.slice(start, end);
-      
+
       resolve({
         code: 200,
         success: true,
@@ -389,7 +419,9 @@ export const getNewsList = (params: NewsListParams): Promise<ApiResponse<Paginat
 };
 
 // 创建资讯
-export const createNews = (formData: NewsCreateForm): Promise<ApiResponse<null>> => {
+export const createNews = (
+  formData: NewsCreateForm
+): Promise<ApiResponse<null>> => {
   return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟创建资讯:", formData);
@@ -404,7 +436,10 @@ export const createNews = (formData: NewsCreateForm): Promise<ApiResponse<null>>
 };
 
 // 更新资讯
-export const updateNews = (id: number, formData: Partial<NewsCreateForm>): Promise<ApiResponse<null>> => {
+export const updateNews = (
+  id: number,
+  formData: Partial<NewsCreateForm>
+): Promise<ApiResponse<null>> => {
   return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟更新资讯:", id, formData);
@@ -449,11 +484,14 @@ export const batchDeleteNews = (ids: number[]): Promise<ApiResponse<null>> => {
 };
 
 // 更新资讯状态
-export const updateNewsStatus = (id: number, status: number): Promise<ApiResponse<null>> => {
+export const updateNewsStatus = (
+  id: number,
+  status: number
+): Promise<ApiResponse<null>> => {
   return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟更新资讯状态:", id, status);
-      
+
       // 在模拟数据中更新状态
       const target = mockNewsData.find(item => item.id === id);
       if (target) {
@@ -463,7 +501,7 @@ export const updateNewsStatus = (id: number, status: number): Promise<ApiRespons
           target.publishTime = new Date().toISOString();
         }
       }
-      
+
       resolve({
         code: 200,
         success: true,
@@ -475,18 +513,21 @@ export const updateNewsStatus = (id: number, status: number): Promise<ApiRespons
 };
 
 // 切换推荐状态
-export const toggleNewsRecommend = (id: number, isRecommended: boolean): Promise<ApiResponse<null>> => {
+export const toggleNewsRecommend = (
+  id: number,
+  isRecommended: boolean
+): Promise<ApiResponse<null>> => {
   return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟切换资讯推荐状态:", id, isRecommended);
-      
+
       // 在模拟数据中更新推荐状态
       const target = mockNewsData.find(item => item.id === id);
       if (target) {
         target.isRecommended = isRecommended;
         target.updatedTime = new Date().toISOString();
       }
-      
+
       resolve({
         code: 200,
         success: true,
@@ -498,18 +539,21 @@ export const toggleNewsRecommend = (id: number, isRecommended: boolean): Promise
 };
 
 // 切换置顶状态
-export const toggleNewsTop = (id: number, isTop: boolean): Promise<ApiResponse<null>> => {
+export const toggleNewsTop = (
+  id: number,
+  isTop: boolean
+): Promise<ApiResponse<null>> => {
   return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟切换资讯置顶状态:", id, isTop);
-      
+
       // 在模拟数据中更新置顶状态
       const target = mockNewsData.find(item => item.id === id);
       if (target) {
         target.isTop = isTop;
         target.updatedTime = new Date().toISOString();
       }
-      
+
       resolve({
         code: 200,
         success: true,

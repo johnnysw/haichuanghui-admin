@@ -6,7 +6,11 @@ import { deviceDetection } from "@pureadmin/utils";
 import type { FormItemProps } from "../types/types";
 import { reactive, ref, h } from "vue";
 import { useRouter } from "vue-router";
-import { createCompetition, updateCompetition, deleteCompetition } from "../api";
+import {
+  createCompetition,
+  updateCompetition,
+  deleteCompetition
+} from "../api";
 import type { CompetitionInfo } from "../types/types";
 
 export function useCompetitionActions() {
@@ -78,13 +82,13 @@ export function useCompetitionActions() {
       beforeSure: (done, { options }) => {
         const FormRef = formRef.value.getRef();
         const curData = options.props.formInline as FormItemProps;
-        
+
         function chores() {
           message(`${title}成功`, { type: "success" });
           done(); // 关闭弹框
         }
-        
-        FormRef.validate(async (valid) => {
+
+        FormRef.validate(async valid => {
           if (valid) {
             try {
               let result;
@@ -93,7 +97,7 @@ export function useCompetitionActions() {
               } else {
                 result = await updateCompetition(curData.id!, curData);
               }
-              
+
               if (result.code === 200) {
                 chores();
               } else {

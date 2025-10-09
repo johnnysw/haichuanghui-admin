@@ -4,7 +4,11 @@ import { ElMessage, ElAvatar, ElTag, ElLink } from "element-plus";
 import { getInvestorList } from "../../api";
 import { useInvestorFilter } from "./useInvestorFilter";
 import { useInvestorActions } from "./useInvestorActions";
-import type { InvestorInfo, InvestorQueryParams, NamedOption } from "../../types/types";
+import type {
+  InvestorInfo,
+  InvestorQueryParams,
+  NamedOption
+} from "../../types/types";
 import { INVESTOR_STATUS_MAP } from "../../types/types";
 import type { PaginationProps } from "@pureadmin/table";
 
@@ -46,13 +50,14 @@ export function useInvestorTable() {
         region: filterForm.region || undefined,
         field: filterForm.field || undefined,
         stage: filterForm.stage || undefined,
-        status: filterForm.status !== undefined && filterForm.status !== "" 
-          ? filterForm.status 
-          : undefined // 不传 status 则查询所有状态
+        status:
+          filterForm.status !== undefined && filterForm.status !== ""
+            ? filterForm.status
+            : undefined // 不传 status 则查询所有状态
       };
 
       const response = await getInvestorList(params);
-      
+
       if (response.code === 200 && response.data) {
         investorList.value = response.data.list || [];
         total.value = response.data.total || 0;
@@ -87,7 +92,7 @@ export function useInvestorTable() {
     filterForm.field = "";
     filterForm.stage = "";
     filterForm.status = undefined;
-    
+
     pagination.currentPage = 1;
     getInvestorData();
   };
@@ -123,16 +128,16 @@ export function useInvestorTable() {
 
   // 构建完整图片 URL
   const getFullImageUrl = (url: string): string => {
-    if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) {
+    if (!url) return "";
+    if (url.startsWith("http://") || url.startsWith("https://")) {
       return url;
     }
     // 如果已经包含 /public/，直接拼接 API 基础地址
-    if (url.startsWith('/public/')) {
+    if (url.startsWith("/public/")) {
       return `${import.meta.env.VITE_API_BASE_URL}${url}`;
     }
     // 否则补充 /public 前缀
-    return `${import.meta.env.VITE_API_BASE_URL}/public${url.startsWith('/') ? url : `/${url}`}`;
+    return `${import.meta.env.VITE_API_BASE_URL}/public${url.startsWith("/") ? url : `/${url}`}`;
   };
 
   // 表格列定义
@@ -147,7 +152,7 @@ export function useInvestorTable() {
       label: "头像",
       prop: "avatar",
       width: 60,
-      cellRenderer: ({ row }) => 
+      cellRenderer: ({ row }) =>
         h(ElAvatar, {
           size: 32,
           src: row?.avatar ? getFullImageUrl(row.avatar) : undefined,
@@ -179,31 +184,43 @@ export function useInvestorTable() {
         if (row?.focusIndustries && row.focusIndustries.length > 0) {
           const industries = row.focusIndustries.slice(0, 3);
           const hasMore = row.focusIndustries.length > 3;
-          
+
           const tags = [
-            ...industries.map((industry: NamedOption) => 
-              h(ElTag, {
-                key: industry.id,
-                size: "small",
-                type: "info",
-                effect: "light"
-              }, () => industry.name)
+            ...industries.map((industry: NamedOption) =>
+              h(
+                ElTag,
+                {
+                  key: industry.id,
+                  size: "small",
+                  type: "info",
+                  effect: "light"
+                },
+                () => industry.name
+              )
             )
           ];
-          
+
           if (hasMore) {
             tags.push(
-              h(ElTag, {
-                size: "small",
-                type: "info",
-                effect: "light"
-              }, () => `+${row.focusIndustries!.length - 3}`)
+              h(
+                ElTag,
+                {
+                  size: "small",
+                  type: "info",
+                  effect: "light"
+                },
+                () => `+${row.focusIndustries!.length - 3}`
+              )
             );
           }
-          
-          return h("div", { 
-            style: "display: flex; flex-wrap: wrap; gap: 4px;" 
-          }, tags);
+
+          return h(
+            "div",
+            {
+              style: "display: flex; flex-wrap: wrap; gap: 4px;"
+            },
+            tags
+          );
         }
         return "-";
       }
@@ -216,31 +233,43 @@ export function useInvestorTable() {
         if (row?.preferredStages && row.preferredStages.length > 0) {
           const stages = row.preferredStages.slice(0, 3);
           const hasMore = row.preferredStages.length > 3;
-          
+
           const tags = [
-            ...stages.map((stage: NamedOption) => 
-              h(ElTag, {
-                key: stage.id,
-                size: "small",
-                type: "success",
-                effect: "light"
-              }, () => stage.name)
+            ...stages.map((stage: NamedOption) =>
+              h(
+                ElTag,
+                {
+                  key: stage.id,
+                  size: "small",
+                  type: "success",
+                  effect: "light"
+                },
+                () => stage.name
+              )
             )
           ];
-          
+
           if (hasMore) {
             tags.push(
-              h(ElTag, {
-                size: "small",
-                type: "success",
-                effect: "light"
-              }, () => `+${row.preferredStages!.length - 3}`)
+              h(
+                ElTag,
+                {
+                  size: "small",
+                  type: "success",
+                  effect: "light"
+                },
+                () => `+${row.preferredStages!.length - 3}`
+              )
             );
           }
-          
-          return h("div", { 
-            style: "display: flex; flex-wrap: wrap; gap: 4px;" 
-          }, tags);
+
+          return h(
+            "div",
+            {
+              style: "display: flex; flex-wrap: wrap; gap: 4px;"
+            },
+            tags
+          );
         }
         return "-";
       }
@@ -249,7 +278,8 @@ export function useInvestorTable() {
       label: "投资金额",
       prop: "investmentRangeText",
       minWidth: 120,
-      cellRenderer: ({ row }) => (row as any)?.investmentRangeText || row?.investmentRange || "-"
+      cellRenderer: ({ row }) =>
+        (row as any)?.investmentRangeText || row?.investmentRange || "-"
     },
     {
       label: "投资项目数",
@@ -264,12 +294,18 @@ export function useInvestorTable() {
       minWidth: 80,
       align: "center",
       cellRenderer: ({ row }) => {
-        const statusInfo = INVESTOR_STATUS_MAP[row?.status] || { label: "未知", type: "info" } as any;
-        return h(ElTag, {
-          type: (statusInfo as any).type,
-          effect: "light",
-          size: "small"
-        }, () => (statusInfo as any).label);
+        const statusInfo =
+          INVESTOR_STATUS_MAP[row?.status] ||
+          ({ label: "未知", type: "info" } as any);
+        return h(
+          ElTag,
+          {
+            type: (statusInfo as any).type,
+            effect: "light",
+            size: "small"
+          },
+          () => (statusInfo as any).label
+        );
       }
     },
     {
@@ -280,11 +316,13 @@ export function useInvestorTable() {
         if (!row?.createdTime) return "-";
         // 将 ISO 格式转换为日期（YYYY-MM-DD）
         const date = new Date(row.createdTime);
-        return date.toLocaleDateString('zh-CN', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
-        }).replace(/\//g, '-');
+        return date
+          .toLocaleDateString("zh-CN", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+          })
+          .replace(/\//g, "-");
       }
     },
     {

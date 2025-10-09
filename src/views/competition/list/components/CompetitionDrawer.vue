@@ -84,23 +84,36 @@
                   :show-file-list="false"
                   :before-upload="beforeLogoUpload"
                 >
-                <div v-if="!formInline.organizerLogo" class="logo-upload-placeholder">
-                  <el-icon class="logo-uploader-icon"><upload-filled /></el-icon>
-                  <div class="logo-upload-text">点击或拖拽上传</div>
-                </div>
-                <div v-else class="logo-preview-container">
-                  <img :src="logoDisplayUrl" class="logo-preview" />
-                  <div class="logo-preview-overlay">
-                    <el-button type="primary" size="small" @click.stop="replaceLogo">
-                      <el-icon><edit /></el-icon>
-                      更换
-                    </el-button>
-                    <el-button type="danger" size="small" @click.stop="removeLogo">
-                      <el-icon><delete /></el-icon>
-                      删除
-                    </el-button>
+                  <div
+                    v-if="!formInline.organizerLogo"
+                    class="logo-upload-placeholder"
+                  >
+                    <el-icon class="logo-uploader-icon"
+                      ><upload-filled
+                    /></el-icon>
+                    <div class="logo-upload-text">点击或拖拽上传</div>
                   </div>
-                </div>
+                  <div v-else class="logo-preview-container">
+                    <img :src="logoDisplayUrl" class="logo-preview" />
+                    <div class="logo-preview-overlay">
+                      <el-button
+                        type="primary"
+                        size="small"
+                        @click.stop="replaceLogo"
+                      >
+                        <el-icon><edit /></el-icon>
+                        更换
+                      </el-button>
+                      <el-button
+                        type="danger"
+                        size="small"
+                        @click.stop="removeLogo"
+                      >
+                        <el-icon><delete /></el-icon>
+                        删除
+                      </el-button>
+                    </div>
+                  </div>
                 </el-upload>
               </div>
               <div class="logo-upload-info">
@@ -108,7 +121,9 @@
                 <div class="logo-info-item">• 支持 JPG、PNG 格式图片</div>
                 <div class="logo-info-item">• 建议尺寸：200x200 像素</div>
                 <div class="logo-info-item">• 文件大小：不超过 2MB</div>
-                <div class="logo-info-item">• 建议使用正方形图片，确保显示效果</div>
+                <div class="logo-info-item">
+                  • 建议使用正方形图片，确保显示效果
+                </div>
               </div>
             </div>
           </el-form-item>
@@ -211,26 +226,41 @@
                 :show-file-list="false"
                 :before-upload="beforePosterUpload"
               >
-              <div v-if="!formInline.poster" class="poster-upload-placeholder">
-                <el-icon class="poster-uploader-icon"><upload-filled /></el-icon>
-                <div class="poster-upload-text-container">
-                  <div class="poster-upload-text">点击或拖拽上传大赛海报</div>
-                  <div class="poster-upload-hint">支持 JPG、PNG 格式，建议尺寸 800x600</div>
+                <div
+                  v-if="!formInline.poster"
+                  class="poster-upload-placeholder"
+                >
+                  <el-icon class="poster-uploader-icon"
+                    ><upload-filled
+                  /></el-icon>
+                  <div class="poster-upload-text-container">
+                    <div class="poster-upload-text">点击或拖拽上传大赛海报</div>
+                    <div class="poster-upload-hint">
+                      支持 JPG、PNG 格式，建议尺寸 800x600
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div v-else class="poster-preview-container">
-                <img :src="posterDisplayUrl" class="poster-preview" />
-                <div class="poster-preview-overlay">
-                  <el-button type="primary" size="small" @click.stop="replacePoster">
-                    <el-icon><edit /></el-icon>
-                    更换
-                  </el-button>
-                  <el-button type="danger" size="small" @click.stop="removePoster">
-                    <el-icon><delete /></el-icon>
-                    删除
-                  </el-button>
+                <div v-else class="poster-preview-container">
+                  <img :src="posterDisplayUrl" class="poster-preview" />
+                  <div class="poster-preview-overlay">
+                    <el-button
+                      type="primary"
+                      size="small"
+                      @click.stop="replacePoster"
+                    >
+                      <el-icon><edit /></el-icon>
+                      更换
+                    </el-button>
+                    <el-button
+                      type="danger"
+                      size="small"
+                      @click.stop="removePoster"
+                    >
+                      <el-icon><delete /></el-icon>
+                      删除
+                    </el-button>
+                  </div>
                 </div>
-              </div>
               </el-upload>
             </div>
           </el-form-item>
@@ -252,7 +282,7 @@
                 :defaultConfig="editorConfig"
                 mode="default"
                 class="wangeditor-editor"
-                style="height: 320px;"
+                style="height: 320px"
                 @onCreated="handleSummaryCreated"
               />
             </div>
@@ -275,7 +305,7 @@
                 :defaultConfig="editorConfig"
                 mode="default"
                 class="wangeditor-editor"
-                style="height: 320px;"
+                style="height: 320px"
                 @onCreated="handleDescriptionCreated"
               />
             </div>
@@ -298,7 +328,7 @@
                 :defaultConfig="editorConfig"
                 mode="default"
                 class="wangeditor-editor"
-                style="height: 320px;"
+                style="height: 320px"
                 @onCreated="handleCoOrganizersCreated"
               />
             </div>
@@ -321,7 +351,7 @@
                 :defaultConfig="editorConfig"
                 mode="default"
                 class="wangeditor-editor"
-                style="height: 320px;"
+                style="height: 320px"
                 @onCreated="handleRequirementsCreated"
               />
             </div>
@@ -344,7 +374,7 @@
                 :defaultConfig="editorConfig"
                 mode="default"
                 class="wangeditor-editor"
-                style="height: 320px;"
+                style="height: 320px"
                 @onCreated="handlePrizesCreated"
               />
             </div>
@@ -367,7 +397,7 @@
                 :defaultConfig="editorConfig"
                 mode="default"
                 class="wangeditor-editor"
-                style="height: 320px;"
+                style="height: 320px"
                 @onCreated="handleScheduleCreated"
               />
             </div>
@@ -390,7 +420,7 @@
                 :defaultConfig="editorConfig"
                 mode="default"
                 class="wangeditor-editor"
-                style="height: 320px;"
+                style="height: 320px"
                 @onCreated="handleJudgesCreated"
               />
             </div>
@@ -413,7 +443,7 @@
                 :defaultConfig="editorConfig"
                 mode="default"
                 class="wangeditor-editor"
-                style="height: 320px;"
+                style="height: 320px"
                 @onCreated="handleMaterialDescriptionCreated"
               />
             </div>
@@ -440,21 +470,23 @@
                     <el-icon class="upload-icon"><upload-filled /></el-icon>
                     <div class="upload-text-container">
                       <div class="upload-text">点击或拖拽上传赛事资料</div>
-                      <div class="upload-hint">支持 PDF、Word、Excel、PPT、压缩包、图片等格式，单个文件不超过 20MB</div>
+                      <div class="upload-hint">
+                        支持
+                        PDF、Word、Excel、PPT、压缩包、图片等格式，单个文件不超过
+                        20MB
+                      </div>
                     </div>
                   </div>
                 </el-upload>
-                
-                
               </div>
 
               <!-- 资料列表 -->
-              <div class="materials-list" v-if="materials.length > 0">
+              <div v-if="materials.length > 0" class="materials-list">
                 <div class="list-header">
                   <span>已上传资料 ({{ materials.length }})</span>
                 </div>
-                <div 
-                  v-for="(material, index) in materials" 
+                <div
+                  v-for="(material, index) in materials"
                   :key="material.id || `temp-${index}`"
                   class="material-item"
                 >
@@ -474,12 +506,16 @@
                           v-model="material.title"
                           size="small"
                           placeholder="请输入文件标题"
-                          @blur="finishEditTitle(material, index)"
-                          @keyup.enter="finishEditTitle(material, index)"
                           class="title-input"
                           autofocus
+                          @blur="finishEditTitle(material, index)"
+                          @keyup.enter="finishEditTitle(material, index)"
                         />
-                        <div v-else class="material-title" @click="startEditTitle(material, index)">
+                        <div
+                          v-else
+                          class="material-title"
+                          @click="startEditTitle(material, index)"
+                        >
                           {{ material.title }}
                           <el-icon class="edit-icon">
                             <edit />
@@ -487,20 +523,32 @@
                         </div>
                       </div>
                       <div class="material-meta">
-                        <span v-if="material.category === 'download' && material.fileSize">
+                        <span
+                          v-if="
+                            material.category === 'download' &&
+                            material.fileSize
+                          "
+                        >
                           {{ formatFileSize(material.fileSize) }}
                         </span>
                         <span v-if="material.category === 'link'">
-                          链接: {{ material.linkType || '外部链接' }}
+                          链接: {{ material.linkType || "外部链接" }}
                         </span>
                         <span class="material-category">
-                          {{ material.category === 'download' ? '文件' : '链接' }}
+                          {{
+                            material.category === "download" ? "文件" : "链接"
+                          }}
                         </span>
                       </div>
                     </div>
                   </div>
                   <div class="material-actions">
-                    <el-button size="small" type="danger" link @click="removeMaterial(index)">
+                    <el-button
+                      size="small"
+                      type="danger"
+                      link
+                      @click="removeMaterial(index)"
+                    >
                       删除
                     </el-button>
                   </div>
@@ -515,7 +563,11 @@
     <template #footer>
       <div style="flex: auto">
         <el-button @click="handleCancel">取消</el-button>
-        <el-button type="primary" @click="handleSubmit" :loading="submitLoading">
+        <el-button
+          type="primary"
+          :loading="submitLoading"
+          @click="handleSubmit"
+        >
           确定
         </el-button>
       </div>
@@ -524,24 +576,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, defineExpose, watch, onBeforeUnmount, shallowRef, computed } from "vue";
-import { getIndustryList, getRegionList, createCompetition, updateCompetition } from "../api";
+import {
+  ref,
+  reactive,
+  onMounted,
+  defineExpose,
+  watch,
+  onBeforeUnmount,
+  shallowRef,
+  computed
+} from "vue";
+import {
+  getIndustryList,
+  getRegionList,
+  createCompetition,
+  updateCompetition
+} from "../api";
 import { message } from "@/utils/message";
 import { uploadImage, uploadFile } from "@/api/upload";
 import { getFullImageUrl } from "@/utils/image";
-import type { FormItemProps, CompetitionMaterial, CompetitionMaterialForm } from "../types/types";
+import type {
+  FormItemProps,
+  CompetitionMaterial,
+  CompetitionMaterialForm
+} from "../types/types";
 import type { Response } from "@/types/response";
 import type { FileUploadResult } from "@/api/upload";
-import { getMaterials, createMaterial, updateMaterial, deleteMaterial } from "../api/materials";
+import {
+  getMaterials,
+  createMaterial,
+  updateMaterial,
+  deleteMaterial
+} from "../api/materials";
 
 // 添加上传相关的导入
 import { UploadFilled, Edit, Delete, Document } from "@element-plus/icons-vue";
 
 // 导入 wangEditor
-import '@wangeditor/editor/dist/css/style.css';
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
-import { createEditor, createToolbar } from '@wangeditor/editor';
-import type { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor';
+import "@wangeditor/editor/dist/css/style.css";
+import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import { createEditor, createToolbar } from "@wangeditor/editor";
+import type {
+  IDomEditor,
+  IEditorConfig,
+  IToolbarConfig
+} from "@wangeditor/editor";
 
 const props = defineProps<{
   title: string;
@@ -592,13 +671,13 @@ const regionOptions = ref<Array<{ id: number; name: string }>>([]);
 
 // 计算属性：用于图片显示的完整URL
 const posterDisplayUrl = computed(() => {
-  if (!formInline.poster) return '';
+  if (!formInline.poster) return "";
   return getFullImageUrl(formInline.poster);
 });
 
 // 计算属性：用于logo显示的完整URL
 const logoDisplayUrl = computed(() => {
-  if (!formInline.organizerLogo) return '';
+  if (!formInline.organizerLogo) return "";
   return getFullImageUrl(formInline.organizerLogo);
 });
 
@@ -615,53 +694,57 @@ const materialDescriptionEditorRef = shallowRef<IDomEditor>();
 // 富文本编辑器工具栏配置 - 使用简单模式
 const toolbarConfig: Partial<IToolbarConfig> = {
   toolbarKeys: [
-    'bold',
-    'underline',
-    'italic',
-    'through',
-    'color',
-    'bgColor',
-    '|',
-    'fontSize',
-    'fontFamily',
-    'lineHeight',
-    '|',
-    'bulletedList',
-    'numberedList',
-    'todo',
-    '|',
-    'justifyLeft',
-    'justifyRight',
-    'justifyCenter',
-    'justifyJustify',
-    '|',
-    'insertLink',
-    'uploadImage',
-    '|',
-    'undo',
-    'redo'
+    "bold",
+    "underline",
+    "italic",
+    "through",
+    "color",
+    "bgColor",
+    "|",
+    "fontSize",
+    "fontFamily",
+    "lineHeight",
+    "|",
+    "bulletedList",
+    "numberedList",
+    "todo",
+    "|",
+    "justifyLeft",
+    "justifyRight",
+    "justifyCenter",
+    "justifyJustify",
+    "|",
+    "insertLink",
+    "uploadImage",
+    "|",
+    "undo",
+    "redo"
   ]
 };
 
 // 富文本编辑器配置
 const editorConfig: Partial<IEditorConfig> = {
-  placeholder: '请输入内容...',
+  placeholder: "请输入内容...",
   scroll: true,
   MENU_CONF: {
     // 配置图片上传
     uploadImage: {
       async customUpload(file: File, insertFn: Function) {
         try {
-          const result: Response<FileUploadResult> = await uploadImage(file, "competition");
+          const result: Response<FileUploadResult> = await uploadImage(
+            file,
+            "competition"
+          );
           if (result && result.code === 200 && result.data?.url) {
             const fullImageUrl = getFullImageUrl(result.data.url);
-            insertFn(fullImageUrl, '', fullImageUrl);
+            insertFn(fullImageUrl, "", fullImageUrl);
             message("图片上传成功", { type: "success" });
           } else {
             message(result?.message || "图片上传失败", { type: "error" });
           }
         } catch (error: any) {
-          const errorMsg = error?.response?.data?.message || error.message || "图片上传失败";
+          const errorMsg =
+            error?.response?.data?.message || error.message || "图片上传失败";
           message(errorMsg, { type: "error" });
         }
       }
@@ -672,7 +755,7 @@ const editorConfig: Partial<IEditorConfig> = {
 // 监听props.title变化
 watch(
   () => props.title,
-  (newVal) => {
+  newVal => {
     if (newVal) {
       drawerTitle.value = newVal;
     }
@@ -683,39 +766,40 @@ watch(
 // 监听props.formData变化
 watch(
   () => props.formData,
-  (newVal) => {
+  newVal => {
     if (newVal) {
       // 确保industryId和regionId在为0时被设置为null
       const formData = { ...newVal } as FormItemProps;
       if (formData.industryId === 0) formData.industryId = null;
       if (formData.regionId === 0) formData.regionId = null;
-      
+
       // 海报图片URL直接使用数据库中的相对路径，计算属性会处理显示
       // formData.poster 保持原样，不需要转换
-      
+
       // 主办方logo URL直接使用数据库中的相对路径，计算属性会处理显示
       // formData.organizerLogo 保持原样，不需要转换
-      
+
       // 处理富文本内容，确保有默认值
-      if (!formData.summary) formData.summary = '<p><br></p>';
-      if (!formData.description) formData.description = '<p><br></p>';
-      if (!formData.coOrganizers) formData.coOrganizers = '<p><br></p>';
-      if (!formData.requirements) formData.requirements = '<p><br></p>';
-      if (!formData.prizes) formData.prizes = '<p><br></p>';
-      if (!formData.schedule) formData.schedule = '<p><br></p>';
-      if (!formData.judges) formData.judges = '<p><br></p>';
-      if (!formData.materialDescription) formData.materialDescription = '<p><br></p>';
-      
+      if (!formData.summary) formData.summary = "<p><br></p>";
+      if (!formData.description) formData.description = "<p><br></p>";
+      if (!formData.coOrganizers) formData.coOrganizers = "<p><br></p>";
+      if (!formData.requirements) formData.requirements = "<p><br></p>";
+      if (!formData.prizes) formData.prizes = "<p><br></p>";
+      if (!formData.schedule) formData.schedule = "<p><br></p>";
+      if (!formData.judges) formData.judges = "<p><br></p>";
+      if (!formData.materialDescription)
+        formData.materialDescription = "<p><br></p>";
+
       // 更新表单数据，v-model 会自动同步到编辑器
       Object.assign(formInline, formData);
-      
+
       // 如果是编辑模式，加载竞赛资料
       if (formData.id) {
         loadMaterials(formData.id);
       }
     } else {
       // 仅在没有数据时才重置
-      resetForm(); 
+      resetForm();
     }
   },
   { immediate: true }
@@ -724,7 +808,7 @@ watch(
 // 监听props.visible变化
 watch(
   () => props.visible,
-  (newVal) => {
+  newVal => {
     drawerVisible.value = newVal;
   },
   { immediate: true }
@@ -733,7 +817,7 @@ watch(
 // 监听drawerVisible变化
 watch(
   () => drawerVisible.value,
-  (newVal) => {
+  newVal => {
     emit("update:visible", newVal);
   }
 );
@@ -743,35 +827,39 @@ const rules = reactive({
   title: [{ required: true, message: "大赛标题不能为空", trigger: "blur" }],
   industryId: [
     { required: true, message: "请选择行业领域", trigger: "change" },
-    { 
+    {
       validator: (rule: any, value: any, callback: any) => {
         if (value === null || value === undefined || value <= 0) {
-          callback(new Error('请选择行业领域'));
+          callback(new Error("请选择行业领域"));
         } else {
           callback();
         }
-      }, 
-      trigger: "change" 
+      },
+      trigger: "change"
     }
   ] as any[],
   regionId: [
     { required: true, message: "请选择地区", trigger: "change" },
-    { 
+    {
       validator: (rule: any, value: any, callback: any) => {
         if (value === null || value === undefined || value <= 0) {
-          callback(new Error('请选择地区'));
+          callback(new Error("请选择地区"));
         } else {
           callback();
         }
-      }, 
-      trigger: "change" 
+      },
+      trigger: "change"
     }
   ] as any[],
   organizer: [{ required: true, message: "主办方不能为空", trigger: "blur" }],
   location: [{ required: true, message: "举办地点不能为空", trigger: "blur" }],
-  startTime: [{ required: true, message: "开始时间不能为空", trigger: "change" }],
+  startTime: [
+    { required: true, message: "开始时间不能为空", trigger: "change" }
+  ],
   endTime: [{ required: true, message: "结束时间不能为空", trigger: "change" }],
-  registrationDeadline: [{ required: true, message: "报名截止时间不能为空", trigger: "change" }],
+  registrationDeadline: [
+    { required: true, message: "报名截止时间不能为空", trigger: "change" }
+  ],
   status: [{ required: true, message: "状态不能为空", trigger: "change" }]
 });
 
@@ -856,7 +944,7 @@ onBeforeUnmount(() => {
     judgesEditorRef.value,
     materialDescriptionEditorRef.value
   ];
-  
+
   editors.forEach(editor => {
     if (editor == null) return;
     editor.destroy();
@@ -882,7 +970,7 @@ const handleCancel = () => {
 // 提交表单
 const handleSubmit = () => {
   if (!formRef.value) return;
-  
+
   formRef.value.validate(async (valid: boolean) => {
     if (valid) {
       submitLoading.value = true;
@@ -897,7 +985,7 @@ const handleSubmit = () => {
           // 根据业务需求决定是否允许null值，如果不允许可以设置为undefined或其他默认值
           delete submitData.regionId;
         }
-        
+
         let result;
         if (formInline.id) {
           // 更新大赛
@@ -906,22 +994,30 @@ const handleSubmit = () => {
           // 创建大赛
           result = await createCompetition(submitData);
         }
-        
+
         if (result.code === 200) {
           // 保存资料到后端
           const competitionId = formInline.id || result.data.id;
           if (competitionId) {
             await saveMaterials(competitionId);
           }
-          
-          message(`大赛${formInline.id ? '更新' : '创建'}成功`, { type: "success" });
+
+          message(`大赛${formInline.id ? "更新" : "创建"}成功`, {
+            type: "success"
+          });
           emit("submit", { ...formInline });
           handleClose();
         } else {
-          message(`大赛${formInline.id ? '更新' : '创建'}失败: ${result.message}`, { type: "error" });
+          message(
+            `大赛${formInline.id ? "更新" : "创建"}失败: ${result.message}`,
+            { type: "error" }
+          );
         }
       } catch (error) {
-        message(`大赛${formInline.id ? '更新' : '创建'}失败: ${error.message}`, { type: "error" });
+        message(
+          `大赛${formInline.id ? "更新" : "创建"}失败: ${error.message}`,
+          { type: "error" }
+        );
       } finally {
         submitLoading.value = false;
       }
@@ -955,10 +1051,10 @@ function resetForm() {
     schedule: "<p><br></p>",
     materialDescription: "<p><br></p>"
   });
-  
+
   // 重置资料列表
   materials.value = [];
-  
+
   // 确保表单引用存在并重置验证
   if (formRef.value) {
     formRef.value.resetFields();
@@ -968,7 +1064,7 @@ function resetForm() {
 // 自定义上传请求函数，用于 el-upload 组件的 http-request 属性
 async function customUploadRequest(options: any) {
   const { file, onSuccess, onError } = options;
-  
+
   // 检查文件是否存在
   if (!file) {
     const errorMsg = "请选择要上传的图片文件";
@@ -976,9 +1072,9 @@ async function customUploadRequest(options: any) {
     onError(new Error(errorMsg));
     return;
   }
-  
+
   // 文件类型验证
-  const isImage = file.type.startsWith('image/');
+  const isImage = file.type.startsWith("image/");
   if (!isImage) {
     const errorMsg = "只能上传图片文件";
     message(errorMsg, { type: "error" });
@@ -994,11 +1090,14 @@ async function customUploadRequest(options: any) {
     onError(new Error(errorMsg));
     return;
   }
-  
+
   try {
     // 调用上传API，传递模块参数 'competition'
-    const result: Response<FileUploadResult> = await uploadImage(file, "competition");
-    
+    const result: Response<FileUploadResult> = await uploadImage(
+      file,
+      "competition"
+    );
+
     if (result && result.code === 200 && result.data?.url) {
       // 上传成功，更新表单中的海报URL（存储相对路径）
       formInline.poster = result.data.url;
@@ -1013,7 +1112,8 @@ async function customUploadRequest(options: any) {
     }
   } catch (error: any) {
     // 捕获上传过程中的错误
-    const errorMsg = error?.response?.data?.message || error.message || "上传请求失败";
+    const errorMsg =
+      error?.response?.data?.message || error.message || "上传请求失败";
     message(errorMsg, { type: "error" });
     onError(error);
   }
@@ -1028,7 +1128,9 @@ const beforePosterUpload = (file: File) => {
 // 更换图片
 const replacePoster = (event: Event) => {
   // 触发文件选择对话框来更换图片
-  const uploadElement = document.querySelector('.poster-uploader .el-upload') as HTMLElement;
+  const uploadElement = document.querySelector(
+    ".poster-uploader .el-upload"
+  ) as HTMLElement;
   if (uploadElement) {
     uploadElement.click();
   }
@@ -1036,13 +1138,13 @@ const replacePoster = (event: Event) => {
 
 // 移除图片
 const removePoster = (event: Event) => {
-  formInline.poster = '';
+  formInline.poster = "";
 };
 
 // 自定义logo上传请求函数
 async function customLogoUploadRequest(options: any) {
   const { file, onSuccess, onError } = options;
-  
+
   // 检查文件是否存在
   if (!file) {
     const errorMsg = "请选择要上传的logo文件";
@@ -1050,9 +1152,9 @@ async function customLogoUploadRequest(options: any) {
     onError(new Error(errorMsg));
     return;
   }
-  
+
   // 文件类型验证
-  const isImage = file.type.startsWith('image/');
+  const isImage = file.type.startsWith("image/");
   if (!isImage) {
     const errorMsg = "只能上传图片文件";
     message(errorMsg, { type: "error" });
@@ -1068,11 +1170,14 @@ async function customLogoUploadRequest(options: any) {
     onError(new Error(errorMsg));
     return;
   }
-  
+
   try {
     // 调用上传API，传递模块参数 'competition'
-    const result: Response<FileUploadResult> = await uploadImage(file, "competition");
-    
+    const result: Response<FileUploadResult> = await uploadImage(
+      file,
+      "competition"
+    );
+
     if (result && result.code === 200 && result.data?.url) {
       // 上传成功，更新表单中的logo URL（存储相对路径）
       formInline.organizerLogo = result.data.url;
@@ -1087,7 +1192,8 @@ async function customLogoUploadRequest(options: any) {
     }
   } catch (error: any) {
     // 捕获上传过程中的错误
-    const errorMsg = error?.response?.data?.message || error.message || "上传请求失败";
+    const errorMsg =
+      error?.response?.data?.message || error.message || "上传请求失败";
     message(errorMsg, { type: "error" });
     onError(error);
   }
@@ -1102,7 +1208,9 @@ const beforeLogoUpload = (file: File) => {
 // 更换logo
 const replaceLogo = (event: Event) => {
   // 触发文件选择对话框来更换logo
-  const uploadElement = document.querySelector('.organizer-logo-uploader .el-upload') as HTMLElement;
+  const uploadElement = document.querySelector(
+    ".organizer-logo-uploader .el-upload"
+  ) as HTMLElement;
   if (uploadElement) {
     uploadElement.click();
   }
@@ -1110,7 +1218,7 @@ const replaceLogo = (event: Event) => {
 
 // 移除logo
 const removeLogo = (event: Event) => {
-  formInline.organizerLogo = '';
+  formInline.organizerLogo = "";
 };
 
 // ==================== 赛事资料管理方法 ====================
@@ -1129,11 +1237,14 @@ const beforeMaterialUpload = (file: File) => {
 // 自定义资料上传请求
 async function customMaterialUploadRequest(options: any) {
   const { file, onSuccess, onError } = options;
-  
+
   try {
     // 调用上传文件API
-    const result: Response<FileUploadResult> = await uploadFile(file, "competition");
-    
+    const result: Response<FileUploadResult> = await uploadFile(
+      file,
+      "competition"
+    );
+
     if (result && result.code === 200 && result.data?.url) {
       // 创建资料对象（临时存储，提交时再保存到数据库）
       const material: CompetitionMaterial & { editing?: boolean } = {
@@ -1143,17 +1254,17 @@ async function customMaterialUploadRequest(options: any) {
         fileUrl: result.data.url,
         fileName: file.name,
         fileSize: file.size,
-        fileType: file.name.split('.').pop()?.toLowerCase() || '',
-        category: 'download',
+        fileType: file.name.split(".").pop()?.toLowerCase() || "",
+        category: "download",
         isRequired: false,
         sortOrder: materials.value.length,
         status: 1,
         editing: false
       };
-      
+
       // 添加到材料列表
       materials.value.push(material);
-      
+
       message("文件上传成功", { type: "success" });
       onSuccess(result);
     } else {
@@ -1162,7 +1273,8 @@ async function customMaterialUploadRequest(options: any) {
       onError(new Error(errorMsg));
     }
   } catch (error: any) {
-    const errorMsg = error?.response?.data?.message || error.message || "上传请求失败";
+    const errorMsg =
+      error?.response?.data?.message || error.message || "上传请求失败";
     message(errorMsg, { type: "error" });
     onError(error);
   }
@@ -1170,24 +1282,28 @@ async function customMaterialUploadRequest(options: any) {
 
 // 格式化文件大小
 const formatFileSize = (bytes: number): string => {
-  if (!bytes) return '0 B';
+  if (!bytes) return "0 B";
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const sizes = ["B", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
 };
 
-
-
 // 开始编辑标题
-const startEditTitle = (material: CompetitionMaterial & { editing?: boolean }, index: number) => {
+const startEditTitle = (
+  material: CompetitionMaterial & { editing?: boolean },
+  index: number
+) => {
   material.editing = true;
 };
 
 // 完成编辑标题
-const finishEditTitle = (material: CompetitionMaterial & { editing?: boolean }, index: number) => {
-  if (!material.title || material.title.trim() === '') {
-    material.title = material.fileName || '未命名文件';
+const finishEditTitle = (
+  material: CompetitionMaterial & { editing?: boolean },
+  index: number
+) => {
+  if (!material.title || material.title.trim() === "") {
+    material.title = material.fileName || "未命名文件";
   }
   material.editing = false;
 };
@@ -1195,7 +1311,7 @@ const finishEditTitle = (material: CompetitionMaterial & { editing?: boolean }, 
 // 删除资料
 const removeMaterial = async (index: number) => {
   const material = materials.value[index];
-  
+
   // 如果是已存在的资料（有id），需要先从后端删除
   if (material.id) {
     try {
@@ -1206,10 +1322,10 @@ const removeMaterial = async (index: number) => {
       return; // 如果后端删除失败，不继续删除前端
     }
   }
-  
+
   // 从前端数组中删除
   materials.value.splice(index, 1);
-  
+
   if (!material.id) {
     message("已删除资料", { type: "success" });
   }
@@ -1218,7 +1334,7 @@ const removeMaterial = async (index: number) => {
 // 加载竞赛资料列表
 const loadMaterials = async (competitionId: number) => {
   if (!competitionId) return;
-  
+
   try {
     const result = await getMaterials({ competitionId });
     if (result.code === 200) {
@@ -1236,7 +1352,7 @@ const loadMaterials = async (competitionId: number) => {
 // 保存资料到后端
 const saveMaterials = async (competitionId: number) => {
   const promises: Promise<any>[] = [];
-  
+
   // 处理所有资料
   materials.value.forEach(material => {
     const materialData = {
@@ -1252,7 +1368,7 @@ const saveMaterials = async (competitionId: number) => {
       isRequired: material.isRequired,
       sortOrder: material.sortOrder
     };
-    
+
     if (material.id) {
       // 更新已存在的资料
       promises.push(updateMaterial(material.id, materialData));
@@ -1261,7 +1377,7 @@ const saveMaterials = async (competitionId: number) => {
       promises.push(createMaterial(competitionId, materialData));
     }
   });
-  
+
   if (promises.length > 0) {
     await Promise.all(promises);
   }
@@ -1312,12 +1428,12 @@ defineExpose({
   z-index: 3000 !important;
 }
 
-.competition-poster-upload-container{
+.competition-poster-upload-container {
   width: 100%;
 }
 
 /* 仅针对竞赛海报上传的 el-upload-dragger 样式覆盖 */
-.competition-poster-upload-container :deep(.el-upload-dragger), 
+.competition-poster-upload-container :deep(.el-upload-dragger),
 .organizer-logo-upload-container :deep(.el-upload-dragger),
 .materials-management :deep(.el-upload-dragger) {
   padding: 0 !important;
@@ -1464,51 +1580,51 @@ defineExpose({
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .logo-upload-area {
     align-self: center;
   }
-  
+
   .logo-upload-info {
     text-align: center;
   }
 }
 
 .poster-upload-placeholder {
-  padding: 8px;  /* 进一步减少内边距 */
+  padding: 8px; /* 进一步减少内边距 */
   text-align: center;
-  display: flex;  /* 使用flex布局 */
-  align-items: center;  /* 垂直居中 */
-  justify-content: center;  /* 水平居中 */
-  height: 100px;  /* 进一步减小高度 */
+  display: flex; /* 使用flex布局 */
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  height: 100px; /* 进一步减小高度 */
 }
 
 .poster-uploader-icon {
-  font-size: 36px;  /* 增大图标尺寸 */
+  font-size: 36px; /* 增大图标尺寸 */
   color: var(--el-text-color-secondary);
-  margin-right: 12px;  /* 右侧添加间距 */
-  margin-bottom: 0;  /* 移除底部间距 */
+  margin-right: 12px; /* 右侧添加间距 */
+  margin-bottom: 0; /* 移除底部间距 */
 }
 
 .poster-upload-text-container {
-  text-align: left;  /* 文字左对齐 */
+  text-align: left; /* 文字左对齐 */
 }
 
 .poster-upload-text {
-  font-size: 14px;  /* 字体大小 */
+  font-size: 14px; /* 字体大小 */
   color: var(--el-text-color-primary);
-  margin-bottom: 2px;  /* 减小底部间距 */
+  margin-bottom: 2px; /* 减小底部间距 */
 }
 
 .poster-upload-hint {
-  font-size: 12px;  /* 字体大小 */
+  font-size: 12px; /* 字体大小 */
   color: var(--el-text-color-secondary);
 }
 
 .poster-preview-container {
   position: relative;
   width: 100%;
-  height: 100px;  /* 与占位符高度一致 */
+  height: 100px; /* 与占位符高度一致 */
   overflow: hidden;
   border-radius: 8px;
 }
@@ -1516,7 +1632,7 @@ defineExpose({
 .poster-preview {
   width: 100%;
   height: 100%;
-  object-fit: cover;  /* 填充固定高度 */
+  object-fit: cover; /* 填充固定高度 */
   display: block;
 }
 
@@ -1649,8 +1765,6 @@ defineExpose({
   color: var(--el-text-color-secondary);
 }
 
-
-
 .materials-list {
   max-height: 240px;
   overflow-y: auto;
@@ -1710,8 +1824,6 @@ defineExpose({
   flex: 1;
   min-width: 0;
 }
-
-
 
 .material-meta {
   font-size: 12px;
@@ -1775,5 +1887,3 @@ defineExpose({
   width: 100%;
 }
 </style>
-
-

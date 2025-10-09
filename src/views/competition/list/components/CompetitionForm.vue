@@ -263,12 +263,18 @@ const regionOptions = ref<Array<{ id: number; name: string }>>([]);
 // 表单验证规则
 const rules = reactive({
   title: [{ required: true, message: "大赛标题不能为空", trigger: "blur" }],
-  industryId: [{ required: true, message: "行业领域不能为空", trigger: "change" }],
+  industryId: [
+    { required: true, message: "行业领域不能为空", trigger: "change" }
+  ],
   regionId: [{ required: true, message: "地区不能为空", trigger: "change" }],
   organizer: [{ required: true, message: "主办方不能为空", trigger: "blur" }],
-  startTime: [{ required: true, message: "开始时间不能为空", trigger: "change" }],
+  startTime: [
+    { required: true, message: "开始时间不能为空", trigger: "change" }
+  ],
   endTime: [{ required: true, message: "结束时间不能为空", trigger: "change" }],
-  registrationDeadline: [{ required: true, message: "报名截止时间不能为空", trigger: "change" }],
+  registrationDeadline: [
+    { required: true, message: "报名截止时间不能为空", trigger: "change" }
+  ],
   status: [{ required: true, message: "状态不能为空", trigger: "change" }]
 });
 

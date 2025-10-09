@@ -73,7 +73,7 @@ export function useDept() {
       name: form.name || undefined,
       status: form.status !== null ? form.status : undefined
     };
-    
+
     const { data } = await getDeptList(params);
     let newData = data;
     if (!isAllEmpty(form.name)) {
@@ -126,7 +126,7 @@ export function useDept() {
       beforeSure: (done, { options }) => {
         const FormRef = formRef.value.getRef();
         const curData = options.props.formInline as Dept.FormData;
-        
+
         FormRef.validate(async valid => {
           if (valid) {
             try {

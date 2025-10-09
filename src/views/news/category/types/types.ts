@@ -44,7 +44,7 @@ export interface CategoryListParams {
   level?: number;
   isNavigation?: boolean;
   sortBy?: keyof NewsCategory;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 // API 响应基础接口
@@ -99,7 +99,14 @@ export interface CategoryOperationLog {
   categoryId: number;
   operatorId: number;
   operatorName: string;
-  action: 'create' | 'update' | 'delete' | 'approve' | 'reject' | 'enable' | 'disable';
+  action:
+    | "create"
+    | "update"
+    | "delete"
+    | "approve"
+    | "reject"
+    | "enable"
+    | "disable";
   description: string;
   operationTime: string;
   ipAddress?: string;

@@ -17,13 +17,27 @@
       <el-row :gutter="24">
         <el-col :span="12">
           <el-form-item label="载体名称" prop="name">
-            <el-input v-model="form.name" placeholder="请输入载体名称" clearable />
+            <el-input
+              v-model="form.name"
+              placeholder="请输入载体名称"
+              clearable
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="中心类型" prop="centerTypeId">
-            <el-select v-model="form.centerTypeId" placeholder="请选择中心类型" clearable style="width: 100%">
-              <el-option v-for="item in centerTypeOptions" :key="item.id" :label="item.name" :value="item.id" />
+            <el-select
+              v-model="form.centerTypeId"
+              placeholder="请选择中心类型"
+              clearable
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in centerTypeOptions"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
             </el-select>
           </el-form-item>
         </el-col>
@@ -32,14 +46,28 @@
       <el-row :gutter="24">
         <el-col :span="12">
           <el-form-item label="地区" prop="regionId">
-            <el-select v-model="form.regionId" placeholder="请选择地区" clearable style="width: 100%">
-              <el-option v-for="item in regionOptions" :key="item.id" :label="item.name" :value="item.id" />
+            <el-select
+              v-model="form.regionId"
+              placeholder="请选择地区"
+              clearable
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in regionOptions"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="城市/区域" prop="location">
-            <el-input v-model="form.location" placeholder="请输入城市或区域" clearable />
+            <el-input
+              v-model="form.location"
+              placeholder="请输入城市或区域"
+              clearable
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -47,12 +75,20 @@
       <el-row :gutter="24">
         <el-col :span="12">
           <el-form-item label="详细地址" prop="address">
-            <el-input v-model="form.address" placeholder="请输入详细地址" clearable />
+            <el-input
+              v-model="form.address"
+              placeholder="请输入详细地址"
+              clearable
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="官方网站" prop="website">
-            <el-input v-model="form.website" placeholder="请输入官方网站" clearable />
+            <el-input
+              v-model="form.website"
+              placeholder="请输入官方网站"
+              clearable
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -60,17 +96,29 @@
       <el-row :gutter="24">
         <el-col :span="8">
           <el-form-item label="联系人" prop="contactPerson">
-            <el-input v-model="form.contactPerson" placeholder="请输入联系人" clearable />
+            <el-input
+              v-model="form.contactPerson"
+              placeholder="请输入联系人"
+              clearable
+            />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="联系电话" prop="contactPhone">
-            <el-input v-model="form.contactPhone" placeholder="请输入联系电话" clearable />
+            <el-input
+              v-model="form.contactPhone"
+              placeholder="请输入联系电话"
+              clearable
+            />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="联系邮箱" prop="contactEmail">
-            <el-input v-model="form.contactEmail" placeholder="请输入联系邮箱" clearable />
+            <el-input
+              v-model="form.contactEmail"
+              placeholder="请输入联系邮箱"
+              clearable
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -78,12 +126,22 @@
       <el-row :gutter="24">
         <el-col :span="8">
           <el-form-item label="是否推荐" prop="isRecommended">
-            <el-switch v-model="form.isRecommended" inline-prompt active-text="是" inactive-text="否" />
+            <el-switch
+              v-model="form.isRecommended"
+              inline-prompt
+              active-text="是"
+              inactive-text="否"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="状态" prop="status">
-            <el-select v-model="form.status" placeholder="请选择状态" clearable style="width: 100%">
+            <el-select
+              v-model="form.status"
+              placeholder="请选择状态"
+              clearable
+              style="width: 100%"
+            >
               <el-option label="正常" :value="1" />
               <el-option label="已下线" :value="2" />
               <el-option label="禁用" :value="3" />
@@ -92,7 +150,13 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="成立年份" prop="establishedYear">
-            <el-input-number v-model="form.establishedYear" :min="1900" :max="2100" :controls="false" style="width: 100%" />
+            <el-input-number
+              v-model="form.establishedYear"
+              :min="1900"
+              :max="2100"
+              :controls="false"
+              style="width: 100%"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -100,17 +164,32 @@
       <el-row :gutter="24">
         <el-col :span="8">
           <el-form-item label="面积(㎡)" prop="area">
-            <el-input-number v-model="form.area" :min="0" :controls="false" style="width: 100%" />
+            <el-input-number
+              v-model="form.area"
+              :min="0"
+              :controls="false"
+              style="width: 100%"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="入驻企业数" prop="settledCompaniesCount">
-            <el-input-number v-model="form.settledCompaniesCount" :min="0" :controls="false" style="width: 100%" />
+            <el-input-number
+              v-model="form.settledCompaniesCount"
+              :min="0"
+              :controls="false"
+              style="width: 100%"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="成功案例数" prop="successCases">
-            <el-input-number v-model="form.successCases" :min="0" :controls="false" style="width: 100%" />
+            <el-input-number
+              v-model="form.successCases"
+              :min="0"
+              :controls="false"
+              style="width: 100%"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -137,8 +216,15 @@
                   <div class="logo-preview">
                     <img :src="logoDisplayUrl" alt="logo" />
                     <div class="logo-preview__mask">
-                      <el-button size="small" type="primary">重新上传</el-button>
-                      <el-button size="small" type="danger" @click.stop="removeLogo">移除</el-button>
+                      <el-button size="small" type="primary"
+                        >重新上传</el-button
+                      >
+                      <el-button
+                        size="small"
+                        type="danger"
+                        @click.stop="removeLogo"
+                        >移除</el-button
+                      >
                     </div>
                   </div>
                 </template>
@@ -168,7 +254,10 @@
               <div
                 v-for="item in industryOptions"
                 :key="item.id"
-                :class="['industry-tag', { 'industry-tag-selected': isIndustrySelected(item.id) }]"
+                :class="[
+                  'industry-tag',
+                  { 'industry-tag-selected': isIndustrySelected(item.id) }
+                ]"
                 @click="toggleIndustry(item)"
               >
                 <span class="industry-tag-text">{{ item.name }}</span>
@@ -270,7 +359,11 @@
     <template #footer>
       <div style="flex: auto">
         <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="handleSubmit">
+        <el-button
+          type="primary"
+          :loading="submitLoading"
+          @click="handleSubmit"
+        >
           保存
         </el-button>
       </div>
@@ -279,44 +372,68 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, onMounted, onBeforeUnmount, shallowRef, toRaw } from "vue";
-import type { FormInstance, FormRules, UploadRequestOptions } from "element-plus";
+import {
+  ref,
+  reactive,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  shallowRef,
+  toRaw
+} from "vue";
+import type {
+  FormInstance,
+  FormRules,
+  UploadRequestOptions
+} from "element-plus";
 import type { PropType } from "vue";
 import { ElMessage } from "element-plus";
 import { UploadFilled } from "@element-plus/icons-vue";
 import type { IncubatorItem } from "../types/types";
-import { createIncubator, updateIncubator, getCenterTypeList, getRegionList, getIndustryList } from "../api";
+import {
+  createIncubator,
+  updateIncubator,
+  getCenterTypeList,
+  getRegionList,
+  getIndustryList
+} from "../api";
 import { uploadImage } from "@/api/upload";
 import { getFullImageUrl } from "@/utils/image";
 
 // 导入 wangEditor
-import '@wangeditor/editor/dist/css/style.css';
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
-import type { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor';
+import "@wangeditor/editor/dist/css/style.css";
+import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import type {
+  IDomEditor,
+  IEditorConfig,
+  IToolbarConfig
+} from "@wangeditor/editor";
 
 const DEFAULT_HTML = "<p><br></p>";
 
-type DrawerFormData = Partial<IncubatorItem & {
-  description?: string;
-  detailedIntro?: string;
-  environmentShowcase?: string;
-  residentEnterprises?: string;
-  serviceContent?: string;
-  policySupport?: string;
-  contactPerson?: string;
-  contactPhone?: string;
-  contactEmail?: string;
-  website?: string;
-  address?: string;
-  location?: string;
-  logo?: string;
-  area?: number;
-  settledCompaniesCount?: number;
-  successCases?: number;
-  establishedYear?: number;
-  isRecommended?: boolean;
-  status?: number;
-}> | null;
+type DrawerFormData = Partial<
+  IncubatorItem & {
+    description?: string;
+    detailedIntro?: string;
+    environmentShowcase?: string;
+    residentEnterprises?: string;
+    serviceContent?: string;
+    policySupport?: string;
+    contactPerson?: string;
+    contactPhone?: string;
+    contactEmail?: string;
+    website?: string;
+    address?: string;
+    location?: string;
+    logo?: string;
+    area?: number;
+    settledCompaniesCount?: number;
+    successCases?: number;
+    establishedYear?: number;
+    isRecommended?: boolean;
+    status?: number;
+  }
+> | null;
 
 const props = defineProps({
   visible: { type: Boolean, default: false },
@@ -336,28 +453,32 @@ const activeTab = ref("detailedIntro");
 
 const formRef = ref<FormInstance>();
 
-const form = reactive<Partial<IncubatorItem & {
-  description: string;
-  detailedIntro: string;
-  environmentShowcase: string;
-  residentEnterprises: string;
-  serviceContent: string;
-  policySupport: string;
-  industries: Array<{ id: number; name: string }>;
-  contactPerson: string;
-  contactPhone: string;
-  contactEmail: string;
-  website: string;
-  address: string;
-  location: string;
-  logo: string;
-  area?: number;
-  settledCompaniesCount?: number;
-  successCases?: number;
-  establishedYear?: number;
-  isRecommended: boolean;
-  status: number;
-}>>({
+const form = reactive<
+  Partial<
+    IncubatorItem & {
+      description: string;
+      detailedIntro: string;
+      environmentShowcase: string;
+      residentEnterprises: string;
+      serviceContent: string;
+      policySupport: string;
+      industries: Array<{ id: number; name: string }>;
+      contactPerson: string;
+      contactPhone: string;
+      contactEmail: string;
+      website: string;
+      address: string;
+      location: string;
+      logo: string;
+      area?: number;
+      settledCompaniesCount?: number;
+      successCases?: number;
+      establishedYear?: number;
+      isRecommended: boolean;
+      status: number;
+    }
+  >
+>({
   id: undefined,
   name: "",
   centerTypeId: undefined,
@@ -386,7 +507,9 @@ const form = reactive<Partial<IncubatorItem & {
 
 const rules = reactive<FormRules>({
   name: [{ required: true, message: "请输入载体名称", trigger: "blur" }],
-  centerTypeId: [{ required: true, message: "请选择中心类型", trigger: "change" }],
+  centerTypeId: [
+    { required: true, message: "请选择中心类型", trigger: "change" }
+  ],
   regionId: [{ required: true, message: "请选择地区", trigger: "change" }]
 });
 
@@ -420,8 +543,14 @@ function applyEditorContent(editor: IDomEditor | undefined, value?: string) {
 
 function syncEditorValues() {
   applyEditorContent(detailedIntroEditorRef.value, form.detailedIntro);
-  applyEditorContent(environmentShowcaseEditorRef.value, form.environmentShowcase);
-  applyEditorContent(residentEnterprisesEditorRef.value, form.residentEnterprises);
+  applyEditorContent(
+    environmentShowcaseEditorRef.value,
+    form.environmentShowcase
+  );
+  applyEditorContent(
+    residentEnterprisesEditorRef.value,
+    form.residentEnterprises
+  );
   applyEditorContent(serviceContentEditorRef.value, form.serviceContent);
   applyEditorContent(policySupportEditorRef.value, form.policySupport);
 }
@@ -429,32 +558,32 @@ function syncEditorValues() {
 // 富文本编辑器工具栏配置
 const toolbarConfig: Partial<IToolbarConfig> = {
   toolbarKeys: [
-    'bold',
-    'underline',
-    'italic',
-    'through',
-    'color',
-    'bgColor',
-    'fontSize',
-    'fontFamily',
-    'lineHeight',
-    'bulletedList',
-    'numberedList',
-    'todo',
-    'justifyLeft',
-    'justifyCenter',
-    'justifyRight',
-    'justifyJustify',
-    'insertLink',
-    'uploadImage',
-    'undo',
-    'redo'
+    "bold",
+    "underline",
+    "italic",
+    "through",
+    "color",
+    "bgColor",
+    "fontSize",
+    "fontFamily",
+    "lineHeight",
+    "bulletedList",
+    "numberedList",
+    "todo",
+    "justifyLeft",
+    "justifyCenter",
+    "justifyRight",
+    "justifyJustify",
+    "insertLink",
+    "uploadImage",
+    "undo",
+    "redo"
   ]
 };
 
 // 富文本编辑器配置
 const editorConfig: Partial<IEditorConfig> = {
-  placeholder: '请输入内容...',
+  placeholder: "请输入内容...",
   MENU_CONF: {
     uploadImage: {
       async customUpload(file: File, insertFn: Function) {
@@ -462,7 +591,7 @@ const editorConfig: Partial<IEditorConfig> = {
           const result = await uploadImage(file, "incubator");
           if (result && result.code === 200 && result.data?.url) {
             const fullImageUrl = getFullImageUrl(result.data.url);
-            insertFn(fullImageUrl, '', fullImageUrl);
+            insertFn(fullImageUrl, "", fullImageUrl);
             ElMessage.success(result.message || "图片上传成功");
           } else {
             ElMessage.error(result?.message || "图片上传失败");
@@ -511,7 +640,7 @@ function toggleIndustry(industry: { id: number; name: string }) {
   if (!form.industries) {
     form.industries = [];
   }
-  
+
   const index = form.industries.findIndex(item => item.id === industry.id);
   if (index > -1) {
     // 已选中，则取消选中
@@ -528,7 +657,7 @@ function fillForm(data?: DrawerFormData) {
     return;
   }
   const value = data || {};
-  
+
   // 确保富文本字段有默认值
   const formData = {
     id: value.id,
@@ -556,7 +685,7 @@ function fillForm(data?: DrawerFormData) {
     industries: value.industries || [],
     logo: value.logo || ""
   };
-  
+
   // 使用 Object.assign 更新表单，v-model 会自动同步到编辑器
   Object.assign(form, formData);
   updateLogoPreview();
@@ -642,7 +771,9 @@ async function handleSubmit() {
   submitLoading.value = true;
   try {
     const rawForm = toRaw(form);
-    const industryIds = (rawForm.industries || []).map(item => Number(item.id)).filter(id => !Number.isNaN(id));
+    const industryIds = (rawForm.industries || [])
+      .map(item => Number(item.id))
+      .filter(id => !Number.isNaN(id));
     const { industries, ...rest } = rawForm;
     const submitData = {
       ...rest,
@@ -737,7 +868,7 @@ onBeforeUnmount(() => {
     serviceContentEditorRef.value,
     policySupportEditorRef.value
   ];
-  
+
   editors.forEach(editor => {
     if (editor) {
       editor.destroy();
@@ -925,4 +1056,3 @@ defineExpose(exposeMethods);
   line-height: 1;
 }
 </style>
-

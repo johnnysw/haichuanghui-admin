@@ -4,7 +4,7 @@ import ContactForm from "./components/ContactForm.vue";
 import { useContact } from "./composables/useContact";
 
 defineOptions({
-  name: "SystemContact",
+  name: "SystemContact"
 });
 
 const {
@@ -18,7 +18,7 @@ const {
   handleReset,
   handleUploadQr,
   handleRemoveQr,
-  registerForm,
+  registerForm
 } = useContact();
 
 const handleRegister = (instance: FormInstance) => {
@@ -55,4 +55,3 @@ const handleRegister = (instance: FormInstance) => {
   }
 }
 </style>
-

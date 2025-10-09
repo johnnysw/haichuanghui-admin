@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { message } from "@/utils/message";
 import { debounce, throttle } from "@pureadmin/utils";

@@ -5,7 +5,7 @@ import { getMenuList, addMenu, updateMenu, deleteMenu } from "@/api/system";
 import { transformI18n } from "@/plugins/i18n";
 import { addDialog } from "@/components/ReDialog";
 import { reactive, ref, onMounted, h } from "vue";
-import { Menu } from "@/types/system";
+import type { Menu } from "@/types/system";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { cloneDeep, isAllEmpty, deviceDetection } from "@pureadmin/utils";
 
@@ -103,7 +103,9 @@ export function useMenu() {
   async function onSearch() {
     try {
       loading.value = true;
-      const { data } = await getMenuList(form.title ? { title: form.title } : undefined);
+      const { data } = await getMenuList(
+        form.title ? { title: form.title } : undefined
+      );
       let newData = data;
       if (!isAllEmpty(form.title)) {
         // 前端搜索菜单名称

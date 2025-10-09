@@ -7,9 +7,18 @@ import { transformI18n } from "@/plugins/i18n";
 import { addDialog } from "@/components/ReDialog";
 import type { PaginationProps } from "@pureadmin/table";
 import { getKeyList, deviceDetection } from "@pureadmin/utils";
-import { getRoleList, getRoleMenuIds, addRole, getMenuList, saveRoleMenus, updateRole, deleteRole, updateRoleStatus } from "@/api/system";
+import {
+  getRoleList,
+  getRoleMenuIds,
+  addRole,
+  getMenuList,
+  saveRoleMenus,
+  updateRole,
+  deleteRole,
+  updateRoleStatus
+} from "@/api/system";
 import { type Ref, reactive, ref, onMounted, h, toRaw, watch } from "vue";
-import { Status, Role } from "@/types/system";
+import type { Status, Role } from "@/types/system";
 
 export function useRole(treeRef: Ref) {
   const form = reactive({

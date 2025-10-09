@@ -1,18 +1,30 @@
 import { ref, reactive, h } from "vue";
-import type {
-  IncubatorItem,
-  IncubatorQueryParams,
-  PageResponseData
-} from "../types/types";
-import { getIncubatorList, deleteIncubator } from "../api";
 import type { PaginationProps } from "@pureadmin/table";
 import { ElMessage, ElTag, ElImage } from "element-plus";
-import { getFullImageUrl } from "@/utils/image";
 import { useDateFormat } from "@vueuse/core";
+import { getFullImageUrl } from "@/utils/image";
+import type { OffshoreCenterItem, OffshoreQueryParams } from "../types/types";
+import { getOffshoreList, deleteOffshore } from "../api";
 
-export function useIncubatorTable() {
+const STATUS_INFO: Record<
+  number,
+  { label: string; type: "success" | "warning" | "danger" | "info" }
+> = {
+  1: { label: "正常", type: "success" },
+  2: { label: "已下线", type: "warning" },
+  3: { label: "禁用", type: "danger" }
+};
+
+function formatNumber(value: unknown) {
+  if (value === null || value === undefined || value === "") return "-";
+  const num = Number(value);
+  if (Number.isNaN(num)) return String(value);
+  return num.toLocaleString();
+}
+
+export function useOffshoreTable() {
   const loading = ref(false);
-  const list = ref<IncubatorItem[]>([]);
+  const list = ref<OffshoreCenterItem[]>([]);
   const pagination = reactive<PaginationProps>({
     total: 0,
     pageSize: 10,
@@ -20,13 +32,16 @@ export function useIncubatorTable() {
     background: true
   });
 
-  const form = reactive<IncubatorQueryParams>({
+  const form = reactive<OffshoreQueryParams>({
     page: 1,
     pageSize: 10,
     name: "",
     regionId: "",
+    centerTypeId: "",
     status: "",
-    isRecommended: ""
+    isRecommended: "",
+    sortBy: "createdTime",
+    sortOrder: "desc"
   });
 
   const columns: TableColumnList = [
@@ -57,7 +72,8 @@ export function useIncubatorTable() {
       label: "地区",
       prop: "region",
       minWidth: 120,
-      cellRenderer: ({ row }) => row.region?.name || row.location || "-"
+      cellRenderer: ({ row }) =>
+        row.region?.name || row.city || row.country || "-"
     },
     {
       label: "推荐",
@@ -68,7 +84,7 @@ export function useIncubatorTable() {
         h(
           ElTag,
           {
-            type: row.isRecommended ? "success" : "info",
+            type: row.isRecommended ? "warning" : "info",
             effect: "light",
             size: "small"
           },
@@ -81,40 +97,35 @@ export function useIncubatorTable() {
       minWidth: 100,
       align: "center",
       cellRenderer: ({ row }) => {
-        const map: Record<
-          number,
-          { label: string; color: "success" | "warning" | "danger" | "info" }
-        > = {
-          1: { label: "正常", color: "success" },
-          2: { label: "已下线", color: "warning" },
-          3: { label: "禁用", color: "danger" }
+        const info = STATUS_INFO[row.status ?? 1] || {
+          label: "-",
+          type: "info"
         };
-        const info = map[row.status ?? 1] || { label: "-", color: "info" };
         return h(
           ElTag,
-          { type: info.color, effect: "light", size: "small" },
+          { type: info.type, effect: "light", size: "small" },
           () => info.label
         );
       }
     },
     {
-      label: "面积(㎡)",
-      prop: "area",
-      minWidth: 120,
-      align: "center",
-      cellRenderer: ({ row }) => formatNumber(row.area)
-    },
-    {
-      label: "入驻企业数",
-      prop: "settledCompaniesCount",
+      label: "服务企业数",
+      prop: "serviceCount",
       minWidth: 140,
       align: "center",
-      cellRenderer: ({ row }) => formatNumber(row.settledCompaniesCount)
+      cellRenderer: ({ row }) => formatNumber(row.serviceCount)
+    },
+    {
+      label: "成功案例数",
+      prop: "successCases",
+      minWidth: 140,
+      align: "center",
+      cellRenderer: ({ row }) => formatNumber(row.successCases)
     },
     {
       label: "创建时间",
       prop: "createdTime",
-      minWidth: 120,
+      minWidth: 140,
       cellRenderer: ({ row }) => {
         if (!row.createdTime) return "-";
         const date = new Date(row.createdTime);
@@ -125,11 +136,11 @@ export function useIncubatorTable() {
     { label: "操作", fixed: "right", width: 220, slot: "operation" }
   ];
 
-  async function fetch(params?: Partial<IncubatorQueryParams>) {
+  async function fetch(params?: Partial<OffshoreQueryParams>) {
     loading.value = true;
     try {
-      const query = { ...form, ...(params || {}) } as IncubatorQueryParams;
-      const result = await getIncubatorList(query);
+      const query = { ...form, ...(params || {}) } as OffshoreQueryParams;
+      const result = await getOffshoreList(query);
 
       if (result.code === 200) {
         const responseData = result.data;
@@ -139,23 +150,16 @@ export function useIncubatorTable() {
         }));
         pagination.total = responseData?.total || 0;
         pagination.pageSize = responseData?.pageSize || query.pageSize;
-        pagination.currentPage = responseData?.currentPage || query.page;
+        pagination.currentPage = responseData?.page || query.page;
       } else {
-        ElMessage.error("获取孵化器列表失败: " + result.message);
+        ElMessage.error("获取离岸中心列表失败: " + result.message);
       }
     } catch (error) {
-      console.error("获取孵化器列表失败:", error);
-      ElMessage.error("获取孵化器列表失败");
+      console.error("获取离岸中心列表失败:", error);
+      ElMessage.error("获取离岸中心列表失败");
     } finally {
       loading.value = false;
     }
-  }
-
-  function formatNumber(value: unknown) {
-    if (value === null || value === undefined || value === "") return "-";
-    const num = Number(value);
-    if (Number.isNaN(num)) return String(value);
-    return num.toLocaleString();
   }
 
   function onSearch() {
@@ -170,18 +174,21 @@ export function useIncubatorTable() {
       pageSize: pagination.pageSize,
       name: "",
       regionId: "",
+      centerTypeId: "",
       status: "",
-      isRecommended: ""
+      isRecommended: "",
+      sortBy: "createdTime",
+      sortOrder: "desc"
     });
     pagination.currentPage = 1;
     fetch();
   }
 
-  async function removeRow(row: IncubatorItem) {
+  async function removeRow(row: OffshoreCenterItem) {
     try {
-      const result = await deleteIncubator(row.id);
+      const result = await deleteOffshore(row.id);
       if (result.code === 200) {
-        ElMessage.success(result.message || `已删除载体【${row.name}】`);
+        ElMessage.success(result.message || `已删除离岸中心【${row.name}】`);
         fetch();
         return true;
       } else {
@@ -189,7 +196,7 @@ export function useIncubatorTable() {
         return false;
       }
     } catch (error: any) {
-      console.error("删除孵化器失败:", error);
+      console.error("删除离岸中心失败:", error);
       ElMessage.error(error?.message || "删除失败");
       return false;
     }

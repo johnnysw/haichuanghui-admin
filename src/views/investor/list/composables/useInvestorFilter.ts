@@ -1,9 +1,5 @@
 import { reactive, ref, onMounted } from "vue";
-import { 
-  getRegionList, 
-  getIndustryList, 
-  getFundingStageList
-} from "../../api";
+import { getRegionList, getIndustryList, getFundingStageList } from "../../api";
 import type { BaseOption, InvestorQueryParams } from "../../types/types";
 import { INVESTOR_STATUS_OPTIONS } from "../../types/types";
 
@@ -12,9 +8,9 @@ export function useInvestorFilter() {
     page: 1,
     limit: 10,
     search: "",
-    field: "",      // 关注行业 ID
-    stage: "",      // 偏好阶段 ID
-    region: "",     // 地区 ID
+    field: "", // 关注行业 ID
+    stage: "", // 偏好阶段 ID
+    region: "", // 地区 ID
     status: undefined // 状态
   });
 
@@ -22,7 +18,7 @@ export function useInvestorFilter() {
   const regionOptions = ref<BaseOption[]>([]);
   const industryOptions = ref<BaseOption[]>([]);
   const stageOptions = ref<BaseOption[]>([]);
-  
+
   // 状态选项
   const statusOptions = INVESTOR_STATUS_OPTIONS;
 
@@ -76,7 +72,7 @@ export function useInvestorFilter() {
     fetchOptions();
   });
 
-  const resetForm = (formEl) => {
+  const resetForm = formEl => {
     if (!formEl) return;
     formEl.resetFields();
   };

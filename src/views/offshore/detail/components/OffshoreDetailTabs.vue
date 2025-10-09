@@ -1,198 +1,177 @@
 <template>
   <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-    <!-- 标签页导航 -->
-    <div class="border-b border-gray-200">
-      <nav class="flex overflow-x-auto">
-        <button
-          v-for="tab in tabs"
-          :key="tab.key"
-          :class="[
-            'px-6 py-4 whitespace-nowrap',
-            currentTab === tab.key
-              ? 'border-b-2 border-primary text-primary font-medium'
-              : 'text-gray-600 hover:text-primary',
-          ]"
-          @click="handleTabChange(tab.key)"
-        >
-          {{ tab.label }}
-        </button>
-      </nav>
-    </div>
-
-    <!-- 标签页内容 -->
-    <div class="p-8">
-      <!-- 详细介绍 -->
-      <div v-if="currentTab === 'introduction'">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">关于{{ offshore.name }}</h2>
-        <div
-          v-if="offshore.detailedIntro"
-          class="text-gray-700 leading-relaxed mb-6 rich-text-content"
-          v-html="offshore.detailedIntro"
-        ></div>
-        <div
-          v-else-if="offshore.description"
-          class="text-gray-700 leading-relaxed mb-6"
-        >
-          {{ offshore.description }}
-        </div>
-        <div v-else class="text-center py-10 text-gray-500">暂无详细介绍信息</div>
-      </div>
-
-      <!-- 环境展示 -->
-      <div v-else-if="currentTab === 'environment'">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">环境展示</h2>
-        <div v-if="getImages().length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <el-tabs
+      v-model="currentTab"
+      class="offshore-tabs"
+      stretch
+      @tab-change="handleTabChange"
+    >
+      <el-tab-pane label="中心介绍" name="introduction">
+        <div class="p-8">
           <div
-            v-for="(image, index) in getImages()"
-            :key="index"
-            class="rounded-lg overflow-hidden shadow-sm border border-gray-200"
-          >
-            <img
-              :src="image.url"
-              :alt="image.name"
-              class="w-full h-64 object-cover"
-            />
-            <div class="p-3 bg-white">
-              <p class="text-sm font-medium text-gray-800 truncate">{{ image.name }}</p>
-              <p class="text-xs text-gray-500 mt-1">{{ formatFileSize(image.size) }}</p>
-            </div>
+            v-if="offshore.introduction"
+            class="text-gray-700 leading-relaxed rich-text-content"
+            v-html="richHtml(offshore.introduction)"
+          />
+          <div v-else class="text-center py-10 text-gray-500">
+            暂无中心介绍信息
           </div>
         </div>
-        <div v-else class="text-center py-10 text-gray-500">暂无环境展示信息</div>
-      </div>
+      </el-tab-pane>
 
-      <!-- 入驻企业 -->
-      <div v-else-if="currentTab === 'companies'">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">入驻企业</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-gray-50 rounded-lg p-6 text-center">
-            <div class="text-3xl font-bold text-primary mb-2">{{ offshore.companyCount || 0 }}家</div>
-            <div class="text-gray-600">当前入驻企业</div>
-          </div>
-          <div class="bg-gray-50 rounded-lg p-6 text-center">
-            <div class="text-3xl font-bold text-green-600 mb-2">{{ offshore.graduatedCount || 0 }}家</div>
-            <div class="text-gray-600">成功毕业企业</div>
-          </div>
-          <div class="bg-gray-50 rounded-lg p-6 text-center">
-            <div class="text-3xl font-bold text-orange-600 mb-2">{{ offshore.successStoryCount || 0 }}个</div>
-            <div class="text-gray-600">成功案例</div>
-          </div>
-          <div class="bg-gray-50 rounded-lg p-6 text-center">
-            <div class="text-3xl font-bold text-purple-600 mb-2">88%</div>
-            <div class="text-gray-600">企业存活率</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 服务内容 -->
-      <div v-else-if="currentTab === 'services'">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">服务内容</h2>
-        <div v-if="getServices().length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <el-tab-pane label="环境展示" name="environment">
+        <div class="p-8">
           <div
-            v-for="(service, index) in getServices()"
-            :key="index"
-            class="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg"
-          >
-            <div class="text-primary">
-              <el-icon :size="20">
-                <component :is="useRenderIcon('ep:check')" />
-              </el-icon>
-            </div>
-            <div>
-              <h4 class="font-semibold text-gray-800 mb-2">服务{{ index + 1 }}</h4>
-              <p class="text-gray-600">{{ service }}</p>
-            </div>
+            v-if="offshore.environment"
+            class="text-gray-700 leading-relaxed rich-text-content"
+            v-html="richHtml(offshore.environment)"
+          />
+          <div v-else class="text-center py-10 text-gray-500">
+            暂无环境展示信息
           </div>
         </div>
-        <div v-else class="text-center py-10 text-gray-500">暂无服务内容信息</div>
-      </div>
+      </el-tab-pane>
 
-      <!-- 政策支持 -->
-      <div v-else-if="currentTab === 'policies'">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">政策支持</h2>
-        <div v-if="getPolicies().length > 0" class="space-y-4">
+      <el-tab-pane label="成功案例" name="success">
+        <div class="p-8">
           <div
-            v-for="(policy, index) in getPolicies()"
-            :key="index"
-            class="bg-blue-50 border border-blue-200 rounded-lg p-6"
-          >
-            <div class="flex items-center space-x-4">
-              <div class="text-primary">
-                <el-icon :size="24">
-                  <component :is="useRenderIcon('ep:document')" />
-                </el-icon>
+            v-if="offshore.successCasesDetail"
+            class="text-gray-700 leading-relaxed rich-text-content"
+            v-html="richHtml(offshore.successCasesDetail)"
+          />
+          <div v-else class="text-center py-10 text-gray-500">
+            暂无成功案例信息
+          </div>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="国际化服务" name="international">
+        <div class="p-8">
+          <div
+            v-if="offshore.internationalServices"
+            class="text-gray-700 leading-relaxed rich-text-content"
+            v-html="richHtml(offshore.internationalServices)"
+          />
+          <div v-else class="text-center py-10 text-gray-500">
+            暂无国际化服务信息
+          </div>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="资源优势" name="resources">
+        <div class="p-8">
+          <div
+            v-if="offshore.resourceAdvantages"
+            class="text-gray-700 leading-relaxed rich-text-content"
+            v-html="richHtml(offshore.resourceAdvantages)"
+          />
+          <div v-else class="text-center py-10 text-gray-500">
+            暂无资源优势信息
+          </div>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="联系方式" name="contact">
+        <div class="p-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 联系人信息卡片 -->
+            <div class="bg-gray-50 rounded-lg p-6">
+              <h3 class="text-lg font-semibold text-gray-700 mb-4">
+                联系人信息
+              </h3>
+              <div class="space-y-3">
+                <div v-if="offshore.contactPerson" class="flex items-start">
+                  <span class="text-gray-600 w-28 flex-shrink-0">联系人：</span>
+                  <span class="text-gray-800">{{ offshore.contactPerson }}</span>
+                </div>
+                <div v-if="offshore.contactPhone" class="flex items-start">
+                  <span class="text-gray-600 w-28 flex-shrink-0"
+                    >联系电话：</span
+                  >
+                  <span class="text-gray-800">{{ offshore.contactPhone }}</span>
+                </div>
+                <div v-if="offshore.contactEmail" class="flex items-start">
+                  <span class="text-gray-600 w-28 flex-shrink-0"
+                    >电子邮箱：</span
+                  >
+                  <span class="text-gray-800">{{ offshore.contactEmail }}</span>
+                </div>
               </div>
-              <div class="flex-1">
-                <h4 class="font-semibold text-gray-800 mb-1">{{ policy.name }}</h4>
-                <p class="text-sm text-gray-600 mb-2">{{ formatFileSize(policy.size) }}</p>
-                <a 
-                  :href="policy.url" 
-                  target="_blank" 
-                  class="inline-flex items-center text-primary hover:text-blue-700 text-sm font-medium"
+            </div>
+
+            <!-- 中心信息卡片 -->
+            <div class="bg-gray-50 rounded-lg p-6">
+              <h3 class="text-lg font-semibold text-gray-700 mb-4">
+                中心信息
+              </h3>
+              <div class="space-y-3">
+                <div v-if="offshore.address" class="flex items-start">
+                  <span class="text-gray-600 w-28 flex-shrink-0"
+                    >详细地址：</span
+                  >
+                  <span class="text-gray-800">{{ offshore.address }}</span>
+                </div>
+                <div v-if="offshore.website" class="flex items-start">
+                  <span class="text-gray-600 w-28 flex-shrink-0"
+                    >官方网站：</span
+                  >
+                  <a
+                    :href="offshore.website"
+                    class="text-primary hover:underline break-all"
+                    target="_blank"
+                  >
+                    {{ offshore.website }}
+                  </a>
+                </div>
+                <div
+                  v-if="offshore.country || offshore.city"
+                  class="flex items-start"
                 >
-                  <el-icon class="mr-1" :size="16">
-                    <component :is="useRenderIcon('ep:download')" />
-                  </el-icon>
-                  下载文件
-                </a>
+                  <span class="text-gray-600 w-28 flex-shrink-0"
+                    >所在区域：</span
+                  >
+                  <span class="text-gray-800">{{
+                    [offshore.country, offshore.city].filter(Boolean).join(" · ")
+                  }}</span>
+                </div>
+                <div v-if="offshore.establishedYear" class="flex items-start">
+                  <span class="text-gray-600 w-28 flex-shrink-0"
+                    >成立年份：</span
+                  >
+                  <span class="text-gray-800">{{
+                    offshore.establishedYear
+                  }}</span>
+                </div>
+                <div v-if="offshore.area" class="flex items-start">
+                  <span class="text-gray-600 w-28 flex-shrink-0"
+                    >中心面积：</span
+                  >
+                  <span class="text-gray-800">{{ offshore.area }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div v-else class="text-center py-10 text-gray-500">暂无政策支持文件</div>
-      </div>
-
-      <!-- 联系方式 -->
-      <div v-else-if="currentTab === 'contact'">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">联系方式</h2>
-        <div class="space-y-4">
-          <div v-if="offshore.address" class="flex items-center space-x-3">
-            <el-icon class="text-gray-500 w-5 h-5 flex-shrink-0">
-              <component :is="useRenderIcon('ep:location')" />
-            </el-icon>
-            <span class="text-gray-700">{{ offshore.address }}</span>
-          </div>
-          <div v-if="offshore.contactPhone" class="flex items-center space-x-3">
-            <el-icon class="text-gray-500 w-5 h-5 flex-shrink-0">
-              <component :is="useRenderIcon('ep:phone')" />
-            </el-icon>
-            <span class="text-gray-700">{{ offshore.contactPhone }}</span>
-          </div>
-          <div v-if="offshore.contactEmail" class="flex items-center space-x-3">
-            <el-icon class="text-gray-500 w-5 h-5 flex-shrink-0">
-              <component :is="useRenderIcon('ep:message')" />
-            </el-icon>
-            <span class="text-gray-700">{{ offshore.contactEmail }}</span>
-          </div>
-          <div v-if="offshore.website" class="flex items-center space-x-3">
-            <el-icon class="text-gray-500 w-5 h-5 flex-shrink-0">
-              <component :is="useRenderIcon('ep:link')" />
-            </el-icon>
-            <a :href="offshore.website" class="text-primary hover:underline" target="_blank">
-              {{ offshore.website }}
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import type { OffshoreDetail } from "../types/types";
+import { ref, watch } from "vue";
+import type { OffshoreCenterDetail } from "../types/types";
 
 defineOptions({ name: "OffshoreDetailTabs" });
 
-interface Props {
-  offshore: OffshoreDetail;
-  activeTab?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  activeTab: "introduction"
-});
+const props = withDefaults(
+  defineProps<{
+    offshore: OffshoreCenterDetail;
+    activeTab?: string;
+  }>(),
+  {
+    activeTab: "introduction"
+  }
+);
 
 const emit = defineEmits<{
   "tab-change": [tab: string];
@@ -200,165 +179,130 @@ const emit = defineEmits<{
 
 const currentTab = ref(props.activeTab);
 
-// 标签页配置
-const tabs = [
-  { key: 'introduction', label: '详细介绍' },
-  { key: 'environment', label: '环境展示' },
-  { key: 'companies', label: '入驻企业' },
-  { key: 'services', label: '服务内容' },
-  { key: 'policies', label: '政策支持' },
-  { key: 'contact', label: '联系方式' },
-];
+watch(
+  () => props.activeTab,
+  value => {
+    currentTab.value = value;
+  }
+);
 
-// 标签页切换
 const handleTabChange = (tab: string) => {
   currentTab.value = tab;
   emit("tab-change", tab);
 };
 
-// 获取图片列表
-const getImages = () => {
-  if (!props.offshore.images) return [];
-  
-  try {
-    // 如果是字符串，尝试解析为JSON（兼容旧数据）
-    if (typeof props.offshore.images === 'string') {
-      try {
-        const parsed = JSON.parse(props.offshore.images);
-        if (Array.isArray(parsed)) {
-          // 如果解析出的是对象数组，直接返回
-          if (parsed.length > 0 && typeof parsed[0] === 'object' && parsed[0].url) {
-            return parsed;
-          }
-          // 如果是字符串数组，转换为图片对象
-          return parsed.map((url: string, index: number) => ({
-            name: `环境图片${index + 1}.jpg`,
-            url: url,
-            type: 'image/jpeg'
-          }));
-        }
-        return [];
-      } catch {
-        // 解析失败，按逗号分割转换为图片对象
-        const urls = props.offshore.images.split(/[,，]/).filter((url) => url.trim() !== '');
-        return urls.map((url: string, index: number) => ({
-          name: `环境图片${index + 1}.jpg`,
-          url: url.trim(),
-          type: 'image/jpeg'
-        }));
-      }
-    }
-
-    // 如果已经是数组
-    if (Array.isArray(props.offshore.images)) {
-      return props.offshore.images;
-    }
-
-    return [];
-  } catch (error) {
-    console.warn('解析图片数据失败:', error);
-    return [];
+// 富文本处理函数
+function richHtml(value?: string) {
+  if (!value) return "";
+  // 如果已经包含 HTML 标签，直接返回
+  if (/<[a-z][\s\S]*>/i.test(value)) {
+    return value;
   }
-};
-
-// 获取服务内容数据
-const getServices = () => {
-  if (!props.offshore.services) {
-    return [
-      '国际市场开拓支持',
-      '投融资对接平台',
-      '跨境创业培训',
-      '政策咨询服务',
-      '技术转移服务',
-      '人才招聘协助'
-    ];
-  }
-
-  if (typeof props.offshore.services === 'string') {
-    try {
-      const parsed = JSON.parse(props.offshore.services);
-      if (Array.isArray(parsed)) return parsed;
-      return [props.offshore.services];
-    } catch (e) {
-      return props.offshore.services.split(/[,，]/).filter(item => item.trim() !== '');
-    }
-  }
-
-  if (Array.isArray(props.offshore.services)) {
-    return props.offshore.services;
-  }
-
-  return [];
-};
-
-// 获取政策数据
-const getPolicies = () => {
-  if (!props.offshore.policies) return [];
-
-  if (typeof props.offshore.policies === 'string') {
-    try {
-      const parsed = JSON.parse(props.offshore.policies);
-      if (Array.isArray(parsed)) {
-        // 如果解析出的是对象数组，直接返回
-        if (parsed.length > 0 && typeof parsed[0] === 'object' && parsed[0].name) {
-          return parsed;
-        }
-        // 如果是字符串数组，转换为政策对象
-        return parsed.map((name: string, index: number) => ({
-          name: name,
-          url: `#policy-${index}`,
-          size: 1024000,
-          type: 'application/pdf'
-        }));
-      }
-      return [];
-    } catch (e) {
-      // 解析失败，按逗号分割转换为政策对象
-      const names = props.offshore.policies.split(/[,，]/).filter(name => name.trim() !== '');
-      return names.map((name: string, index: number) => ({
-        name: name.trim(),
-        url: `#policy-${index}`,
-        size: 1024000,
-        type: 'application/pdf'
-      }));
-    }
-  }
-
-  if (Array.isArray(props.offshore.policies)) {
-    return props.offshore.policies;
-  }
-
-  return [];
-};
-
-// 格式化文件大小
-function formatFileSize(size?: number): string {
-  if (!size) return '未知大小';
-  if (size < 1024) return `${size} B`;
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  // 否则将换行符转换为 <br />
+  return value.replace(/\n/g, "<br />");
 }
 </script>
 
 <style scoped lang="scss">
-:deep(.rich-text-content) {
-  h1, h2, h3, h4, h5, h6 {
-    margin: 1em 0 0.5em 0;
+.offshore-tabs {
+  :deep(.el-tabs__header) {
+    margin: 0;
+  }
+
+  :deep(.el-tabs__nav-wrap::after) {
+    display: none;
+  }
+
+  :deep(.el-tabs__item) {
+    padding: 0 32px;
+    font-size: 15px;
+  }
+}
+
+.rich-text-content {
+  color: #374151;
+  line-height: 1.75;
+
+  :deep(h1),
+  :deep(h2),
+  :deep(h3),
+  :deep(h4) {
+    margin: 1.5em 0 0.75em;
     font-weight: 600;
+    color: #1f2937;
   }
-  
-  p {
-    margin: 0.5em 0;
-    line-height: 1.6;
+
+  :deep(h1) {
+    font-size: 1.875em;
   }
-  
-  ul, ol {
+
+  :deep(h2) {
+    font-size: 1.5em;
+  }
+
+  :deep(h3) {
+    font-size: 1.25em;
+  }
+
+  :deep(p) {
+    margin: 0.75em 0;
+  }
+
+  :deep(ul),
+  :deep(ol) {
     margin: 1em 0;
-    padding-left: 2em;
+    padding-left: 1.5em;
   }
-  
-  li {
-    margin: 0.25em 0;
+
+  :deep(li) {
+    margin: 0.5em 0;
+  }
+
+  :deep(img) {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1em 0;
+  }
+
+  :deep(blockquote) {
+    border-left: 4px solid #e5e7eb;
+    padding-left: 1em;
+    margin: 1em 0;
+    color: #6b7280;
+  }
+
+  :deep(code) {
+    background: #f3f4f6;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-size: 0.875em;
+  }
+
+  :deep(pre) {
+    background: #1f2937;
+    color: #f9fafb;
+    padding: 1em;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1em 0;
+  }
+
+  :deep(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+  }
+
+  :deep(th),
+  :deep(td) {
+    border: 1px solid #e5e7eb;
+    padding: 0.5em 1em;
+    text-align: left;
+  }
+
+  :deep(th) {
+    background: #f9fafb;
+    font-weight: 600;
   }
 }
 </style>

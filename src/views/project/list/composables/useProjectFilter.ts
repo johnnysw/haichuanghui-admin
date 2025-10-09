@@ -19,13 +19,22 @@ export function useProjectFilter() {
   const industryOptions = ref<BaseOption[]>([]);
   const regionOptions = ref<BaseOption[]>([]);
   const fundingStageOptions = ref<BaseOption[]>([]);
-  
+
   // 状态选项（静态枚举）
   const statusOptions = [
     { value: "draft" as ProjectStatus, label: PROJECT_STATUS_MAP.draft.text },
-    { value: "approved" as ProjectStatus, label: PROJECT_STATUS_MAP.approved.text },
-    { value: "pending_review" as ProjectStatus, label: PROJECT_STATUS_MAP.pending_review.text },
-    { value: "rejected" as ProjectStatus, label: PROJECT_STATUS_MAP.rejected.text }
+    {
+      value: "approved" as ProjectStatus,
+      label: PROJECT_STATUS_MAP.approved.text
+    },
+    {
+      value: "pending_review" as ProjectStatus,
+      label: PROJECT_STATUS_MAP.pending_review.text
+    },
+    {
+      value: "rejected" as ProjectStatus,
+      label: PROJECT_STATUS_MAP.rejected.text
+    }
   ];
 
   // 推荐状态选项
@@ -87,7 +96,7 @@ export function useProjectFilter() {
     fetchFundingStageOptions();
   });
 
-  const resetForm = (formEl) => {
+  const resetForm = formEl => {
     if (!formEl) return;
     formEl.resetFields();
   };

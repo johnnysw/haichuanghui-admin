@@ -29,7 +29,7 @@ export const uploadImage = (
 ): Promise<Response<FileUploadResult>> => {
   const formData = new FormData();
   formData.append("file", file);
-  
+
   // 如果传入了 module，则添加到 FormData 中
   if (module) {
     formData.append("module", module);
@@ -41,7 +41,7 @@ export const uploadImage = (
     { data: formData }, // 保持现有 http 工具的调用习惯，将 formData 包装在 data 中
     {
       headers: {
-        'Content-Type': 'multipart/form-data' // 显式设置 Header
+        "Content-Type": "multipart/form-data" // 显式设置 Header
       }
     }
   );
@@ -56,10 +56,11 @@ export const uploadImage = (
 export const uploadFile = (
   file: File,
   module?: string // 模块参数
-): Promise<Response<FileUploadResult>> => { // 更新返回类型
+): Promise<Response<FileUploadResult>> => {
+  // 更新返回类型
   const formData = new FormData();
   formData.append("file", file); // 后端 Controller 默认读取 "file"
-  
+
   // 如果传入了 module，则添加到 FormData 中
   if (module) {
     formData.append("module", module);
@@ -71,7 +72,7 @@ export const uploadFile = (
     { data: formData }, // 将 formData 包装在 data 属性中
     {
       headers: {
-        'Content-Type': 'multipart/form-data' // 显式设置 Header
+        "Content-Type": "multipart/form-data" // 显式设置 Header
       }
     }
   );

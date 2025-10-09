@@ -25,7 +25,7 @@ const mockListData: ListItem[] = [
   },
   {
     id: 2,
-    title: "示例卡片2", 
+    title: "示例卡片2",
     description: "这是另一个示例卡片描述",
     image: "https://via.placeholder.com/300x200",
     status: 1,
@@ -33,8 +33,10 @@ const mockListData: ListItem[] = [
   }
 ];
 
-export const getCardList = (params?: any): Promise<{ code: number; data: ListResponse; message: string }> => {
-  return new Promise((resolve) => {
+export const getCardList = (
+  params?: any
+): Promise<{ code: number; data: ListResponse; message: string }> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       resolve({
         code: 200,

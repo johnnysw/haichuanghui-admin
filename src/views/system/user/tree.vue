@@ -180,8 +180,8 @@ defineExpose({ onTreeReset });
             :style="{
               color: highlightMap[node.id]?.highlight
                 ? 'var(--el-color-primary)'
-                : data.status === 0 
-                  ? 'var(--el-color-danger)' 
+                : data.status === 0
+                  ? 'var(--el-color-danger)'
                   : '',
               background: highlightMap[node.id]?.highlight
                 ? 'var(--el-color-primary-light-7)'
@@ -198,7 +198,7 @@ defineExpose({ onTreeReset });
               "
             />
             <span class="!w-[120px] !truncate" :title="node.label">
-              {{ node.label }}{{ data.status === 0 ? '(已禁用)' : '' }}
+              {{ node.label }}{{ data.status === 0 ? "(已禁用)" : "" }}
             </span>
           </div>
         </template>

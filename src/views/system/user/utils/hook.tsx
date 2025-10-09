@@ -211,7 +211,6 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
 
       switchLoadMap.value[index] = { loading: false };
       message("已成功修改用户状态", { type: "success" });
-
     } catch (error) {
       // 操作取消或接口失败时回滚状态
       row.status = row.status === 0 ? 1 : 0;
@@ -357,14 +356,16 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
                 email: curData.email,
                 wechat: curData.wechat,
                 status: curData.status,
-                remark: curData.remark,
-              }).then(() => {
-                chores();
-              }).catch(error => {
-                message(`新增用户失败：${error.message}`, {
-                  type: "error"
+                remark: curData.remark
+              })
+                .then(() => {
+                  chores();
+                })
+                .catch(error => {
+                  message(`新增用户失败：${error.message}`, {
+                    type: "error"
+                  });
                 });
-              });
             } else {
               // 修改用户
               updateUser({
@@ -376,13 +377,15 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
                 email: curData.email,
                 wechat: curData.wechat,
                 remark: curData.remark
-              }).then(() => {
-                chores();
-              }).catch(error => {
-                message(`修改用户失败：${error.message}`, {
-                  type: "error"
+              })
+                .then(() => {
+                  chores();
+                })
+                .catch(error => {
+                  message(`修改用户失败：${error.message}`, {
+                    type: "error"
+                  });
                 });
-              });
             }
           }
         });
@@ -404,7 +407,7 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
           imgSrc: getFullImageUrl(row.avatar) || userAvatar,
           onCropper: info => (avatarInfo.value = info)
         }),
-      beforeSure: async (done) => {
+      beforeSure: async done => {
         // 根据实际业务使用avatarInfo.value和row里的某些字段去调用上传头像接口即可
         try {
           // 将裁剪后的图片转为文件对象
@@ -424,8 +427,8 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
           // done(); // 关闭弹框
           // onSearch(); // 刷新表格数据
           // 压缩图片
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
           const img = new Image();
 
           await new Promise((resolve, reject) => {
@@ -435,18 +438,20 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
           });
 
           // 设置固定尺寸
-          canvas.width = 200;  // 设置合适的尺寸
+          canvas.width = 200; // 设置合适的尺寸
           canvas.height = 200;
 
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
           const blob = await new Promise(resolve => {
-            canvas.toBlob(resolve, 'image/png', 0.8); // 压缩质量为80%
+            canvas.toBlob(resolve, "image/png", 0.8); // 压缩质量为80%
           });
 
           await uploadAvatar({
             userId: row.id,
-            file: new File([blob as BlobPart], "avatar.png", { type: "image/png" })
+            file: new File([blob as BlobPart], "avatar.png", {
+              type: "image/png"
+            })
           });
 
           message("上传头像成功", { type: "success" });
@@ -523,24 +528,26 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
         </Fragment>
       ),
       closeCallBack: () => (pwdForm.newPwd = ""),
-      beforeSure: (done) => {
+      beforeSure: done => {
         ruleFormRef.value.validate(valid => {
           if (valid) {
             // 表单规则校验通过
             resetPassword({
               userId: row.id,
               newPassword: pwdForm.newPwd
-            }).then(() => {
-              message(`已成功重置 ${row.username} 用户的密码`, {
-                type: "success"
+            })
+              .then(() => {
+                message(`已成功重置 ${row.username} 用户的密码`, {
+                  type: "success"
+                });
+                done(); // 关闭弹框
+                onSearch(); // 刷新表格数据
+              })
+              .catch(error => {
+                message(`重置密码失败：${error.message}`, {
+                  type: "error"
+                });
               });
-              done(); // 关闭弹框
-              onSearch(); // 刷新表格数据
-            }).catch(error => {
-              message(`重置密码失败：${error.message}`, {
-                type: "error"
-              });
-            });
           }
         });
       }
@@ -554,14 +561,14 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
       const allRolesResponse = await getAssignableRoles();
       // 提取角色列表数组，getAssignableRoles直接返回数组而不是分页结构
       const allRoles = allRolesResponse.data || [];
-      
+
       // 选中的角色列表
       const rolesResponse = await getRoleIds({ userId: row.id });
       const roles = rolesResponse.data ?? [];
-      
+
       // 从角色对象数组中提取ID数组
       const ids = roles.map(role => role.id);
-      
+
       addDialog({
         title: `分配 ${row.username} 用户的角色`,
         props: {
@@ -584,15 +591,17 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
           assignRoles({
             userId: row.id,
             roleIds: curData.ids
-          }).then(() => {
-            message("分配角色成功", { type: "success" });
-            done(); // 关闭弹框
-            onSearch(); // 刷新表格数据
-          }).catch(error => {
-            message(`分配角色失败：${error.message}`, {
-              type: "error"
+          })
+            .then(() => {
+              message("分配角色成功", { type: "success" });
+              done(); // 关闭弹框
+              onSearch(); // 刷新表格数据
+            })
+            .catch(error => {
+              message(`分配角色失败：${error.message}`, {
+                type: "error"
+              });
             });
-          });
         }
       });
     } catch (error) {
@@ -627,7 +636,6 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
       });
   }
 
-  
   onMounted(async () => {
     treeLoading.value = true;
     onSearch();

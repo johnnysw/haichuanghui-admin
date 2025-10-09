@@ -2,7 +2,11 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { InvestorInfo } from "../types/types";
-import { reviewInvestor, toggleInvestorRecommendation, updateInvestor } from "../api";
+import {
+  reviewInvestor,
+  toggleInvestorRecommendation,
+  updateInvestor
+} from "../api";
 
 export function useInvestorDetailActions(onRefresh: () => void) {
   const router = useRouter();
@@ -51,7 +55,7 @@ export function useInvestorDetailActions(onRefresh: () => void) {
 
       actionLoading.value = true;
       const response = await reviewInvestor(investor.id, status, comment);
-      
+
       if (response.success) {
         ElMessage.success(`审核${statusText}成功`);
         onRefresh();
@@ -72,7 +76,7 @@ export function useInvestorDetailActions(onRefresh: () => void) {
   const handleToggleRecommendation = async (investor: InvestorInfo) => {
     try {
       const action = investor.isFeatured ? "取消推荐" : "推荐";
-      
+
       await ElMessageBox.confirm(
         `确定要${action}该投资人吗？`,
         `确认${action}`,
@@ -85,7 +89,7 @@ export function useInvestorDetailActions(onRefresh: () => void) {
 
       actionLoading.value = true;
       const response = await toggleInvestorRecommendation(investor.id);
-      
+
       if (response.success) {
         ElMessage.success(response.message);
         onRefresh();
@@ -107,7 +111,7 @@ export function useInvestorDetailActions(onRefresh: () => void) {
     try {
       const newStatus = investor.status === 1 ? 0 : 1;
       const action = newStatus === 1 ? "启用" : "禁用";
-      
+
       await ElMessageBox.confirm(
         `确定要${action}该投资人吗？`,
         `确认${action}`,
@@ -120,7 +124,7 @@ export function useInvestorDetailActions(onRefresh: () => void) {
 
       actionLoading.value = true;
       const response = await updateInvestor(investor.id, { status: newStatus });
-      
+
       if (response.success) {
         ElMessage.success(`${action}成功`);
         onRefresh();
@@ -161,13 +165,16 @@ export function useInvestorDetailActions(onRefresh: () => void) {
   };
 
   // 发送通知
-  const handleSendNotification = async (investor: InvestorInfo, message: string) => {
+  const handleSendNotification = async (
+    investor: InvestorInfo,
+    message: string
+  ) => {
     try {
       actionLoading.value = true;
-      
+
       // 这里调用发送通知的API
       // await sendNotification(investor.userId, message);
-      
+
       ElMessage.success("通知发送成功");
     } catch (error) {
       console.error("发送通知失败:", error);

@@ -78,10 +78,14 @@ const mockReviewRecords: ReviewRecord[] = [
 ];
 
 // 获取投资案例列表
-export const getInvestmentCases = (investorId: number): Promise<ApiResponse<InvestmentCase[]>> => {
-  return new Promise((resolve) => {
+export const getInvestmentCases = (
+  investorId: number
+): Promise<ApiResponse<InvestmentCase[]>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
-      const cases = mockInvestmentCases.filter(item => item.investorId === investorId);
+      const cases = mockInvestmentCases.filter(
+        item => item.investorId === investorId
+      );
       resolve({
         code: 200,
         success: true,
@@ -93,10 +97,14 @@ export const getInvestmentCases = (investorId: number): Promise<ApiResponse<Inve
 };
 
 // 获取审核记录
-export const getReviewRecords = (investorId: number): Promise<ApiResponse<ReviewRecord[]>> => {
-  return new Promise((resolve) => {
+export const getReviewRecords = (
+  investorId: number
+): Promise<ApiResponse<ReviewRecord[]>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
-      const records = mockReviewRecords.filter(item => item.investorId === investorId);
+      const records = mockReviewRecords.filter(
+        item => item.investorId === investorId
+      );
       resolve({
         code: 200,
         success: true,
@@ -108,16 +116,18 @@ export const getReviewRecords = (investorId: number): Promise<ApiResponse<Review
 };
 
 // 添加投资案例
-export const addInvestmentCase = (data: Omit<InvestmentCase, "id">): Promise<ApiResponse<InvestmentCase>> => {
-  return new Promise((resolve) => {
+export const addInvestmentCase = (
+  data: Omit<InvestmentCase, "id">
+): Promise<ApiResponse<InvestmentCase>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const newCase: InvestmentCase = {
         ...data,
         id: Date.now()
       };
-      
+
       mockInvestmentCases.push(newCase);
-      
+
       resolve({
         code: 200,
         success: true,
@@ -129,8 +139,11 @@ export const addInvestmentCase = (data: Omit<InvestmentCase, "id">): Promise<Api
 };
 
 // 更新投资案例
-export const updateInvestmentCase = (id: number, data: Partial<InvestmentCase>): Promise<ApiResponse<InvestmentCase>> => {
-  return new Promise((resolve) => {
+export const updateInvestmentCase = (
+  id: number,
+  data: Partial<InvestmentCase>
+): Promise<ApiResponse<InvestmentCase>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const index = mockInvestmentCases.findIndex(item => item.id === id);
       if (index !== -1) {
@@ -154,8 +167,10 @@ export const updateInvestmentCase = (id: number, data: Partial<InvestmentCase>):
 };
 
 // 删除投资案例
-export const deleteInvestmentCase = (id: number): Promise<ApiResponse<null>> => {
-  return new Promise((resolve) => {
+export const deleteInvestmentCase = (
+  id: number
+): Promise<ApiResponse<null>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const index = mockInvestmentCases.findIndex(item => item.id === id);
       if (index !== -1) {

@@ -6,13 +6,13 @@
         <button
           v-for="tab in tabs"
           :key="tab.key"
-          @click="handleTabClick(tab.key)"
           :class="[
             'px-6 py-4 whitespace-nowrap font-medium transition-colors',
             activeTab === tab.key
               ? 'border-b-2 border-primary text-primary'
               : 'text-gray-600 hover:text-primary'
           ]"
+          @click="handleTabClick(tab.key)"
         >
           {{ tab.label }}
         </button>

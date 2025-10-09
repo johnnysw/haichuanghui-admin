@@ -1,554 +1,1073 @@
 <template>
-  <el-dialog
-    :title="dialogTitle"
-    v-model="dialogVisible"
-    width="900px"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    destroy-on-close
+  <el-drawer
+    v-model="visible"
+    :title="drawerTitle"
+    direction="rtl"
+    size="70%"
+    :before-close="handleClose"
+    custom-class="offshore-drawer"
   >
     <el-form
       ref="formRef"
       :model="form"
       :rules="rules"
       label-width="120px"
-      label-position="left"
-      :disabled="mode === 'view'"
+      label-position="top"
     >
       <!-- 基本信息 -->
-      <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3"></div>
-          基本信息
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="form-section">
+        <div class="form-section-title">基本信息</div>
+        <el-row :gutter="24">
+          <el-col :span="12">
           <el-form-item label="中心名称" prop="name">
-            <el-input v-model="form.name" placeholder="请输入中心名称" />
+              <el-input
+                v-model="form.name"
+                placeholder="请输入中心名称"
+                clearable
+              />
           </el-form-item>
-          <el-form-item label="所在地区" prop="location">
-            <el-select v-model="form.location" placeholder="请选择所在地区" class="w-full">
-              <el-option label="美国硅谷" value="美国硅谷" />
-              <el-option label="德国柏林" value="德国柏林" />
-              <el-option label="新加坡" value="新加坡" />
-              <el-option label="日本东京" value="日本东京" />
-              <el-option label="澳大利亚悉尼" value="澳大利亚悉尼" />
-              <el-option label="加拿大多伦多" value="加拿大多伦多" />
-              <el-option label="英国伦敦" value="英国伦敦" />
-              <el-option label="法国巴黎" value="法国巴黎" />
-              <el-option label="韩国首尔" value="韩国首尔" />
-              <el-option label="以色列特拉维夫" value="以色列特拉维夫" />
-              <el-option label="其他" value="其他" />
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="中心类型" prop="centerTypeId">
+              <el-select
+                v-model="form.centerTypeId"
+                placeholder="请选择中心类型"
+                clearable
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in centerTypeOptions"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
             </el-select>
           </el-form-item>
-          <el-form-item label="中心类型" prop="type">
-            <el-select v-model="form.type" placeholder="请选择中心类型" class="w-full">
-              <el-option label="科技园" value="科技园" />
-              <el-option label="孵化器" value="孵化器" />
-              <el-option label="加速器" value="加速器" />
-              <el-option label="创业园" value="创业园" />
-              <el-option label="研究院" value="研究院" />
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="24">
+          <el-col :span="24">
+            <el-form-item label="简介" prop="description">
+              <el-input
+                v-model="form.description"
+                type="textarea"
+                :rows="3"
+                placeholder="请输入中心简介"
+                maxlength="500"
+                show-word-limit
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </div>
+
+      <!-- 地区信息 -->
+      <div class="form-section">
+        <div class="form-section-title">地区信息</div>
+        <el-row :gutter="24">
+          <el-col :span="8">
+            <el-form-item label="地区" prop="regionId">
+              <el-select
+                v-model="form.regionId"
+                placeholder="请选择地区"
+                clearable
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in regionOptions"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
             </el-select>
           </el-form-item>
-          <el-form-item label="成立日期">
-            <el-date-picker
-              v-model="form.establishedDate"
-              type="date"
-              placeholder="选择成立日期"
-              value-format="YYYY-MM-DD"
-              class="w-full"
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="国家" prop="country">
+              <el-input
+                v-model="form.country"
+                placeholder="请输入国家"
+                clearable
             />
           </el-form-item>
-          <el-form-item label="场地面积(㎡)">
-            <el-input-number v-model="form.areaSize" :min="0" class="w-full" />
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="城市" prop="city">
+              <el-input v-model="form.city" placeholder="请输入城市" clearable />
           </el-form-item>
-          <el-form-item label="入驻企业数">
-            <el-input-number v-model="form.companyCount" :min="0" class="w-full" />
-          </el-form-item>
-          <el-form-item label="毕业企业数">
-            <el-input-number v-model="form.graduatedCount" :min="0" class="w-full" />
-          </el-form-item>
-        </div>
-        <el-form-item label="中心简介" prop="description" class="mt-6">
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="24">
+          <el-col :span="24">
+            <el-form-item label="详细地址" prop="address">
           <el-input
-            v-model="form.description"
-            type="textarea"
-            :rows="4"
-            placeholder="请输入中心简介"
+                v-model="form.address"
+                placeholder="请输入详细地址"
+                clearable
           />
         </el-form-item>
+          </el-col>
+        </el-row>
       </div>
 
-      <!-- 联系信息 -->
-      <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3"></div>
-          联系信息
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <el-form-item label="联系地址">
-            <el-input v-model="form.address" placeholder="请输入详细地址" />
+      <!-- 联系方式 -->
+      <div class="form-section">
+        <div class="form-section-title">联系方式</div>
+        <el-row :gutter="24">
+          <el-col :span="8">
+            <el-form-item label="联系人" prop="contactPerson">
+              <el-input
+                v-model="form.contactPerson"
+                placeholder="请输入联系人"
+                clearable
+              />
           </el-form-item>
+          </el-col>
+          <el-col :span="8">
           <el-form-item label="联系电话" prop="contactPhone">
-            <el-input v-model="form.contactPhone" placeholder="请输入联系电话" />
+              <el-input
+                v-model="form.contactPhone"
+                placeholder="请输入联系电话"
+                clearable
+              />
           </el-form-item>
+          </el-col>
+          <el-col :span="8">
           <el-form-item label="联系邮箱" prop="contactEmail">
-            <el-input v-model="form.contactEmail" placeholder="请输入联系邮箱" />
+              <el-input
+                v-model="form.contactEmail"
+                placeholder="请输入联系邮箱"
+                clearable
+              />
           </el-form-item>
-          <el-form-item label="官方网站">
-            <el-input v-model="form.website" placeholder="请输入官方网站地址" />
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="24">
+          <el-col :span="24">
+            <el-form-item label="官方网站" prop="website">
+              <el-input
+                v-model="form.website"
+                placeholder="请输入官方网站"
+                clearable
+              />
           </el-form-item>
+          </el-col>
+        </el-row>
         </div>
+
+      <!-- 中心数据 -->
+      <div class="form-section">
+        <div class="form-section-title">中心数据</div>
+        <el-row :gutter="24">
+          <el-col :span="8">
+            <el-form-item label="成立年份" prop="establishedYear">
+              <el-input-number
+                v-model="form.establishedYear"
+                :min="1900"
+                :max="2100"
+                :controls="false"
+                placeholder="请输入成立年份"
+                style="width: 100%"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="面积" prop="area">
+              <el-input
+                v-model="form.area"
+                placeholder="如：1000㎡"
+                clearable
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="评分" prop="rating">
+              <el-input-number
+                v-model="form.rating"
+                :min="0"
+                :max="5"
+                :step="0.1"
+                :controls="false"
+                placeholder="0-5分"
+                style="width: 100%"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <el-form-item label="服务企业数" prop="serviceCount">
+              <el-input-number
+                v-model="form.serviceCount"
+                :min="0"
+                :controls="false"
+                placeholder="请输入服务企业数"
+                style="width: 100%"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="成功案例数" prop="successCases">
+              <el-input-number
+                v-model="form.successCases"
+                :min="0"
+                :controls="false"
+                placeholder="请输入成功案例数"
+                style="width: 100%"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </div>
 
-      <!-- 服务内容 -->
-      <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3"></div>
-          服务内容
-        </h3>
-        <div class="flex gap-2 mb-4">
-          <el-input
-            v-model="serviceInput"
-            placeholder="请输入服务内容"
-            class="flex-1"
-            @keyup.enter="addService"
-          />
-          <el-button type="primary" @click="addService">添加</el-button>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          <el-tag
-            v-for="(service, index) in form.services"
-            :key="index"
-            closable
-            @close="removeService(index)"
-            type="info"
-          >
-            {{ service }}
-          </el-tag>
-        </div>
+      <!-- 状态设置 -->
+      <div class="form-section">
+        <div class="form-section-title">状态设置</div>
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <el-form-item label="是否推荐" prop="isRecommended">
+              <el-switch
+                v-model="form.isRecommended"
+                inline-prompt
+                active-text="是"
+                inactive-text="否"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态" prop="status">
+              <el-select
+                v-model="form.status"
+                placeholder="请选择状态"
+                style="width: 100%"
+              >
+                <el-option label="正常" :value="1" />
+                <el-option label="已下线" :value="2" />
+                <el-option label="禁用" :value="3" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </div>
 
-      <!-- 政策支持 -->
-      <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3"></div>
-          政策支持文件
-        </h3>
-        
-        <!-- 文件上传 -->
-        <div class="mb-4" v-if="mode !== 'view'">
-          <el-upload
-            :auto-upload="false"
-            :on-change="handleFileUpload"
-            :before-upload="beforeUpload"
-            :show-file-list="false"
-            accept=".pdf,.doc,.docx"
-            drag
-          >
-            <div class="el-upload__text">
-              <el-icon class="el-icon--upload">
-                <component :is="useRenderIcon('ep:upload')" />
-              </el-icon>
-              <div class="el-upload__text">将政策文件拖到此处，或<em>点击上传</em></div>
-              <div class="el-upload__tip">只能上传 PDF、DOC、DOCX 文件，且不超过 10MB</div>
+      <el-row :gutter="24" class="mt-2">
+        <el-col :span="24">
+          <el-form-item label="Logo 上传" prop="logo">
+            <div class="logo-uploader">
+              <el-upload
+                class="logo-upload"
+                drag
+                :show-file-list="false"
+                :http-request="handleLogoUpload"
+                :before-upload="beforeLogoUpload"
+              >
+                <template v-if="!form.logo">
+                  <div class="logo-placeholder">
+                    <el-icon class="logo-icon"><UploadFilled /></el-icon>
+                    <div class="logo-text">点击或拖拽上传 Logo</div>
+                    <div class="logo-tip">支持 JPG/PNG，大小不超过 5MB</div>
+        </div>
+                </template>
+                <template v-else>
+                  <div class="logo-preview">
+                    <img :src="logoDisplayUrl" alt="logo" />
+                    <div class="logo-preview__mask">
+                      <el-button size="small" type="primary"
+                        >重新上传</el-button
+                      >
+                      <el-button
+                        size="small"
+                        type="danger"
+                        @click.stop="removeLogo"
+                        >移除</el-button
+                      >
+        </div>
+      </div>
+                </template>
+              </el-upload>
             </div>
-          </el-upload>
-        </div>
-        
-        <!-- 已上传文件列表 -->
-        <div v-if="form.policies.length > 0" class="space-y-2">
-          <h4 class="text-sm font-medium text-gray-700">已上传文件：</h4>
-          <div
-            v-for="(policy, index) in form.policies"
-            :key="index"
-            class="flex items-center justify-between bg-gray-50 rounded-lg p-3 border"
-          >
-            <div class="flex items-center space-x-3">
-              <el-icon class="text-blue-500" :size="20">
-                <component :is="useRenderIcon('ep:document')" />
-              </el-icon>
-              <div>
-                <div class="text-sm font-medium text-gray-900">{{ policy.name }}</div>
-                <div class="text-xs text-gray-500">{{ formatFileSize(policy.size) }}</div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="24">
+        <el-col :span="24">
+          <el-form-item label="所属行业" prop="industries">
+            <div class="industry-tags-container">
+              <div
+                v-for="item in industryOptions"
+                :key="item.id"
+                :class="[
+                  'industry-tag',
+                  { 'industry-tag-selected': isIndustrySelected(item.id) }
+                ]"
+                @click="toggleIndustry(item)"
+              >
+                <span class="industry-tag-text">{{ item.name }}</span>
               </div>
             </div>
-            <el-button
-              v-if="mode !== 'view'"
-              type="danger"
-              size="small"
-              text
-              @click="removePolicy(index)"
-            >
-              删除
-            </el-button>
-          </div>
-        </div>
-      </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
-      <!-- 环境图片 -->
-      <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3"></div>
-          环境图片
-        </h3>
-        
-        <!-- 图片上传 -->
-        <div class="mb-4" v-if="mode !== 'view'">
-          <el-upload
-            :auto-upload="false"
-            :on-change="handleImageUpload"
-            :before-upload="beforeImageUpload"
-            :show-file-list="false"
-            accept="image/*"
-            drag
-            multiple
-          >
-            <div class="el-upload__text">
-              <el-icon class="el-icon--upload">
-                <component :is="useRenderIcon('ep:upload')" />
-              </el-icon>
-              <div class="el-upload__text">将环境图片拖到此处，或<em>点击上传</em></div>
-              <div class="el-upload__tip">只能上传 JPG、PNG、GIF、WebP 格式图片，且不超过 5MB</div>
-            </div>
-          </el-upload>
+      <el-tabs v-model="activeTab" class="mt-4">
+        <el-tab-pane label="中心介绍" name="introduction">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="introductionEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="form.introduction"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              @onCreated="handleIntroductionCreated"
+            />
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="环境展示" name="environment">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="environmentEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="form.environment"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              @onCreated="handleEnvironmentCreated"
+            />
         </div>
-        
-        <!-- 已上传图片预览 -->
-        <div v-if="form.images.length > 0">
-          <h4 class="text-sm font-medium text-gray-700 mb-4">已上传图片：</h4>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div
-              v-for="(image, index) in form.images"
-              :key="index"
-              class="relative group"
-            >
-              <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200">
-                <img
-                  :src="image.url"
-                  :alt="image.name"
-                  class="w-full h-full object-cover"
+        </el-tab-pane>
+        <el-tab-pane label="成功案例" name="successCases">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="successCasesEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="form.successCasesDetail"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              @onCreated="handleSuccessCasesCreated"
+            />
+      </div>
+        </el-tab-pane>
+        <el-tab-pane label="国际化服务" name="internationalServices">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="internationalEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="form.internationalServices"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              @onCreated="handleInternationalCreated"
                 />
               </div>
-              <div class="mt-2">
-                <p class="text-xs text-gray-600 truncate">{{ image.name }}</p>
-                <p class="text-xs text-gray-500">{{ formatFileSize(image.size) }}</p>
-              </div>
-              <button
-                v-if="mode !== 'view'"
-                type="button"
-                class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
-                @click="removeImage(index)"
-              >
-                ×
-              </button>
-            </div>
+        </el-tab-pane>
+        <el-tab-pane label="资源优势" name="resourceAdvantages">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="resourceEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="form.resourceAdvantages"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              @onCreated="handleResourceCreated"
+            />
           </div>
-        </div>
-      </div>
+        </el-tab-pane>
+      </el-tabs>
     </el-form>
 
     <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="handleCancel">取消</el-button>
+      <div style="flex: auto">
+        <el-button @click="handleClose">取消</el-button>
         <el-button
-          v-if="mode !== 'view'"
           type="primary"
+          :loading="submitLoading"
           @click="handleSubmit"
-          :loading="loading"
         >
-          {{ mode === "add" ? "确认新增" : "确认修改" }}
+          保存
         </el-button>
       </div>
     </template>
-  </el-dialog>
+  </el-drawer>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from "vue";
-import { ElMessage, type FormInstance, type FormRules, type UploadFile, type UploadProps } from "element-plus";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { createOffshore, updateOffshore } from "../api/index";
-import type { OffshoreCenter, OffshoreCreateForm, PolicyFile, ImageFile } from "../types/types";
+import {
+  ref,
+  reactive,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  shallowRef,
+  toRaw
+} from "vue";
+import type {
+  FormInstance,
+  FormRules,
+  UploadRequestOptions
+} from "element-plus";
+import type { PropType } from "vue";
+import { ElMessage } from "element-plus";
+import { UploadFilled } from "@element-plus/icons-vue";
+import "@wangeditor/editor/dist/css/style.css";
+import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import type {
+  IDomEditor,
+  IEditorConfig,
+  IToolbarConfig
+} from "@wangeditor/editor";
+import { uploadImage } from "@/api/upload";
+import { getFullImageUrl } from "@/utils/image";
+import {
+  createOffshore,
+  updateOffshore,
+  getRegionList,
+  getCenterTypeList,
+  getIndustryList
+} from "../api";
+import type {
+  OffshoreCenterItem,
+  OffshoreSubmitPayload
+} from "../types/types";
 
-defineOptions({ name: "OffshoreDialog" });
+const DEFAULT_HTML = "<p><br></p>";
 
-interface Props {
-  visible: boolean;
-  mode: "add" | "edit" | "view";
-  formData?: OffshoreCenter | null;
-}
+type DrawerFormData = Partial<
+  OffshoreCenterItem & {
+    industries: Array<{ id: number; name: string }>;
+  }
+> | null;
 
-const props = withDefaults(defineProps<Props>(), {
-  visible: false,
-  mode: "add",
-  formData: null
+const props = defineProps({
+  visible: { type: Boolean, default: false },
+  title: { type: String, default: "" },
+  formData: { type: Object as PropType<DrawerFormData>, default: null }
 });
 
 const emit = defineEmits<{
-  "update:visible": [visible: boolean];
-  success: [];
+  (e: "update:visible", value: boolean): void;
+  (e: "refresh"): void;
 }>();
 
+const visible = ref(false);
+const drawerTitle = ref("新增离岸中心");
+const submitLoading = ref(false);
+const activeTab = ref("introduction");
+
 const formRef = ref<FormInstance>();
-const loading = ref(false);
-const serviceInput = ref("");
 
-// 弹窗显示控制
-const dialogVisible = computed({
-  get: () => props.visible,
-  set: (value: boolean) => emit("update:visible", value)
-});
-
-// 弹窗标题
-const dialogTitle = computed(() => {
-  switch (props.mode) {
-    case "add": return "新增离岸中心";
-    case "edit": return "编辑离岸中心";
-    case "view": return "查看离岸中心";
-    default: return "";
-  }
-});
-
-// 表单数据
-const form = ref<OffshoreCreateForm>({
+const form = reactive<
+  Partial<
+    OffshoreCenterItem & {
+      industries: Array<{ id: number; name: string }>;
+    }
+  >
+>({
+  id: undefined,
   name: "",
-  location: "",
-  type: "",
   description: "",
+  centerTypeId: undefined,
+  regionId: undefined,
+  country: "",
+  city: "",
+  address: "",
   website: "",
+  contactPerson: "",
   contactPhone: "",
   contactEmail: "",
-  address: "",
-  establishedDate: "",
-  areaSize: 0,
-  companyCount: 0,
-  graduatedCount: 0,
-  services: [],
-  policies: [],
-  images: []
+  isRecommended: false,
+  status: 1,
+  establishedYear: undefined,
+  area: "",
+  serviceCount: undefined,
+  successCases: undefined,
+  rating: undefined,
+  introduction: DEFAULT_HTML,
+  environment: DEFAULT_HTML,
+  successCasesDetail: DEFAULT_HTML,
+  internationalServices: DEFAULT_HTML,
+  resourceAdvantages: DEFAULT_HTML,
+  logo: "",
+  industries: []
 });
 
-// 表单验证规则
-const rules: FormRules<OffshoreCreateForm> = {
+const rules = reactive<FormRules>({
   name: [{ required: true, message: "请输入中心名称", trigger: "blur" }],
-  location: [{ required: true, message: "请输入所在地区", trigger: "blur" }],
-  type: [{ required: true, message: "请选择中心类型", trigger: "change" }],
-  description: [{ required: true, message: "请输入中心简介", trigger: "blur" }],
-  contactPhone: [
-    { pattern: /^[\d\s\-\+\(\)]*$/, message: "请输入正确的电话号码格式", trigger: "blur" }
+  centerTypeId: [
+    { required: true, message: "请选择中心类型", trigger: "change" }
   ],
-  contactEmail: [
-    { type: "email", message: "请输入正确的邮箱格式", trigger: "blur" }
+  regionId: [{ required: true, message: "请选择地区", trigger: "change" }]
+});
+
+const regionOptions = ref<Array<{ id: number; name: string }>>([]);
+const centerTypeOptions = ref<Array<{ id: number; name: string }>>([]);
+const industryOptions = ref<Array<{ id: number; name: string }>>([]);
+
+const logoDisplayUrl = ref<string>("");
+
+const introductionEditorRef = shallowRef<IDomEditor>();
+const environmentEditorRef = shallowRef<IDomEditor>();
+const successCasesEditorRef = shallowRef<IDomEditor>();
+const internationalEditorRef = shallowRef<IDomEditor>();
+const resourceEditorRef = shallowRef<IDomEditor>();
+
+function normalizeEditorHtml(value?: string): string {
+  if (typeof value !== "string" || value.trim() === "") {
+    return DEFAULT_HTML;
+  }
+  return value;
+}
+
+function applyEditorContent(editor: IDomEditor | undefined, value?: string) {
+  if (!editor) return;
+  const html = normalizeEditorHtml(value);
+  if (editor.getHtml() !== html) {
+    editor.setHtml(html);
+  }
+}
+
+function syncEditorValues() {
+  applyEditorContent(introductionEditorRef.value, form.introduction);
+  applyEditorContent(environmentEditorRef.value, form.environment);
+  applyEditorContent(successCasesEditorRef.value, form.successCasesDetail);
+  applyEditorContent(internationalEditorRef.value, form.internationalServices);
+  applyEditorContent(resourceEditorRef.value, form.resourceAdvantages);
+}
+
+const toolbarConfig: Partial<IToolbarConfig> = {
+  toolbarKeys: [
+    "bold",
+    "underline",
+    "italic",
+    "through",
+    "color",
+    "bgColor",
+    "fontSize",
+    "fontFamily",
+    "lineHeight",
+    "bulletedList",
+    "numberedList",
+    "todo",
+    "justifyLeft",
+    "justifyCenter",
+    "justifyRight",
+    "justifyJustify",
+    "insertLink",
+    "uploadImage",
+    "undo",
+    "redo"
   ]
 };
 
-// 在弹窗打开时初始化表单（避免初始化阶段调用未定义函数）
+const editorConfig: Partial<IEditorConfig> = {
+  placeholder: "请输入内容...",
+  MENU_CONF: {
+    uploadImage: {
+      async customUpload(file: File, insertFn: Function) {
+        try {
+          const result = await uploadImage(file, "offshore");
+          if (result && result.code === 200 && result.data?.url) {
+            const fullImageUrl = getFullImageUrl(result.data.url);
+            insertFn(fullImageUrl, "", fullImageUrl);
+            ElMessage.success(result.message || "图片上传成功");
+          } else {
+            ElMessage.error(result?.message || "图片上传失败");
+          }
+        } catch (error: any) {
+          ElMessage.error(error?.message || "图片上传失败");
+        }
+      }
+    }
+  }
+};
+
+const handleIntroductionCreated = (editor: IDomEditor) => {
+  introductionEditorRef.value = editor;
+  applyEditorContent(editor, form.introduction);
+};
+
+const handleEnvironmentCreated = (editor: IDomEditor) => {
+  environmentEditorRef.value = editor;
+  applyEditorContent(editor, form.environment);
+};
+
+const handleSuccessCasesCreated = (editor: IDomEditor) => {
+  successCasesEditorRef.value = editor;
+  applyEditorContent(editor, form.successCasesDetail);
+};
+
+const handleInternationalCreated = (editor: IDomEditor) => {
+  internationalEditorRef.value = editor;
+  applyEditorContent(editor, form.internationalServices);
+};
+
+const handleResourceCreated = (editor: IDomEditor) => {
+  resourceEditorRef.value = editor;
+  applyEditorContent(editor, form.resourceAdvantages);
+};
+
+function isIndustrySelected(industryId: number): boolean {
+  return form.industries?.some(item => item.id === industryId) || false;
+}
+
+function toggleIndustry(industry: { id: number; name: string }) {
+  if (!form.industries) {
+    form.industries = [];
+  }
+
+  const index = form.industries.findIndex(item => item.id === industry.id);
+  if (index > -1) {
+    form.industries.splice(index, 1);
+  } else {
+    form.industries.push({ id: industry.id, name: industry.name });
+  }
+}
+
+function fillForm(data?: DrawerFormData) {
+  if (!data) {
+    resetForm();
+    return;
+  }
+  const value = data || {};
+
+  const formData = {
+    id: value.id,
+    name: value.name || "",
+    description: value.description || "",
+    centerTypeId: value.centerTypeId ?? value.centerType?.id,
+    regionId: value.regionId ?? value.region?.id,
+    country: value.country || "",
+    city: value.city || "",
+    address: value.address || "",
+    website: value.website || "",
+    contactPerson: value.contactPerson || "",
+    contactPhone: value.contactPhone || "",
+    contactEmail: value.contactEmail || "",
+    isRecommended: value.isRecommended ?? false,
+    status: value.status ?? 1,
+    establishedYear: value.establishedYear,
+    area: value.area || "",
+    serviceCount: value.serviceCount,
+    successCases: value.successCases,
+    rating: value.rating,
+    introduction: value.introduction || DEFAULT_HTML,
+    environment: value.environment || DEFAULT_HTML,
+    successCasesDetail: value.successCasesDetail || DEFAULT_HTML,
+    internationalServices: value.internationalServices || DEFAULT_HTML,
+    resourceAdvantages: value.resourceAdvantages || DEFAULT_HTML,
+    industries: value.industries || [],
+    logo: value.logo || ""
+  };
+
+  Object.assign(form, formData);
+  updateLogoPreview();
+  syncEditorValues();
+}
+
 watch(
   () => props.visible,
-  visible => {
-    if (!visible) return;
-    if (props.mode === "add") {
-      resetForm();
-    } else if (props.formData) {
-      form.value = {
-        name: props.formData.name,
-        location: props.formData.location,
-        type: props.formData.type,
-        description: props.formData.description || "",
-        website: props.formData.website || "",
-        contactPhone: props.formData.contactPhone || "",
-        contactEmail: props.formData.contactEmail || "",
-        address: props.formData.address || "",
-        establishedDate: props.formData.establishedDate || "",
-        areaSize: props.formData.areaSize || 0,
-        companyCount: props.formData.companyCount || 0,
-        graduatedCount: props.formData.graduatedCount || 0,
-        services: props.formData.services || [],
-        policies: props.formData.policies || [],
-        images: props.formData.images || []
-      };
-      nextTick(() => formRef.value?.clearValidate());
+  value => {
+    visible.value = value;
+    if (value && props.formData) {
+      fillForm(props.formData);
+    }
+  },
+  { immediate: true }
+);
+
+watch(
+  () => visible.value,
+  value => {
+    emit("update:visible", value);
+  }
+);
+
+watch(
+  () => props.title,
+  value => {
+    if (value) drawerTitle.value = value;
+  },
+  { immediate: true }
+);
+
+watch(
+  () => props.formData,
+  value => {
+    if (visible.value && value) {
+      fillForm(value);
     }
   }
 );
 
-// 重置表单
-const resetForm = () => {
-  form.value = {
+function resetForm() {
+  formRef.value?.clearValidate();
+  Object.assign(form, {
+    id: undefined,
     name: "",
-    location: "",
-    type: "",
     description: "",
+    centerTypeId: undefined,
+    regionId: undefined,
+    country: "",
+    city: "",
+    address: "",
     website: "",
+    contactPerson: "",
     contactPhone: "",
     contactEmail: "",
-    address: "",
-    establishedDate: "",
-    areaSize: 0,
-    companyCount: 0,
-    graduatedCount: 0,
-    services: [],
-    policies: [],
-    images: []
-  };
-  serviceInput.value = "";
-  nextTick(() => formRef.value?.clearValidate());
-};
+    isRecommended: false,
+    status: 1,
+    establishedYear: undefined,
+    area: "",
+    serviceCount: undefined,
+    successCases: undefined,
+    rating: undefined,
+    introduction: DEFAULT_HTML,
+    environment: DEFAULT_HTML,
+    successCasesDetail: DEFAULT_HTML,
+    internationalServices: DEFAULT_HTML,
+    resourceAdvantages: DEFAULT_HTML,
+    industries: [],
+    logo: ""
+  });
+  updateLogoPreview();
+  syncEditorValues();
+}
 
-// 服务内容相关
-const addService = () => {
-  if (serviceInput.value.trim()) {
-    form.value.services.push(serviceInput.value.trim());
-    serviceInput.value = "";
-  }
-};
-
-const removeService = (index: number) => {
-  form.value.services.splice(index, 1);
-};
-
-// 文件上传相关
-const handleFileUpload: UploadProps['onChange'] = (file: UploadFile) => {
-  if (file.status === 'ready') {
-    const mockUrl = `https://example.com/policies/${file.name}`;
-    const policyFile: PolicyFile = {
-      name: file.name,
-      url: mockUrl,
-      size: file.size,
-      type: file.raw?.type
-    };
-    form.value.policies.push(policyFile);
-    ElMessage.success(`文件 ${file.name} 上传成功`);
-  }
-};
-
-const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-  if (!allowedTypes.includes(rawFile.type)) {
-    ElMessage.error('只支持上传 PDF、DOC、DOCX 格式的文件!');
-    return false;
-  }
-  
-  const isLt10M = rawFile.size / 1024 / 1024 < 10;
-  if (!isLt10M) {
-    ElMessage.error('上传文件大小不能超过 10MB!');
-  }
-  
-  return isLt10M;
-};
-
-const removePolicy = (index: number) => {
-  form.value.policies.splice(index, 1);
-};
-
-// 图片上传相关
-const handleImageUpload: UploadProps['onChange'] = (file: UploadFile) => {
-  if (file.status === 'ready') {
-    const mockUrl = `https://example.com/images/${file.name}`;
-    const imageFile: ImageFile = {
-      name: file.name,
-      url: mockUrl,
-      size: file.size,
-      type: file.raw?.type
-    };
-    form.value.images.push(imageFile);
-    ElMessage.success(`图片 ${file.name} 上传成功`);
-  }
-};
-
-const beforeImageUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-  if (!allowedTypes.includes(rawFile.type)) {
-    ElMessage.error('只支持上传 JPG、PNG、GIF、WebP 格式的图片!');
-    return false;
-  }
-  
-  const isLt5M = rawFile.size / 1024 / 1024 < 5;
-  if (!isLt5M) {
-    ElMessage.error('上传图片大小不能超过 5MB!');
-  }
-  
-  return isLt5M;
-};
-
-const removeImage = (index: number) => {
-  form.value.images.splice(index, 1);
-};
-
-// 格式化文件大小
-const formatFileSize = (size?: number): string => {
-  if (!size) return '未知大小';
-  if (size < 1024) return `${size} B`;
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
-};
-
-// 提交表单
-const handleSubmit = async () => {
-  if (!formRef.value) return;
-  
-  try {
-    await formRef.value.validate();
-    loading.value = true;
-    
-    if (props.mode === "add") {
-      await createOffshore(form.value);
-      ElMessage.success("新增成功");
-    } else {
-      await updateOffshore(props.formData!.id, form.value);
-      ElMessage.success("修改成功");
-    }
-    
-    emit("success");
-    handleCancel();
-  } catch (error) {
-    console.error("提交失败:", error);
-    ElMessage.error("提交失败");
-  } finally {
-    loading.value = false;
-  }
-};
-
-// 取消
-const handleCancel = () => {
-  dialogVisible.value = false;
+function handleClose() {
+  visible.value = false;
   resetForm();
+}
+
+async function handleSubmit() {
+  if (!formRef.value) return;
+  const valid = await formRef.value.validate().catch(() => false);
+  if (!valid) return;
+
+  submitLoading.value = true;
+  try {
+    const rawForm = toRaw(form);
+    const industryIds = (rawForm.industries || [])
+      .map(item => Number(item.id))
+      .filter(id => !Number.isNaN(id));
+    const { industries, ...rest } = rawForm;
+    const submitData = {
+      ...rest,
+      industryIds
+    } as OffshoreSubmitPayload;
+
+    if (form.id) {
+      await updateOffshore(form.id, submitData);
+      ElMessage.success("更新成功");
+    } else {
+      await createOffshore(submitData);
+      ElMessage.success("创建成功");
+    }
+    emit("refresh");
+    handleClose();
+  } catch (error) {
+    ElMessage.error("保存失败");
+  } finally {
+    submitLoading.value = false;
+  }
+}
+
+function updateLogoPreview() {
+  logoDisplayUrl.value = form.logo ? getFullImageUrl(form.logo) : "";
+}
+
+async function handleLogoUpload(options: UploadRequestOptions) {
+  const { file, onError, onSuccess } = options;
+  try {
+    const res = await uploadImage(file as File, "offshore");
+    if (res.code === 200 && res.data?.url) {
+      form.logo = res.data.url;
+      updateLogoPreview();
+      ElMessage.success(res.message || "上传成功");
+      onSuccess?.(res as any);
+    } else {
+      const msg = res.message || "上传失败";
+      ElMessage.error(msg);
+      onError?.(msg as any);
+    }
+  } catch (error: any) {
+    const msg = error?.message || "上传失败";
+    ElMessage.error(msg);
+    onError?.(msg as any);
+  }
+}
+
+function beforeLogoUpload(file: File) {
+  const isImage = file.type.startsWith("image/");
+  if (!isImage) {
+    ElMessage.error("仅支持上传图片文件");
+    return false;
+  }
+  const isLt5M = file.size / 1024 / 1024 < 5;
+  if (!isLt5M) {
+    ElMessage.error("图片大小不能超过 5MB");
+    return false;
+  }
+  return true;
+}
+
+function removeLogo() {
+  form.logo = "";
+  updateLogoPreview();
+}
+
+async function loadOptions() {
+  try {
+    const [regionRes, typeRes, industryRes] = await Promise.all([
+      getRegionList(),
+      getCenterTypeList(),
+      getIndustryList()
+    ]);
+    regionOptions.value = regionRes.data || [];
+    centerTypeOptions.value = typeRes.data || [];
+    industryOptions.value = industryRes.data || [];
+  } catch (error) {
+    ElMessage.error("加载基础数据失败");
+  }
+}
+
+onMounted(() => {
+  loadOptions();
+});
+
+onBeforeUnmount(() => {
+  const editors = [
+    introductionEditorRef.value,
+    environmentEditorRef.value,
+    successCasesEditorRef.value,
+    internationalEditorRef.value,
+    resourceEditorRef.value
+  ];
+
+  editors.forEach(editor => {
+    if (editor) {
+      editor.destroy();
+    }
+  });
+});
+
+const exposeMethods = {
+  open(data?: Partial<OffshoreCenterItem>) {
+    if (data) {
+      drawerTitle.value = "编辑离岸中心";
+      fillForm(data as any);
+    } else {
+      drawerTitle.value = "新增离岸中心";
+      resetForm();
+    }
+    visible.value = true;
+  }
 };
+
+defineExpose(exposeMethods);
 </script>
 
-<style scoped lang="scss">
-.dialog-footer {
+<style scoped>
+.offshore-drawer :deep(.el-drawer__header) {
+  margin-bottom: 12px !important;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.offshore-drawer :deep(.el-drawer__body) {
+  padding-bottom: 0;
+}
+
+.form-section {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.form-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #409eff;
+  display: inline-block;
+}
+
+.logo-uploader {
+  width: 100%;
+}
+
+.logo-upload {
+  width: 160px;
+  height: 160px;
+  border-radius: 8px;
+}
+
+.logo-upload :deep(.el-upload-dragger) {
+  width: 160px;
+  height: 160px;
+  padding: 0;
+  border: 1px dashed var(--el-border-color);
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.logo-placeholder {
+  text-align: center;
+}
+
+.logo-icon {
+  font-size: 32px;
+  color: var(--el-text-color-secondary);
+  margin-bottom: 6px;
+}
+
+.logo-text {
+  font-size: 14px;
+  color: var(--el-text-color-primary);
+}
+
+.logo-tip {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  margin-top: 4px;
+}
+
+.logo-preview {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.logo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logo-preview__mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.logo-preview:hover .logo-preview__mask {
+  opacity: 1;
+}
+
+.logo-preview__mask .el-button {
+  width: 96px;
+}
+
+.wangeditor-container {
+  border: 1px solid var(--el-border-color);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.wangeditor-toolbar {
+  border-bottom: 1px solid var(--el-border-color);
+}
+
+.wangeditor-editor {
+  min-height: 320px;
+  overflow-y: auto;
+}
+
+.wangeditor-container :deep(.w-e-text-container) {
+  min-height: 320px !important;
+  height: 320px !important;
+}
+
+.wangeditor-container :deep(.w-e-text) {
+  min-height: 320px !important;
+  height: 320px !important;
+}
+
+.wangeditor-container :deep(.w-e-scroll) {
+  min-height: 320px !important;
+}
+
+.industry-tags-container {
+  display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
-:deep(.el-upload-dragger) {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  background-color: var(--el-fill-color-lighter);
-  text-align: center;
-  padding: 40px 20px;
-  
-  &:hover {
-    border-color: var(--el-color-primary);
-  }
-}
-
-:deep(.el-upload__text) {
-  color: var(--el-text-color-regular);
+.industry-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 24px;
   font-size: 14px;
-  text-align: center;
-  
-  em {
-    color: var(--el-color-primary);
-    font-style: normal;
-  }
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
 }
 
-:deep(.el-upload__tip) {
-  font-size: 12px;
-  color: var(--el-text-color-secondary);
-  margin-top: 8px;
+.industry-tag:hover {
+  background: #e8f4ff;
+  border-color: #4a90e2;
+  color: #4a90e2;
+}
+
+.industry-tag-selected {
+  background: #e8f4ff;
+  border-color: #4a90e2;
+  color: #4a90e2;
+}
+
+.industry-tag-selected:hover {
+  background: #d4ebff;
+  box-shadow: 0 2px 4px rgba(74, 144, 226, 0.2);
+}
+
+.industry-tag-text {
+  line-height: 1;
 }
 </style>

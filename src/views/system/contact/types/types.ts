@@ -33,6 +33,5 @@ export const defaultContactForm: ContactFormModel = {
   address: "",
   about: "",
   wechatQr: null,
-  quickLinks: [],
+  quickLinks: []
 };
-

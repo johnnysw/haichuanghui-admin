@@ -83,8 +83,16 @@ export interface ProjectSummary {
   updatedTime?: string | null;
   fundingStage?: { id: number; name: string } | null;
   region?: { id: number; name: string } | null;
-  businessPlanFile?: { id: string; name?: string | null; url?: string | null } | null;
-  presentationFile?: { id: string; name?: string | null; url?: string | null } | null;
+  businessPlanFile?: {
+    id: string;
+    name?: string | null;
+    url?: string | null;
+  } | null;
+  presentationFile?: {
+    id: string;
+    name?: string | null;
+    url?: string | null;
+  } | null;
   logoFile?: { id: string; name?: string | null; url?: string | null } | null;
 }
 
@@ -167,5 +175,5 @@ export const REGISTRATION_STATUS_MAP = {
   1: { text: "待审核", type: "warning" },
   2: { text: "已通过", type: "success" },
   3: { text: "已拒绝", type: "danger" },
-  4: { text: "已取消", type: "info" },
+  4: { text: "已取消", type: "info" }
 } as const;

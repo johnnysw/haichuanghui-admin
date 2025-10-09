@@ -1,7 +1,16 @@
 import { ref, reactive, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
-import type { InvestorInfo, InvestorDetailState, InvestmentCase, ReviewRecord } from "../types/types";
-import { getInvestorDetail, getInvestmentCases, getReviewRecords } from "../api";
+import type {
+  InvestorInfo,
+  InvestorDetailState,
+  InvestmentCase,
+  ReviewRecord
+} from "../types/types";
+import {
+  getInvestorDetail,
+  getInvestmentCases,
+  getReviewRecords
+} from "../api";
 
 export function useInvestorDetail() {
   const route = useRoute();

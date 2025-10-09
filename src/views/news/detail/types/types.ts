@@ -83,7 +83,7 @@ export interface NewsStats {
 // 状态信息接口
 export interface StatusInfo {
   label: string;
-  type: 'success' | 'info' | 'warning' | 'danger' | 'primary';
+  type: "success" | "info" | "warning" | "danger" | "primary";
   color?: string;
 }
 
@@ -100,7 +100,7 @@ export interface ReviewRecord {
   id: number;
   reviewerId: number;
   reviewerName: string;
-  action: 'approve' | 'reject' | 'return'; // 通过、拒绝、退回
+  action: "approve" | "reject" | "return"; // 通过、拒绝、退回
   comment?: string;
   reviewTime: string;
 }

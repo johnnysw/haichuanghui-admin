@@ -13,7 +13,7 @@ export function useIncubatorDetail(id: number) {
   // 获取详情
   const fetchDetail = async () => {
     if (!id) return;
-    
+
     loading.value = true;
     try {
       const response = await getIncubatorDetail(id);
@@ -34,7 +34,7 @@ export function useIncubatorDetail(id: number) {
   // 更新状态
   const updateStatus = async (status: number, reason?: string) => {
     if (!id) return false;
-    
+
     actionLoading.value = true;
     try {
       const response = await updateIncubatorStatus(id, status, reason);
@@ -101,12 +101,12 @@ export function useIncubatorDetail(id: number) {
     loading,
     actionLoading,
     detail,
-    
+
     // 方法
     fetchDetail,
     updateStatus,
     getStatusInfo,
-    
+
     // 计算属性
     statusInfo
   };

@@ -9,7 +9,8 @@ const mockDetailData: Record<number, NewsDetail> = {
     subtitle: "聚焦数字经济新趋势，助力创新创业新发展",
     author: "海创荟编辑部",
     source: "海创荟官网",
-    summary: "2024年度创业大会在深圳成功举办，来自全国各地的500余名创业者、投资人和行业专家齐聚一堂，共话创新创业新趋势。",
+    summary:
+      "2024年度创业大会在深圳成功举办，来自全国各地的500余名创业者、投资人和行业专家齐聚一堂，共话创新创业新趋势。",
     content: `
       <h3>关于海创荟2024年度创业大会</h3>
       <p>2024年度海创荟创业大会于3月15日在深圳国际会展中心隆重举行，本届大会以"数字经济新趋势，创新创业新发展"为主题，汇聚了来自全国各地的500余名创业者、投资人和行业专家。</p>
@@ -28,7 +29,8 @@ const mockDetailData: Record<number, NewsDetail> = {
       <h4>未来展望</h4>
       <p>海创荟将继续发挥平台优势，为创业者提供更多优质资源和服务，助力更多创新项目落地开花，为经济高质量发展贡献力量。</p>
     `,
-    coverImage: "https://via.placeholder.com/400x240/4285f4/ffffff?text=创业大会",
+    coverImage:
+      "https://via.placeholder.com/400x240/4285f4/ffffff?text=创业大会",
     publishTime: "2024-03-15T09:00:00Z",
     status: 1,
     reviewComment: null,
@@ -41,7 +43,8 @@ const mockDetailData: Record<number, NewsDetail> = {
     favoriteCount: 234,
     seoTitle: "海创荟2024年度创业大会 - 数字经济创新趋势",
     seoKeywords: "海创荟,创业大会,数字经济,创新创业",
-    seoDescription: "海创荟2024年度创业大会聚焦数字经济新趋势，500余名行业精英共话创新发展",
+    seoDescription:
+      "海创荟2024年度创业大会聚焦数字经济新趋势，500余名行业精英共话创新发展",
     categoryId: 1,
     categoryName: "重大活动",
     tags: ["创业大会", "数字经济", "创新创业", "深圳"],
@@ -54,7 +57,8 @@ const mockDetailData: Record<number, NewsDetail> = {
     subtitle: "多家海创荟合作孵化器成功入选",
     author: "张小明",
     source: "科技日报",
-    summary: "科技部公布2024年国家级科技企业孵化器认定结果，海创荟生态体系内多家孵化器成功入选。",
+    summary:
+      "科技部公布2024年国家级科技企业孵化器认定结果，海创荟生态体系内多家孵化器成功入选。",
     content: `
       <h3>认定结果公布</h3>
       <p>科技部近日公布了2024年国家级科技企业孵化器认定结果，全国共有156家孵化器通过认定，其中海创荟生态体系内有8家合作孵化器成功入选，入选率达到5.1%。</p>
@@ -73,7 +77,8 @@ const mockDetailData: Record<number, NewsDetail> = {
       <h4>支持政策</h4>
       <p>国家级科技企业孵化器将享受多项优惠政策，包括税收减免、资金支持、人才引进等。这将进一步提升孵化器的服务能力和孵化成效。</p>
     `,
-    coverImage: "https://via.placeholder.com/400x240/34a853/ffffff?text=孵化器认定",
+    coverImage:
+      "https://via.placeholder.com/400x240/34a853/ffffff?text=孵化器认定",
     publishTime: "2024-03-12T10:30:00Z",
     status: 1,
     reviewComment: null,
@@ -86,7 +91,8 @@ const mockDetailData: Record<number, NewsDetail> = {
     favoriteCount: 89,
     seoTitle: "2024年国家级科技企业孵化器认定结果",
     seoKeywords: "科技企业孵化器,认定结果,科技部,海创荟",
-    seoDescription: "科技部公布2024年国家级科技企业孵化器认定结果，多家合作机构成功入选",
+    seoDescription:
+      "科技部公布2024年国家级科技企业孵化器认定结果，多家合作机构成功入选",
     categoryId: 2,
     categoryName: "政策动态",
     tags: ["孵化器", "认定", "科技部", "政策"],
@@ -99,7 +105,8 @@ const mockDetailData: Record<number, NewsDetail> = {
     subtitle: "2024年一季度AI领域投资热点分析",
     author: "李投资",
     source: "投资界",
-    summary: "最新发布的人工智能产业投融资报告显示，2024年一季度AI领域投资持续升温，多个细分赛道表现亮眼。",
+    summary:
+      "最新发布的人工智能产业投融资报告显示，2024年一季度AI领域投资持续升温，多个细分赛道表现亮眼。",
     content: `
       <h3>投资概况</h3>
       <p>根据最新发布的《2024年Q1人工智能产业投融资报告》，一季度AI领域共发生投资事件147起，披露投资金额达368亿元，同比增长23.5%。</p>
@@ -124,7 +131,8 @@ const mockDetailData: Record<number, NewsDetail> = {
       <h4>市场展望</h4>
       <p>专家预测，随着AI技术的不断成熟和应用场景的拓展，2024年全年AI领域投资有望突破1500亿元，继续保持高速增长态势。</p>
     `,
-    coverImage: "https://via.placeholder.com/400x240/ff6d01/ffffff?text=AI投融资",
+    coverImage:
+      "https://via.placeholder.com/400x240/ff6d01/ffffff?text=AI投融资",
     publishTime: "2024-03-10T14:15:00Z",
     status: 1,
     reviewComment: null,
@@ -137,7 +145,8 @@ const mockDetailData: Record<number, NewsDetail> = {
     favoriteCount: 156,
     seoTitle: "2024年Q1人工智能产业投融资报告",
     seoKeywords: "人工智能,投融资,报告,AI投资,风险投资",
-    seoDescription: "深度分析2024年一季度人工智能产业投融资趋势，解读AI投资热点",
+    seoDescription:
+      "深度分析2024年一季度人工智能产业投融资趋势，解读AI投资热点",
     categoryId: 3,
     categoryName: "行业报告",
     tags: ["人工智能", "投融资", "报告", "AI"],
@@ -150,7 +159,8 @@ const mockDetailData: Record<number, NewsDetail> = {
     subtitle: "聚焦智能网联与绿色出行新趋势",
     author: "王编辑",
     source: "汽车之家",
-    summary: "新能源汽车产业链创新发展论坛将于本月底举办，届时将有众多行业专家分享最新技术趋势。",
+    summary:
+      "新能源汽车产业链创新发展论坛将于本月底举办，届时将有众多行业专家分享最新技术趋势。",
     content: `
       <h3>论坛概况</h3>
       <p>由中国汽车工业协会主办的"新能源汽车产业链创新发展论坛"将于3月28-29日在上海举办。本次论坛以"智能网联与绿色出行"为主题，聚焦新能源汽车产业链的创新发展。</p>
@@ -175,7 +185,8 @@ const mockDetailData: Record<number, NewsDetail> = {
       <h4>参会嘉宾</h4>
       <p>论坛邀请了包括院士专家、行业领军企业CEO、知名投资机构合伙人等在内的100余位重量级嘉宾，将为与会者带来最前沿的技术分享和深度的行业洞察。</p>
     `,
-    coverImage: "https://via.placeholder.com/400x240/9c27b0/ffffff?text=新能源汽车",
+    coverImage:
+      "https://via.placeholder.com/400x240/9c27b0/ffffff?text=新能源汽车",
     publishTime: "2024-03-08T16:20:00Z",
     status: 1,
     reviewComment: null,
@@ -198,7 +209,8 @@ const mockDetailData: Record<number, NewsDetail> = {
     subtitle: "数字化转型助力中小企业融资",
     author: "赵技术",
     source: "金融科技周刊",
-    summary: "区块链技术在供应链金融领域的应用越来越广泛，为中小企业提供了新的融资解决方案。",
+    summary:
+      "区块链技术在供应链金融领域的应用越来越广泛，为中小企业提供了新的融资解决方案。",
     content: `
       <h3>技术背景</h3>
       <p>供应链金融作为解决中小企业融资难题的重要手段，在区块链技术的赋能下正迎来新的发展机遇。区块链的不可篡改、去中心化、透明度高等特性，为供应链金融提供了可靠的技术基础。</p>
@@ -225,7 +237,8 @@ const mockDetailData: Record<number, NewsDetail> = {
       <h4>发展前景</h4>
       <p>预计到2025年，基于区块链的供应链金融市场规模将达到3000亿元，为更多中小企业提供便捷、低成本的融资服务。</p>
     `,
-    coverImage: "https://via.placeholder.com/400x240/795548/ffffff?text=区块链金融",
+    coverImage:
+      "https://via.placeholder.com/400x240/795548/ffffff?text=区块链金融",
     publishTime: "2024-03-06T11:45:00Z",
     status: 1,
     reviewComment: null,
@@ -248,7 +261,8 @@ const mockDetailData: Record<number, NewsDetail> = {
     subtitle: "助力天使投资和创业投资健康发展",
     author: "财政部",
     source: "财政部官网",
-    summary: "财政部发布创业投资税收优惠政策解读，进一步明确相关税收优惠适用条件和申报流程。",
+    summary:
+      "财政部发布创业投资税收优惠政策解读，进一步明确相关税收优惠适用条件和申报流程。",
     content: `
       <h3>政策概述</h3>
       <p>为进一步支持创业投资发展，财政部、税务总局发布了《关于创业投资企业和天使投资个人有关税收政策的通知》，对创业投资税收优惠政策进行了详细解读。</p>
@@ -275,7 +289,8 @@ const mockDetailData: Record<number, NewsDetail> = {
       <h4>政策意义</h4>
       <p>这些税收优惠政策将有效降低创业投资的税收负担，激发社会资本投资初创科技型企业的积极性，促进科技成果转化和产业化。</p>
     `,
-    coverImage: "https://via.placeholder.com/400x240/607d8b/ffffff?text=税收政策",
+    coverImage:
+      "https://via.placeholder.com/400x240/607d8b/ffffff?text=税收政策",
     publishTime: "2024-03-05T09:30:00Z",
     status: 1,
     reviewComment: null,
@@ -298,7 +313,8 @@ const mockDetailData: Record<number, NewsDetail> = {
     subtitle: "多地出台扶持政策促进产业集群发展",
     author: "健康时报",
     source: "健康时报",
-    summary: "全国多地加快生物医药产业园区建设步伐，通过政策扶持和资源整合，促进产业集群化发展。",
+    summary:
+      "全国多地加快生物医药产业园区建设步伐，通过政策扶持和资源整合，促进产业集群化发展。",
     content: `
       <h3>发展现状</h3>
       <p>截至目前，全国已建成生物医药产业园区200余个，总投资规模超过5000亿元。这些园区集聚了超过8000家生物医药企业，从业人员达到150万人。</p>
@@ -331,7 +347,8 @@ const mockDetailData: Record<number, NewsDetail> = {
       <h4>未来展望</h4>
       <p>预计到2025年，全国生物医药产业园区产值将突破2万亿元，成为推动健康中国建设的重要引擎。</p>
     `,
-    coverImage: "https://via.placeholder.com/400x240/3f51b5/ffffff?text=生物医药",
+    coverImage:
+      "https://via.placeholder.com/400x240/3f51b5/ffffff?text=生物医药",
     publishTime: "2024-03-03T15:10:00Z",
     status: 1,
     reviewComment: null,
@@ -354,7 +371,8 @@ const mockDetailData: Record<number, NewsDetail> = {
     subtitle: "工业互联网平台赋能智能制造",
     author: "制造业观察",
     source: "制造业观察",
-    summary: "数字化转型正成为传统制造业转型升级的重要抓手，工业互联网平台发挥着越来越重要的作用。",
+    summary:
+      "数字化转型正成为传统制造业转型升级的重要抓手，工业互联网平台发挥着越来越重要的作用。",
     content: `
       <h3>转型背景</h3>
       <p>面对全球产业竞争加剧和新技术革命的挑战，传统制造业急需通过数字化转型实现提质增效。工业互联网作为新一代信息技术与制造业深度融合的产物，正成为推动制造业高质量发展的重要引擎。</p>
@@ -389,7 +407,8 @@ const mockDetailData: Record<number, NewsDetail> = {
       <h4>政策支持</h4>
       <p>国家出台了一系列支持政策，包括设立工业互联网发展专项资金、开展试点示范、完善标准体系等，为制造业数字化转型提供有力支撑。</p>
     `,
-    coverImage: "https://via.placeholder.com/400x240/e91e63/ffffff?text=数字化制造",
+    coverImage:
+      "https://via.placeholder.com/400x240/e91e63/ffffff?text=数字化制造",
     publishTime: null, // 这是审核中的文章，还未发布
     status: 3,
     reviewComment: null,
@@ -517,7 +536,7 @@ export const getNewsDetail = (id: number): Promise<ApiResponse<NewsDetail>> => {
 
 // 获取资讯统计数据
 export const getNewsStats = (id: number): Promise<ApiResponse<NewsStats>> => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const stats = mockStatsData[id] || {
         totalViews: 0,
@@ -529,7 +548,7 @@ export const getNewsStats = (id: number): Promise<ApiResponse<NewsStats>> => {
         totalFavorites: 0,
         shareCount: 0
       };
-      
+
       resolve({
         code: 200,
         success: true,
@@ -541,11 +560,15 @@ export const getNewsStats = (id: number): Promise<ApiResponse<NewsStats>> => {
 };
 
 // 更新资讯状态
-export const updateNewsStatus = (id: number, status: number, note?: string): Promise<ApiResponse<null>> => {
-  return new Promise((resolve) => {
+export const updateNewsStatus = (
+  id: number,
+  status: number,
+  note?: string
+): Promise<ApiResponse<null>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟更新资讯状态:", { id, status, note });
-      
+
       // 在模拟数据中更新状态
       const target = mockDetailData[id];
       if (target) {
@@ -555,7 +578,7 @@ export const updateNewsStatus = (id: number, status: number, note?: string): Pro
           target.publishTime = new Date().toISOString();
         }
       }
-      
+
       resolve({
         code: 200,
         success: true,
@@ -567,18 +590,21 @@ export const updateNewsStatus = (id: number, status: number, note?: string): Pro
 };
 
 // 推荐/取消推荐资讯
-export const toggleNewsRecommend = (id: number, isRecommended: boolean): Promise<ApiResponse<null>> => {
-  return new Promise((resolve) => {
+export const toggleNewsRecommend = (
+  id: number,
+  isRecommended: boolean
+): Promise<ApiResponse<null>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟切换资讯推荐状态:", { id, isRecommended });
-      
+
       // 在模拟数据中更新推荐状态
       const target = mockDetailData[id];
       if (target) {
         target.isRecommended = isRecommended;
         target.updatedTime = new Date().toISOString();
       }
-      
+
       resolve({
         code: 200,
         success: true,
@@ -590,18 +616,21 @@ export const toggleNewsRecommend = (id: number, isRecommended: boolean): Promise
 };
 
 // 置顶/取消置顶资讯
-export const toggleNewsTop = (id: number, isTop: boolean): Promise<ApiResponse<null>> => {
-  return new Promise((resolve) => {
+export const toggleNewsTop = (
+  id: number,
+  isTop: boolean
+): Promise<ApiResponse<null>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       console.log("模拟切换资讯置顶状态:", { id, isTop });
-      
+
       // 在模拟数据中更新置顶状态
       const target = mockDetailData[id];
       if (target) {
         target.isTop = isTop;
         target.updatedTime = new Date().toISOString();
       }
-      
+
       resolve({
         code: 200,
         success: true,

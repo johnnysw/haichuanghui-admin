@@ -20,7 +20,7 @@ export function useRegistrationActions() {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-        draggable: true,
+        draggable: true
       }
     )
       .then(async () => {
@@ -33,7 +33,9 @@ export function useRegistrationActions() {
           message(result.message || "审核通过失败", { type: "error" });
           return false;
         } catch (error) {
-          message(extractErrorMessage(error, "审核通过失败"), { type: "error" });
+          message(extractErrorMessage(error, "审核通过失败"), {
+            type: "error"
+          });
           return false;
         }
       })
@@ -55,7 +57,7 @@ export function useRegistrationActions() {
         type: "warning",
         inputPattern: /^.{1,200}$/,
         inputErrorMessage: "拒绝原因长度应在 1-200 个字符之间",
-        inputType: "textarea",
+        inputType: "textarea"
       }
     )
       .then(async ({ value }) => {
@@ -68,7 +70,9 @@ export function useRegistrationActions() {
           message(result.message || "拒绝操作失败", { type: "error" });
           return false;
         } catch (error) {
-          message(extractErrorMessage(error, "拒绝操作失败"), { type: "error" });
+          message(extractErrorMessage(error, "拒绝操作失败"), {
+            type: "error"
+          });
           return false;
         }
       })
@@ -80,6 +84,6 @@ export function useRegistrationActions() {
 
   return {
     approveRegistration,
-    rejectRegistration,
+    rejectRegistration
   };
 }

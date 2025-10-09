@@ -95,7 +95,7 @@ export interface CompetitionMaterial {
   fileName?: string;
   fileSize?: number;
   fileType?: string;
-  category: 'download' | 'link';
+  category: "download" | "link";
   linkUrl?: string;
   linkType?: string;
   downloadCount?: number;
@@ -115,7 +115,7 @@ export interface CompetitionMaterialForm {
   fileName?: string;
   fileSize?: number;
   fileType?: string;
-  category: 'download' | 'link';
+  category: "download" | "link";
   linkUrl?: string;
   linkType?: string;
   isRequired?: boolean;
@@ -125,7 +125,7 @@ export interface CompetitionMaterialForm {
 // 竞赛资料查询参数
 export interface CompetitionMaterialQueryParams {
   competitionId: number;
-  category?: 'download' | 'link';
+  category?: "download" | "link";
   status?: number;
 }
 

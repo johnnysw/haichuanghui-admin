@@ -1,6 +1,9 @@
 // 重新导出申请相关类型
 export * from "../../types/types";
-import type { InvestorApplication, ApplicationDocument } from "../../types/types";
+import type {
+  InvestorApplication,
+  ApplicationDocument
+} from "../../types/types";
 
 // 申请详情页面状态
 export interface ApplicationDetailState {
@@ -36,7 +39,7 @@ export interface ReviewHistory {
 export interface ApplicationStep {
   title: string;
   description?: string;
-  status: 'wait' | 'process' | 'finish' | 'error';
+  status: "wait" | "process" | "finish" | "error";
   timestamp?: string;
 }
 
@@ -45,6 +48,6 @@ export interface UploadProgress {
   documentId: number;
   fileName: string;
   progress: number;
-  status: 'uploading' | 'success' | 'error';
+  status: "uploading" | "success" | "error";
   error?: string;
 }

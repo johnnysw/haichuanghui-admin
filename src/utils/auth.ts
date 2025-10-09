@@ -52,7 +52,10 @@ export function setToken(data: DataInfo<Date>) {
   const { loginDay, isRemembered } = useUserStoreHook();
 
   // 处理后端返回的时间戳格式
-  expires = typeof data.expires === 'number' ? data.expires : new Date(data.expires).getTime();
+  expires =
+    typeof data.expires === "number"
+      ? data.expires
+      : new Date(data.expires).getTime();
   const cookieString = JSON.stringify({ accessToken, expires, refreshToken });
 
   Cookies.set(TokenKey, cookieString, {
@@ -64,8 +67,8 @@ export function setToken(data: DataInfo<Date>) {
     "true",
     isRemembered
       ? {
-        expires: loginDay
-      }
+          expires: loginDay
+        }
       : {}
   );
 

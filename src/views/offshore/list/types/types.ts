@@ -1,98 +1,105 @@
-export interface PolicyFile {
-  name: string;
-  url: string;
-  size?: number;
-  type?: string;
-}
-
-export interface ImageFile {
-  name: string;
-  url: string;
-  size?: number;
-  type?: string;
-}
-
-export interface OffshoreCenter {
+export interface OffshoreIndustry {
   id: number;
   name: string;
-  location: string;
-  type: string;
-  description?: string;
-  logo?: string;
-  status: number; // 0: 禁用, 1: 启用, 2: 待审核
-  isRecommended: boolean;
-  createdTime: string;
-  updatedTime: string;
-  
-  // 联系信息
-  website?: string;
-  contactPhone?: string;
-  contactEmail?: string;
-  address?: string;
-  
-  // 详细信息
-  establishedDate?: string;
-  areaSize?: number; // 面积大小(平方米)
-  companyCount?: number; // 入驻企业数量
-  graduatedCount?: number; // 毕业企业数量
-  
-  // 服务和政策
-  services?: string[];
-  policies?: PolicyFile[];
-  images?: ImageFile[];
-  
-  // 统计信息
-  viewCount?: number;
-  favoriteCount?: number;
-  
-  // 审核相关
-  reviewerId?: number;
-  reviewTime?: string;
-  reviewNote?: string;
+  code?: string;
 }
 
-export interface OffshoreCreateForm {
+export interface OffshoreCenterBase {
+  id: number;
   name: string;
-  location: string;
-  type: string;
-  description: string;
-  website?: string;
+  logo?: string;
+  regionId?: number;
+  region?: {
+    id: number;
+    name: string;
+    code?: string;
+    regionType?: string;
+  } | null;
+  centerTypeId?: number;
+  centerType?: {
+    id: number;
+    name: string;
+    code?: string;
+    description?: string;
+    color?: string;
+  } | null;
+  country?: string;
+  city?: string;
+  address?: string;
+  description?: string;
+  introduction?: string;
+  environment?: string;
+  successCasesDetail?: string;
+  internationalServices?: string;
+  resourceAdvantages?: string;
+  area?: string;
+  establishedYear?: number;
+  serviceCount?: number;
+  successCases?: number;
+  contactPerson?: string;
   contactPhone?: string;
   contactEmail?: string;
-  address?: string;
-  establishedDate?: string;
-  areaSize: number;
-  companyCount: number;
-  graduatedCount: number;
-  services: string[];
-  policies: PolicyFile[];
-  images: ImageFile[];
+  website?: string;
+  isRecommended?: boolean;
+  status?: number;
+  rating?: number;
+  reviewComment?: string;
+  reviewTime?: string;
+  viewCount?: number;
+  createdTime?: string;
+  updatedTime?: string;
+  industryIds?: number[];
+  industries?: OffshoreIndustry[];
 }
 
-export interface OffshoreListParams {
-  page?: number;
-  pageSize?: number;
-  keyword?: string;
-  location?: string;
-  type?: string;
-  status?: number;
-  isRecommended?: boolean;
+export type OffshoreCenterItem = OffshoreCenterBase;
+
+export type OffshoreCenterDetail = OffshoreCenterBase & {
+  favorites?: number;
+  totalViews?: number;
+};
+
+export interface OffshoreQueryParams {
+  page: number;
+  pageSize: number;
+  name?: string;
+  regionId?: number | string;
+  centerTypeId?: number | string;
+  status?: number | string;
+  isRecommended?: number | string;
   sortBy?: string;
   sortOrder?: string;
 }
 
-export interface ApiResponse<T = any> {
-  code: number;
-  success: boolean;
-  message?: string;
-  data: T;
-}
-
-export interface PaginationResponse<T> {
-  list: T[];
-  total: number;
-  page: number;
-  pageSize: number;
+export interface OffshoreSubmitPayload {
+  name: string;
+  logo?: string;
+  regionId?: number;
+  centerTypeId?: number;
+  country?: string;
+  city?: string;
+  address?: string;
+  description?: string;
+  introduction?: string;
+  environment?: string;
+  successCasesDetail?: string;
+  internationalServices?: string;
+  resourceAdvantages?: string;
+  area?: string;
+  establishedYear?: number;
+  serviceCount?: number;
+  successCases?: number;
+  contactPerson?: string;
+  contactPhone?: string;
+  contactEmail?: string;
+  website?: string;
+  isRecommended?: boolean;
+  status?: number;
+  rating?: number;
+  reviewComment?: string;
+  reviewTime?: string;
+  viewCount?: number;
+  industryIds?: number[];
 }
 
 export interface OffshoreStats {

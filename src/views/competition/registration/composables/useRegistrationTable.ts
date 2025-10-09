@@ -7,14 +7,14 @@ import {
   REGISTRATION_STATUS_MAP,
   type RegistrationListItem,
   type RegistrationQueryParams,
-  type RegistrationSummary,
+  type RegistrationSummary
 } from "../types/types";
 
 const SUMMARY_DEFAULT: RegistrationSummary = {
   pending: 0,
   approved: 0,
   rejected: 0,
-  cancelled: 0,
+  cancelled: 0
 };
 
 export function useRegistrationTable() {
@@ -27,7 +27,7 @@ export function useRegistrationTable() {
     total: 0,
     pageSize: 10,
     currentPage: 1,
-    background: true,
+    background: true
   });
 
   const columns: TableColumnList = [
@@ -42,8 +42,8 @@ export function useRegistrationTable() {
             "span",
             { class: "text-[12px] text-text_color_secondary" },
             row.projectName || row.companyName || ""
-          ),
-        ]),
+          )
+        ])
     },
     {
       label: "联系人",
@@ -56,8 +56,8 @@ export function useRegistrationTable() {
             "span",
             { class: "text-[12px] text-text_color_secondary" },
             row.contactPhone || "--"
-          ),
-        ]),
+          )
+        ])
     },
     {
       label: "状态",
@@ -65,23 +65,25 @@ export function useRegistrationTable() {
       minWidth: 110,
       cellRenderer: ({ row, props }) => {
         const meta =
-          REGISTRATION_STATUS_MAP[row.status as keyof typeof REGISTRATION_STATUS_MAP];
+          REGISTRATION_STATUS_MAP[
+            row.status as keyof typeof REGISTRATION_STATUS_MAP
+          ];
         return h(
           "el-tag",
           {
             type: meta?.type || "info",
-            size: props.size === "small" ? "small" : "default",
+            size: props.size === "small" ? "small" : "default"
           },
           meta?.text || "--"
         );
-      },
+      }
     },
     {
       label: "报名时间",
       prop: "createdTime",
       minWidth: 160,
       formatter: ({ createdTime }) =>
-        createdTime ? dayjs(createdTime).format("YYYY-MM-DD HH:mm") : "--",
+        createdTime ? dayjs(createdTime).format("YYYY-MM-DD HH:mm") : "--"
     },
     {
       label: "审核信息",
@@ -100,18 +102,21 @@ export function useRegistrationTable() {
             row.reviewTime
               ? dayjs(row.reviewTime).format("YYYY-MM-DD HH:mm")
               : "未审核"
-          ),
-        ]),
+          )
+        ])
     },
     {
       label: "操作",
       fixed: "right",
       width: 220,
-      slot: "operation",
-    },
+      slot: "operation"
+    }
   ];
 
-  async function fetchData(competitionId: number, params: RegistrationQueryParams) {
+  async function fetchData(
+    competitionId: number,
+    params: RegistrationQueryParams
+  ) {
     loading.value = true;
     try {
       const { data } = await getCompetitionRegistrations(competitionId, params);
@@ -154,6 +159,6 @@ export function useRegistrationTable() {
     columns,
     fetchData,
     handleSizeChange,
-    handleCurrentChange,
+    handleCurrentChange
   };
 }

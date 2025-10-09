@@ -80,48 +80,48 @@ class PureHttp {
         return whiteList.some(url => config.url.endsWith(url))
           ? config
           : new Promise(resolve => {
-            const data = getToken();
-            if (data) {
-              const now = new Date().getTime();
-              const expired = parseInt(data.expires) - now <= 0;
-              if (expired) {
-                if (!PureHttp.isRefreshing) {
-                  PureHttp.isRefreshing = true;
-                  // token过期刷新
-                  useUserStoreHook()
-                    .handRefreshToken({ refreshToken: data.refreshToken })
-                    .then(res => {
-                      const token = res.accessToken;
-                      config.headers["Authorization"] = formatToken(token);
-                      PureHttp.requests.forEach(cb => cb(token));
-                      PureHttp.requests = [];
-                    })
-                    .catch(error => {
-                      // 清空请求队列
-                      PureHttp.requests = [];
-                      // 登出
-                      useUserStoreHook().logOut();
-                      // 跳转登录页
-                      router.push("/login");
-                      // 错误提示
-                      ElMessage.error("登录已过期，请重新登录");
-                      return Promise.reject(error);
-                    })
-                    .finally(() => {
-                      PureHttp.isRefreshing = false;
-                    });
+              const data = getToken();
+              if (data) {
+                const now = new Date().getTime();
+                const expired = parseInt(data.expires) - now <= 0;
+                if (expired) {
+                  if (!PureHttp.isRefreshing) {
+                    PureHttp.isRefreshing = true;
+                    // token过期刷新
+                    useUserStoreHook()
+                      .handRefreshToken({ refreshToken: data.refreshToken })
+                      .then(res => {
+                        const token = res.accessToken;
+                        config.headers["Authorization"] = formatToken(token);
+                        PureHttp.requests.forEach(cb => cb(token));
+                        PureHttp.requests = [];
+                      })
+                      .catch(error => {
+                        // 清空请求队列
+                        PureHttp.requests = [];
+                        // 登出
+                        useUserStoreHook().logOut();
+                        // 跳转登录页
+                        router.push("/login");
+                        // 错误提示
+                        ElMessage.error("登录已过期，请重新登录");
+                        return Promise.reject(error);
+                      })
+                      .finally(() => {
+                        PureHttp.isRefreshing = false;
+                      });
+                  }
+                  resolve(PureHttp.retryOriginalRequest(config));
+                } else {
+                  config.headers["Authorization"] = formatToken(
+                    data.accessToken
+                  );
+                  resolve(config);
                 }
-                resolve(PureHttp.retryOriginalRequest(config));
               } else {
-                config.headers["Authorization"] = formatToken(
-                  data.accessToken
-                );
                 resolve(config);
               }
-            } else {
-              resolve(config);
-            }
-          });
+            });
       },
       error => {
         return Promise.reject(error);
@@ -164,21 +164,30 @@ class PureHttp {
 
         // 尝试使用后端返回的 message 更新 Axios 错误对象的 message
         // 仅当不是取消请求且后端提供了 message 时才更新，避免覆盖取消请求的特定消息
-        if (responseData?.message && typeof responseData.message === 'string' && !$error.isCancelRequest) {
+        if (
+          responseData?.message &&
+          typeof responseData.message === "string" &&
+          !$error.isCancelRequest
+        ) {
           $error.message = responseData.message;
         }
 
         // 核心修改：处理特定的401错误，强制重新登录
-        if (response?.status === 401 && responseData?.authFailureCode === "MUST_RELOGIN") {
+        if (
+          response?.status === 401 &&
+          responseData?.authFailureCode === "MUST_RELOGIN"
+        ) {
           // 优先使用后端返回的错误消息，如果没有则使用通用提示
-          const displayMessage = responseData.message || "会话已失效，请重新登录，系统将引导您至登录页。"; // 更详细的提示
+          const displayMessage =
+            responseData.message ||
+            "会话已失效，请重新登录，系统将引导您至登录页。"; // 更详细的提示
           ElMessage.error(displayMessage);
 
           useUserStoreHook().logOut();
 
           // 为了防止这个特定的、已处理的错误继续传播到业务代码的 .catch() 中，
           // 返回一个永远不会解析的 Promise。
-          return new Promise(() => { });
+          return new Promise(() => {});
         }
 
         // 对于其他错误，或非 MUST_RELOGIN 的401错误，继续向下传递

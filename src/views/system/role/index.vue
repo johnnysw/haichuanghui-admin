@@ -3,11 +3,7 @@ import { useRole } from "./utils/hook";
 import { ref, computed, nextTick, onMounted, watch } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import {
-  delay,
-  subBefore,
-  useResizeObserver
-} from "@pureadmin/utils";
+import { delay, subBefore, useResizeObserver } from "@pureadmin/utils";
 
 // import Database from "@iconify-icons/ri/database-2-line";
 // import More from "@iconify-icons/ep/more-filled";
@@ -160,7 +156,10 @@ watch(isShow, () => {
       ref="contentRef"
       :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
     >
-      <div :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']" class="w-full min-w-0">
+      <div
+        :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']"
+        class="w-full min-w-0"
+      >
         <PureTableBar
           class="w-full min-w-0"
           style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
@@ -168,75 +167,75 @@ watch(isShow, () => {
           :columns="columns"
           @refresh="onSearch"
         >
-        <template #buttons>
-          <el-button
-            type="primary"
-            :icon="useRenderIcon(AddFill)"
-            @click="openDialog()"
-          >
-            新增角色
-          </el-button>
-        </template>
-        <template v-slot="{ size, dynamicColumns }">
-          <pure-table
-            ref="tableRef"
-            align-whole="center"
-            showOverflowTooltip
-            table-layout="auto"
-            :loading="loading"
-            :size="size"
-            adaptive
-            :row-style="rowStyle"
-            :adaptiveConfig="{ offsetBottom: 108 }"
-            :data="dataList"
-            :columns="dynamicColumns"
-            :pagination="{ ...pagination, size }"
-            :header-cell-style="{
-              background: 'var(--el-fill-color-light)',
-              color: 'var(--el-text-color-primary)'
-            }"
-            @selection-change="handleSelectionChange"
-            @page-size-change="handleSizeChange"
-            @page-current-change="handleCurrentChange"
-          >
-            <template #operation="{ row }">
-              <el-button
-                class="reset-margin"
-                link
-                type="primary"
-                :size="size"
-                :icon="useRenderIcon(EditPen)"
-                @click="openDialog('修改', row)"
-              >
-                修改
-              </el-button>
-              <el-popconfirm
-                :title="`是否确认删除角色名称为${row.name}的这条数据`"
-                @confirm="handleDelete(row)"
-              >
-                <template #reference>
-                  <el-button
-                    class="reset-margin"
-                    link
-                    type="primary"
-                    :size="size"
-                    :icon="useRenderIcon(Delete)"
-                  >
-                    删除
-                  </el-button>
-                </template>
-              </el-popconfirm>
-              <el-button
-                class="reset-margin"
-                link
-                type="primary"
-                :size="size"
-                :icon="useRenderIcon(Menu)"
-                @click="handleMenu(row)"
-              >
-                权限
-              </el-button>
-              <!-- <el-dropdown>
+          <template #buttons>
+            <el-button
+              type="primary"
+              :icon="useRenderIcon(AddFill)"
+              @click="openDialog()"
+            >
+              新增角色
+            </el-button>
+          </template>
+          <template v-slot="{ size, dynamicColumns }">
+            <pure-table
+              ref="tableRef"
+              align-whole="center"
+              showOverflowTooltip
+              table-layout="auto"
+              :loading="loading"
+              :size="size"
+              adaptive
+              :row-style="rowStyle"
+              :adaptiveConfig="{ offsetBottom: 108 }"
+              :data="dataList"
+              :columns="dynamicColumns"
+              :pagination="{ ...pagination, size }"
+              :header-cell-style="{
+                background: 'var(--el-fill-color-light)',
+                color: 'var(--el-text-color-primary)'
+              }"
+              @selection-change="handleSelectionChange"
+              @page-size-change="handleSizeChange"
+              @page-current-change="handleCurrentChange"
+            >
+              <template #operation="{ row }">
+                <el-button
+                  class="reset-margin"
+                  link
+                  type="primary"
+                  :size="size"
+                  :icon="useRenderIcon(EditPen)"
+                  @click="openDialog('修改', row)"
+                >
+                  修改
+                </el-button>
+                <el-popconfirm
+                  :title="`是否确认删除角色名称为${row.name}的这条数据`"
+                  @confirm="handleDelete(row)"
+                >
+                  <template #reference>
+                    <el-button
+                      class="reset-margin"
+                      link
+                      type="primary"
+                      :size="size"
+                      :icon="useRenderIcon(Delete)"
+                    >
+                      删除
+                    </el-button>
+                  </template>
+                </el-popconfirm>
+                <el-button
+                  class="reset-margin"
+                  link
+                  type="primary"
+                  :size="size"
+                  :icon="useRenderIcon(Menu)"
+                  @click="handleMenu(row)"
+                >
+                  权限
+                </el-button>
+                <!-- <el-dropdown>
               <el-button
                 class="ml-3 mt-[2px]"
                 link
@@ -273,9 +272,9 @@ watch(isShow, () => {
                 </el-dropdown-menu>
               </template>
             </el-dropdown> -->
-            </template>
-          </pure-table>
-        </template>
+              </template>
+            </pure-table>
+          </template>
         </PureTableBar>
       </div>
 

@@ -58,13 +58,22 @@
 
               <!-- 职位和机构 -->
               <div class="text-base text-gray-600 mb-2">
-                <span class="font-medium">{{ investorDetail.position || '未设置职位' }}</span>
-                <span v-if="investorDetail.investmentInstitution" class="mx-2">·</span>
-                <span class="font-medium">{{ investorDetail.investmentInstitution || '未设置机构' }}</span>
+                <span class="font-medium">{{
+                  investorDetail.position || "未设置职位"
+                }}</span>
+                <span v-if="investorDetail.investmentInstitution" class="mx-2"
+                  >·</span
+                >
+                <span class="font-medium">{{
+                  investorDetail.investmentInstitution || "未设置机构"
+                }}</span>
               </div>
 
               <!-- 地区 -->
-              <div v-if="investorDetail.location" class="flex items-center text-sm text-gray-500 mb-4">
+              <div
+                v-if="investorDetail.location"
+                class="flex items-center text-sm text-gray-500 mb-4"
+              >
                 <span>{{ investorDetail.location }}</span>
               </div>
             </div>
@@ -73,23 +82,33 @@
           <!-- 右侧：统计卡片 -->
           <div class="grid grid-cols-5 gap-4 mt-6">
             <div class="stat-card bg-blue-50">
-              <div class="stat-value text-blue-600">{{ investorDetail.investmentCount || 0 }}</div>
+              <div class="stat-value text-blue-600">
+                {{ investorDetail.investmentCount || 0 }}
+              </div>
               <div class="stat-label text-blue-700">投资项目数</div>
             </div>
             <div class="stat-card bg-green-50">
-              <div class="stat-value text-green-600">{{ investorDetail.successfulExits || 0 }}</div>
+              <div class="stat-value text-green-600">
+                {{ investorDetail.successfulExits || 0 }}
+              </div>
               <div class="stat-label text-green-700">成功退出</div>
             </div>
             <div class="stat-card bg-purple-50">
-              <div class="stat-value text-purple-600">{{ investorDetail.activeMonths || 0 }}</div>
+              <div class="stat-value text-purple-600">
+                {{ investorDetail.activeMonths || 0 }}
+              </div>
               <div class="stat-label text-purple-700">活跃月数</div>
             </div>
             <div class="stat-card bg-orange-50">
-              <div class="stat-value text-orange-600">{{ investorDetail.responseRate || 0 }}%</div>
+              <div class="stat-value text-orange-600">
+                {{ investorDetail.responseRate || 0 }}%
+              </div>
               <div class="stat-label text-orange-700">反馈率</div>
             </div>
             <div class="stat-card bg-teal-50">
-              <div class="stat-value text-teal-600 text-base">{{ investorDetail.avgResponseTime || '暂无' }}</div>
+              <div class="stat-value text-teal-600 text-base">
+                {{ investorDetail.avgResponseTime || "暂无" }}
+              </div>
               <div class="stat-label text-teal-700">平均反馈时间</div>
             </div>
           </div>
@@ -102,7 +121,9 @@
           <!-- 投资理念与简介 -->
           <el-card v-if="investorDetail.description" shadow="never">
             <template #header>
-              <h3 class="text-lg font-semibold text-gray-800">投资理念与简介</h3>
+              <h3 class="text-lg font-semibold text-gray-800">
+                投资理念与简介
+              </h3>
             </template>
             <div class="prose max-w-none">
               <p class="text-gray-700 leading-relaxed whitespace-pre-line">
@@ -116,10 +137,12 @@
             <template #header>
               <h3 class="text-lg font-semibold text-gray-800">投资偏好</h3>
             </template>
-            
+
             <!-- 关注领域 - 标签形式 -->
             <div class="bg-gray-50 rounded-lg p-4 mb-6">
-              <label class="block text-sm font-medium text-gray-500 mb-3">关注领域</label>
+              <label class="block text-sm font-medium text-gray-500 mb-3"
+                >关注领域</label
+              >
               <div class="flex flex-wrap gap-2">
                 <span
                   v-for="industry in investorDetail.focusIndustries"
@@ -140,7 +163,9 @@
             <!-- 主投阶段和单笔投资金额 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div class="bg-gray-50 rounded-lg p-4">
-                <label class="block text-sm font-medium text-gray-500 mb-2">主投阶段</label>
+                <label class="block text-sm font-medium text-gray-500 mb-2"
+                  >主投阶段</label
+                >
                 <div class="flex flex-wrap gap-2">
                   <span
                     v-for="stage in investorDetail.preferredStages"
@@ -159,10 +184,20 @@
               </div>
 
               <div class="bg-gray-50 rounded-lg p-4">
-                <label class="block text-sm font-medium text-gray-500 mb-2">单笔投资金额</label>
+                <label class="block text-sm font-medium text-gray-500 mb-2"
+                  >单笔投资金额</label
+                >
                 <div class="text-gray-800 font-semibold text-lg">
-                  <span v-if="investorDetail.investmentRangeText || investorDetail.investmentRange">
-                    {{ investorDetail.investmentRangeText || investorDetail.investmentRange }}
+                  <span
+                    v-if="
+                      investorDetail.investmentRangeText ||
+                      investorDetail.investmentRange
+                    "
+                  >
+                    {{
+                      investorDetail.investmentRangeText ||
+                      investorDetail.investmentRange
+                    }}
                   </span>
                   <span v-else class="text-gray-400">暂无数据</span>
                 </div>
@@ -170,12 +205,14 @@
             </div>
 
             <!-- 投资风格 -->
-            <div class="bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg p-5 border border-gray-200">
+            <div
+              class="bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg p-5 border border-gray-200"
+            >
               <label class="block text-sm font-medium text-gray-700 mb-3">
                 投资风格
               </label>
               <div class="text-gray-700 leading-relaxed text-sm">
-                {{ investorDetail.investmentPreference || '暂无描述' }}
+                {{ investorDetail.investmentPreference || "暂无描述" }}
               </div>
             </div>
           </el-card>
@@ -185,11 +222,18 @@
             <template #header>
               <h3 class="text-lg font-semibold text-gray-800">投资案例</h3>
             </template>
-            
+
             <!-- 使用 v-html 渲染富文本内容 -->
-            <div v-if="investorDetail.investmentCases" class="prose max-w-none" v-html="investorDetail.investmentCases"></div>
-            
-            <div v-else class="text-gray-500 text-sm text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+            <div
+              v-if="investorDetail.investmentCases"
+              class="prose max-w-none"
+              v-html="investorDetail.investmentCases"
+            />
+
+            <div
+              v-else
+              class="text-gray-500 text-sm text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-200"
+            >
               暂无投资案例信息
             </div>
           </el-card>
@@ -207,7 +251,9 @@
                 class="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3"
               >
                 <div>
-                  <div class="text-sm font-medium text-gray-800">{{ fileItem.label }}</div>
+                  <div class="text-sm font-medium text-gray-800">
+                    {{ fileItem.label }}
+                  </div>
                   <div class="text-xs text-gray-500 mt-1">
                     {{ fileItem.file.originalName || fileItem.file.fileName }}
                   </div>
@@ -219,12 +265,17 @@
                   class="inline-flex items-center text-primary text-sm hover:text-primary/80"
                 >
                   查看
-                  <el-icon class="ml-1"><component :is="useRenderIcon('ep:link')" /></el-icon>
+                  <el-icon class="ml-1"
+                    ><component :is="useRenderIcon('ep:link')"
+                  /></el-icon>
                 </a>
               </div>
             </div>
 
-            <div v-else class="text-gray-500 text-sm text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+            <div
+              v-else
+              class="text-gray-500 text-sm text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200"
+            >
               暂无认证材料
             </div>
           </el-card>
@@ -244,37 +295,55 @@
             </template>
 
             <div v-if="hasContactInfo" class="space-y-3">
-              <div v-if="investorDetail.user?.phone" class="flex items-center p-3 bg-gray-50 rounded-lg">
+              <div
+                v-if="investorDetail.user?.phone"
+                class="flex items-center p-3 bg-gray-50 rounded-lg"
+              >
                 <el-icon class="text-primary mr-3" :size="20">
                   <component :is="useRenderIcon('ep:phone')" />
                 </el-icon>
                 <div>
                   <div class="text-xs text-gray-500 font-medium">电话</div>
-                  <div class="text-gray-800 font-medium">{{ investorDetail.user.phone }}</div>
+                  <div class="text-gray-800 font-medium">
+                    {{ investorDetail.user.phone }}
+                  </div>
                 </div>
               </div>
 
-              <div v-if="investorDetail.user?.email" class="flex items-center p-3 bg-gray-50 rounded-lg">
+              <div
+                v-if="investorDetail.user?.email"
+                class="flex items-center p-3 bg-gray-50 rounded-lg"
+              >
                 <el-icon class="text-primary mr-3" :size="20">
                   <component :is="useRenderIcon('ep:message')" />
                 </el-icon>
                 <div>
                   <div class="text-xs text-gray-500 font-medium">邮箱</div>
-                  <div class="text-gray-800 font-medium">{{ investorDetail.user.email }}</div>
+                  <div class="text-gray-800 font-medium">
+                    {{ investorDetail.user.email }}
+                  </div>
                 </div>
               </div>
 
-              <div v-if="investorDetail.wechat" class="flex items-center p-3 bg-gray-50 rounded-lg">
+              <div
+                v-if="investorDetail.wechat"
+                class="flex items-center p-3 bg-gray-50 rounded-lg"
+              >
                 <el-icon class="text-primary mr-3" :size="20">
                   <component :is="useRenderIcon('ep:chat-dot-round')" />
                 </el-icon>
                 <div>
                   <div class="text-xs text-gray-500 font-medium">微信</div>
-                  <div class="text-gray-800 font-medium">{{ investorDetail.wechat }}</div>
+                  <div class="text-gray-800 font-medium">
+                    {{ investorDetail.wechat }}
+                  </div>
                 </div>
               </div>
 
-              <div v-if="investorDetail.website" class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div
+                v-if="investorDetail.website"
+                class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              >
                 <el-icon class="text-primary mr-3" :size="20">
                   <component :is="useRenderIcon('ep:link')" />
                 </el-icon>
@@ -293,7 +362,9 @@
             </div>
 
             <div v-else class="text-center py-6">
-              <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <div
+                class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3"
+              >
                 <el-icon class="text-gray-400" :size="24">
                   <component :is="useRenderIcon('ep:message')" />
                 </el-icon>
@@ -309,22 +380,49 @@
             </template>
             <div class="space-y-4">
               <!-- 审核信息（如果存在） -->
-              <div v-if="investorDetail.reviewTime || investorDetail.reviewComment" class="bg-gray-50 rounded-lg p-4 mb-4">
-                <h4 class="text-sm font-semibold text-gray-700 mb-3">历史审核信息</h4>
+              <div
+                v-if="investorDetail.reviewTime || investorDetail.reviewComment"
+                class="bg-gray-50 rounded-lg p-4 mb-4"
+              >
+                <h4 class="text-sm font-semibold text-gray-700 mb-3">
+                  历史审核信息
+                </h4>
                 <div class="space-y-2">
-                  <div v-if="investorDetail.reviewTime" class="flex items-start">
-                    <label class="text-xs text-gray-500 font-medium w-20 flex-shrink-0">审核时间:</label>
-                    <div class="text-sm text-gray-700">{{ formatDateTime(investorDetail.reviewTime) }}</div>
-                  </div>
-                  <div v-if="investorDetail.reviewer" class="flex items-start">
-                    <label class="text-xs text-gray-500 font-medium w-20 flex-shrink-0">审核人:</label>
+                  <div
+                    v-if="investorDetail.reviewTime"
+                    class="flex items-start"
+                  >
+                    <label
+                      class="text-xs text-gray-500 font-medium w-20 flex-shrink-0"
+                      >审核时间:</label
+                    >
                     <div class="text-sm text-gray-700">
-                      {{ investorDetail.reviewer.nickname || investorDetail.reviewer.username }}
+                      {{ formatDateTime(investorDetail.reviewTime) }}
                     </div>
                   </div>
-                  <div v-if="investorDetail.reviewComment" class="flex items-start">
-                    <label class="text-xs text-gray-500 font-medium w-20 flex-shrink-0">审核备注:</label>
-                    <div class="text-sm text-gray-700 whitespace-pre-line flex-1">
+                  <div v-if="investorDetail.reviewer" class="flex items-start">
+                    <label
+                      class="text-xs text-gray-500 font-medium w-20 flex-shrink-0"
+                      >审核人:</label
+                    >
+                    <div class="text-sm text-gray-700">
+                      {{
+                        investorDetail.reviewer.nickname ||
+                        investorDetail.reviewer.username
+                      }}
+                    </div>
+                  </div>
+                  <div
+                    v-if="investorDetail.reviewComment"
+                    class="flex items-start"
+                  >
+                    <label
+                      class="text-xs text-gray-500 font-medium w-20 flex-shrink-0"
+                      >审核备注:</label
+                    >
+                    <div
+                      class="text-sm text-gray-700 whitespace-pre-line flex-1"
+                    >
                       {{ investorDetail.reviewComment }}
                     </div>
                   </div>
@@ -335,9 +433,11 @@
               <div class="flex gap-3">
                 <el-button
                   type="success"
-                  :disabled="investorDetail.status === 1 || investorDetail.status === 0"
-                  @click="openReviewDialog(1)"
+                  :disabled="
+                    investorDetail.status === 1 || investorDetail.status === 0
+                  "
                   class="flex-1"
+                  @click="openReviewDialog(1)"
                 >
                   <el-icon class="mr-1">
                     <component :is="useRenderIcon('ep:select')" />
@@ -346,9 +446,11 @@
                 </el-button>
                 <el-button
                   type="danger"
-                  :disabled="investorDetail.status === 3 || investorDetail.status === 0"
-                  @click="openReviewDialog(3)"
+                  :disabled="
+                    investorDetail.status === 3 || investorDetail.status === 0
+                  "
                   class="flex-1"
+                  @click="openReviewDialog(3)"
                 >
                   <el-icon class="mr-1">
                     <component :is="useRenderIcon('ep:close')" />
@@ -394,13 +496,17 @@
               <!-- 申请时间和更新时间 - 一行两个 -->
               <div class="grid grid-cols-2 gap-3">
                 <div class="bg-gray-50 rounded-lg p-3">
-                  <label class="block text-xs text-gray-500 font-medium mb-1">申请时间</label>
+                  <label class="block text-xs text-gray-500 font-medium mb-1"
+                    >申请时间</label
+                  >
                   <div class="text-gray-800 font-medium text-sm">
                     {{ formatDate(investorDetail.createdTime) }}
                   </div>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-3">
-                  <label class="block text-xs text-gray-500 font-medium mb-1">更新时间</label>
+                  <label class="block text-xs text-gray-500 font-medium mb-1"
+                    >更新时间</label
+                  >
                   <div class="text-gray-800 font-medium text-sm">
                     {{ formatDateTime(investorDetail.updatedTime) }}
                   </div>
@@ -410,23 +516,31 @@
               <!-- 最后登录和登录IP - 一行两个 -->
               <div class="grid grid-cols-2 gap-3">
                 <div class="bg-gray-50 rounded-lg p-3">
-                  <label class="block text-xs text-gray-500 font-medium mb-1">最后登录</label>
+                  <label class="block text-xs text-gray-500 font-medium mb-1"
+                    >最后登录</label
+                  >
                   <div class="text-gray-800 font-medium text-sm">
                     {{ formatDateTime(investorDetail.user?.lastLoginTime) }}
                   </div>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-3">
-                  <label class="block text-xs text-gray-500 font-medium mb-1">登录IP</label>
+                  <label class="block text-xs text-gray-500 font-medium mb-1"
+                    >登录IP</label
+                  >
                   <div class="text-gray-800 font-medium text-sm font-mono">
-                    {{ investorDetail.user?.loginIp || '-' }}
+                    {{ investorDetail.user?.loginIp || "-" }}
                   </div>
                 </div>
               </div>
 
               <!-- 浏览次数 - 独占一行 -->
               <div class="bg-gray-50 rounded-lg p-3">
-                <label class="block text-xs text-gray-500 font-medium mb-1">浏览次数</label>
-                <div class="text-gray-800 font-medium text-sm">{{ investorDetail.viewCount || 0 }} 次</div>
+                <label class="block text-xs text-gray-500 font-medium mb-1"
+                  >浏览次数</label
+                >
+                <div class="text-gray-800 font-medium text-sm">
+                  {{ investorDetail.viewCount || 0 }} 次
+                </div>
               </div>
             </div>
           </el-card>
@@ -442,7 +556,9 @@
     <!-- 错误状态 -->
     <div v-else class="error-container">
       <el-empty description="投资人信息加载失败">
-        <el-button type="primary" @click="fetchInvestorDetail">重新加载</el-button>
+        <el-button type="primary" @click="fetchInvestorDetail"
+          >重新加载</el-button
+        >
       </el-empty>
     </div>
 
@@ -478,7 +594,11 @@
             v-model="reviewForm.reviewComment"
             type="textarea"
             :rows="4"
-            :placeholder="reviewForm.status === 3 ? '拒绝时必须填写备注（最多1000字）' : '请输入审核备注（可选，最多1000字）'"
+            :placeholder="
+              reviewForm.status === 3
+                ? '拒绝时必须填写备注（最多1000字）'
+                : '请输入审核备注（可选，最多1000字）'
+            "
             maxlength="1000"
             show-word-limit
           />
@@ -493,7 +613,7 @@
             :loading="reviewLoading"
             @click="confirmReview"
           >
-            确认{{ reviewForm.status === 1 ? '通过' : '拒绝' }}
+            确认{{ reviewForm.status === 1 ? "通过" : "拒绝" }}
           </el-button>
         </div>
       </template>
@@ -507,7 +627,11 @@ import { useRouter, useRoute } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { getInvestorDetail, reviewInvestor } from "../api";
-import type { InvestorInfo, CertificationFiles, FileInfo } from "../types/types";
+import type {
+  InvestorInfo,
+  CertificationFiles,
+  FileInfo
+} from "../types/types";
 
 defineOptions({ name: "InvestorDetail" });
 
@@ -616,7 +740,9 @@ const getFullImageUrl = (path?: string): string => {
 const getAvatarText = (name?: string): string => {
   if (!name) return "?";
   // 中文取最后一个字，英文取首字母
-  return /[\u4e00-\u9fa5]/.test(name) ? name.slice(-1) : name.charAt(0).toUpperCase();
+  return /[\u4e00-\u9fa5]/.test(name)
+    ? name.slice(-1)
+    : name.charAt(0).toUpperCase();
 };
 
 // 获取状态信息
@@ -668,7 +794,7 @@ const certificationFileItems = computed(() => {
   ];
 
   const result: Array<{ label: string; file: FileInfo }> = [];
-  entries.forEach((entry) => {
+  entries.forEach(entry => {
     const file = files[entry.key];
     if (file) {
       result.push({ label: entry.label, file });
@@ -678,7 +804,9 @@ const certificationFileItems = computed(() => {
   return result;
 });
 
-const hasCertificationFiles = computed(() => certificationFileItems.value.length > 0);
+const hasCertificationFiles = computed(
+  () => certificationFileItems.value.length > 0
+);
 
 // 是否有联系方式
 const hasContactInfo = computed(() => {
@@ -811,7 +939,9 @@ onMounted(() => {
 
     &:hover {
       background-color: #fff;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
     &:last-child {

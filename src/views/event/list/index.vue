@@ -61,7 +61,10 @@
         >
           搜索
         </el-button>
-        <el-button :icon="useRenderIcon('ri:refresh-line')" @click="resetSearch">
+        <el-button
+          :icon="useRenderIcon('ri:refresh-line')"
+          @click="resetSearch"
+        >
           重置
         </el-button>
       </el-form-item>
@@ -71,7 +74,10 @@
       ref="contentRef"
       :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
     >
-      <div :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']" class="w-full min-w-0">
+      <div
+        :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']"
+        class="w-full min-w-0"
+      >
         <PureTableBar
           class="w-full min-w-0"
           style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
@@ -118,7 +124,10 @@
                   :preview-src-list="[row.poster]"
                   preview-teleported
                 />
-                <div v-else class="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
+                <div
+                  v-else
+                  class="w-12 h-12 bg-gray-100 rounded flex items-center justify-center"
+                >
                   <el-icon class="text-gray-400" size="20">
                     <component :is="useRenderIcon('ep:picture')" />
                   </el-icon>
@@ -198,7 +207,7 @@
         </PureTableBar>
       </div>
     </div>
-    
+
     <!-- 新增/编辑弹窗 -->
     <EventDialog
       v-model:visible="dialogVisible"
@@ -331,7 +340,7 @@ const getData = async () => {
       pageSize: pagination.pageSize,
       ...searchForm
     };
-    
+
     const { data } = await getEventList(params);
     dataList.value = data.list;
     pagination.total = data.total;
@@ -403,21 +412,31 @@ const handleDelete = async (id: number) => {
 // 工具函数
 const getStatusType = (status: number) => {
   switch (status) {
-    case 0: return "primary";
-    case 1: return "success";
-    case 2: return "info";
-    case 3: return "danger";
-    default: return "info";
+    case 0:
+      return "primary";
+    case 1:
+      return "success";
+    case 2:
+      return "info";
+    case 3:
+      return "danger";
+    default:
+      return "info";
   }
 };
 
 const getStatusText = (status: number) => {
   switch (status) {
-    case 0: return "报名中";
-    case 1: return "进行中";
-    case 2: return "已结束";
-    case 3: return "已取消";
-    default: return "未知";
+    case 0:
+      return "报名中";
+    case 1:
+      return "进行中";
+    case 2:
+      return "已结束";
+    case 3:
+      return "已取消";
+    default:
+      return "未知";
   }
 };
 

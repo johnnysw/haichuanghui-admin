@@ -3,7 +3,7 @@ import type { ApplicationQueryParams, BaseOption } from "../types/types";
 
 export function useApplicationFilter() {
   const loading = ref(false);
-  
+
   // 筛选表单
   const filterForm = reactive<ApplicationQueryParams>({
     page: 1,
@@ -34,14 +34,14 @@ export function useApplicationFilter() {
   // 日期快捷选项
   const dateShortcuts = [
     {
-      text: '今天',
+      text: "今天",
       value: () => {
         const today = new Date();
         return [today, today];
       }
     },
     {
-      text: '最近一周',
+      text: "最近一周",
       value: () => {
         const end = new Date();
         const start = new Date();
@@ -50,7 +50,7 @@ export function useApplicationFilter() {
       }
     },
     {
-      text: '最近一月',
+      text: "最近一月",
       value: () => {
         const end = new Date();
         const start = new Date();
@@ -59,7 +59,7 @@ export function useApplicationFilter() {
       }
     },
     {
-      text: '最近三月',
+      text: "最近三月",
       value: () => {
         const end = new Date();
         const start = new Date();

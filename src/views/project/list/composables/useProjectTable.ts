@@ -3,7 +3,7 @@ import { ElMessageBox, ElTag } from "element-plus";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { ref, onMounted, reactive, h } from "vue";
 import { useDateFormat } from "@vueuse/core";
-import { PaginationProps } from "@pureadmin/table";
+import type { PaginationProps } from "@pureadmin/table";
 import type { TableColumns } from "@pureadmin/table";
 import { getProjectList, toggleProjectRecommendation } from "../api";
 import { useProjectFilter } from "./useProjectFilter";
@@ -29,10 +29,8 @@ export function useProjectTable() {
     resetForm
   } = useProjectFilter();
 
-  const {
-    openDetail,
-    handleDelete: handleDeleteAction
-  } = useProjectActions(getProjectData);
+  const { openDetail, handleDelete: handleDeleteAction } =
+    useProjectActions(getProjectData);
 
   const dataList = ref<ProjectInfo[]>([]);
   const loading = ref(true);
@@ -101,7 +99,7 @@ export function useProjectTable() {
             size: "small"
           },
           {
-            default: () => row.isRecommended ? "已推荐" : "未推荐"
+            default: () => (row.isRecommended ? "已推荐" : "未推荐")
           }
         );
       }
@@ -113,7 +111,7 @@ export function useProjectTable() {
       cellRenderer: ({ row }) => {
         const statusInfo = PROJECT_STATUS_MAP[row.status as ProjectStatus];
         if (!statusInfo) return "未知";
-        
+
         return h(
           ElTag,
           {
@@ -165,7 +163,8 @@ export function useProjectTable() {
         regionId: form.regionId || undefined,
         fundingStageId: form.fundingStageId || undefined,
         status: form.status || undefined,
-        isRecommended: form.isRecommended === "" ? undefined : form.isRecommended
+        isRecommended:
+          form.isRecommended === "" ? undefined : form.isRecommended
       };
 
       const result = await getProjectList(params);
@@ -190,7 +189,7 @@ export function useProjectTable() {
   };
 
   // 重置搜索表单
-  const resetSearchForm = (formEl) => {
+  const resetSearchForm = formEl => {
     resetForm(formEl);
     onSearch();
   };
@@ -228,7 +227,10 @@ export function useProjectTable() {
         }
       );
 
-      const response = await toggleProjectRecommendation(row.id, newRecommended);
+      const response = await toggleProjectRecommendation(
+        row.id,
+        newRecommended
+      );
       if (response.code === 200) {
         row.isRecommended = newRecommended;
         message(`${action}成功`, { type: "success" });

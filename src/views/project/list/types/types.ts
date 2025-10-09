@@ -47,17 +47,27 @@ export interface ProjectForm {
 }
 
 // 项目状态（字符串枚举）
-export type ProjectStatus = "draft" | "pending_review" | "approved" | "rejected";
+export type ProjectStatus =
+  | "draft"
+  | "pending_review"
+  | "approved"
+  | "rejected";
 
 // 项目状态映射
-export const PROJECT_STATUS_MAP: Record<ProjectStatus, { text: string; type: "info" | "success" | "warning" | "danger" }> = {
+export const PROJECT_STATUS_MAP: Record<
+  ProjectStatus,
+  { text: string; type: "info" | "success" | "warning" | "danger" }
+> = {
   draft: { text: "草稿", type: "info" },
   approved: { text: "已发布", type: "success" },
   pending_review: { text: "审核中", type: "warning" },
   rejected: { text: "已拒绝", type: "danger" }
 };
 
-export const PROJECT_STATUS_OPTIONS: Array<{ label: string; value: ProjectStatus }> = [
+export const PROJECT_STATUS_OPTIONS: Array<{
+  label: string;
+  value: ProjectStatus;
+}> = [
   { label: PROJECT_STATUS_MAP.draft.text, value: "draft" },
   { label: PROJECT_STATUS_MAP.approved.text, value: "approved" },
   { label: PROJECT_STATUS_MAP.pending_review.text, value: "pending_review" },

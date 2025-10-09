@@ -21,28 +21,34 @@ export const getFullImageUrl = (url: string): string => {
   }
 
   // 处理以/public开头的路径
-  if (url.startsWith('/public')) {
+  if (url.startsWith("/public")) {
     return `${apiBaseUrl}${url}`;
   }
 
   // 如果是以/uploads开头的相对路径，则拼接API基础URL
-  if (url.startsWith('/uploads')) {
+  if (url.startsWith("/uploads")) {
     return `${apiBaseUrl}/public${url}`;
   }
 
   // 兼容性处理：如果是不带/的uploads开头，也要处理
-  if (url.startsWith('uploads')) {
+  if (url.startsWith("uploads")) {
     return `${apiBaseUrl}/public/${url}`;
   }
 
   // 默认情况下，添加/public前缀
-  return `${apiBaseUrl}/public${url.startsWith('/') ? url : `/${url}`}`;
+  return `${apiBaseUrl}/public${url.startsWith("/") ? url : `/${url}`}`;
 };
 
 /**
  * 创建SVG占位图片
  */
-const createSvgPlaceholder = (width: number, height: number, bgColor: string, textColor: string, text: string): string => {
+const createSvgPlaceholder = (
+  width: number,
+  height: number,
+  bgColor: string,
+  textColor: string,
+  text: string
+): string => {
   const svg = `
     <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
       <rect width="100%" height="100%" fill="${bgColor}"/>
@@ -99,8 +105,10 @@ export const getClientImageUrl = (url: string): string => {
   }
 
   // 确保URL路径正确拼接
-  const baseUrl = clientApiUrl.endsWith('/') ? clientApiUrl.slice(0, -1) : clientApiUrl;
-  const imagePath = url.startsWith('/') ? url : `/${url}`;
+  const baseUrl = clientApiUrl.endsWith("/")
+    ? clientApiUrl.slice(0, -1)
+    : clientApiUrl;
+  const imagePath = url.startsWith("/") ? url : `/${url}`;
   return `${baseUrl}${imagePath}`;
 };
 

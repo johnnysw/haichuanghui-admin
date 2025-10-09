@@ -2,7 +2,11 @@ import { ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useRouter } from "vue-router";
 import type { InvestorApplication, ReviewForm } from "../types/types";
-import { reviewApplication, batchReviewApplications, deleteApplication } from "../api";
+import {
+  reviewApplication,
+  batchReviewApplications,
+  deleteApplication
+} from "../api";
 
 export function useApplicationActions(onRefresh: () => void) {
   const router = useRouter();
@@ -17,7 +21,10 @@ export function useApplicationActions(onRefresh: () => void) {
   };
 
   // 打开审核对话框
-  const openReviewDialog = (application: InvestorApplication, isBatch = false) => {
+  const openReviewDialog = (
+    application: InvestorApplication,
+    isBatch = false
+  ) => {
     if (isBatch) {
       batchApplications.value = [application];
     } else {
@@ -42,7 +49,10 @@ export function useApplicationActions(onRefresh: () => void) {
   };
 
   // 快速审核（通过/拒绝）
-  const handleQuickReview = async (application: InvestorApplication, status: number) => {
+  const handleQuickReview = async (
+    application: InvestorApplication,
+    status: number
+  ) => {
     try {
       const statusText = status === 1 ? "通过" : "拒绝";
       let comment = "";
@@ -78,7 +88,7 @@ export function useApplicationActions(onRefresh: () => void) {
       };
 
       const response = await reviewApplication(application.id, reviewData);
-      
+
       if (response.success) {
         ElMessage.success(`审核${statusText}成功`);
         onRefresh();
@@ -104,7 +114,7 @@ export function useApplicationActions(onRefresh: () => void) {
         // 批量审核
         const ids = batchApplications.value.map(app => app.id);
         const response = await batchReviewApplications(ids, reviewData);
-        
+
         if (response.success) {
           ElMessage.success(response.message);
           closeReviewDialog();
@@ -114,8 +124,11 @@ export function useApplicationActions(onRefresh: () => void) {
         }
       } else if (currentApplication.value) {
         // 单个审核
-        const response = await reviewApplication(currentApplication.value.id, reviewData);
-        
+        const response = await reviewApplication(
+          currentApplication.value.id,
+          reviewData
+        );
+
         if (response.success) {
           ElMessage.success("审核成功");
           closeReviewDialog();
@@ -176,7 +189,7 @@ export function useApplicationActions(onRefresh: () => void) {
       // 模拟批量删除
       const promises = applications.map(app => deleteApplication(app.id));
       await Promise.all(promises);
-      
+
       ElMessage.success("批量删除成功");
       onRefresh();
     } catch (error) {
@@ -199,7 +212,10 @@ export function useApplicationActions(onRefresh: () => void) {
   };
 
   // 发送通知
-  const handleSendNotification = async (applications: InvestorApplication[], message: string) => {
+  const handleSendNotification = async (
+    applications: InvestorApplication[],
+    message: string
+  ) => {
     try {
       // 这里可以调用发送通知API
       ElMessage.success(`已向 ${applications.length} 个申请人发送通知`);

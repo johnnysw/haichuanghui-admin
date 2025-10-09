@@ -42,8 +42,10 @@ const competitionIdNumber = computed(() => {
 const competitionId = computed(() => competitionIdNumber.value);
 
 // 使用composables
-const { competitionData, loading, statusMap, fetchCompetitionDetail } = useCompetitionDetail();
-const { saveCompetition, reviewCompetitionAction, toggleRecommendation } = useCompetitionDetailActions();
+const { competitionData, loading, statusMap, fetchCompetitionDetail } =
+  useCompetitionDetail();
+const { saveCompetition, reviewCompetitionAction, toggleRecommendation } =
+  useCompetitionDetailActions();
 
 // 添加PC端的状态变量
 const relatedCompetitions = ref([]);
@@ -59,58 +61,64 @@ const materialsLoading = ref(false);
 const posterError = ref(false);
 
 // 标签页配置
-const activeTab = ref('summary');
+const activeTab = ref("summary");
 const tabs = [
-  { key: 'summary', label: '大赛简介' },
-  { key: 'description', label: '大赛主题' },
-  { key: 'organizer', label: '组织机构' },
-  { key: 'requirements', label: '参赛条件' },
-  { key: 'schedule', label: '大赛流程' },
-  { key: 'prizes', label: '政策支持' },
-  { key: 'materialDescription', label: '赛事资料' },
+  { key: "summary", label: "大赛简介" },
+  { key: "description", label: "大赛主题" },
+  { key: "organizer", label: "组织机构" },
+  { key: "requirements", label: "参赛条件" },
+  { key: "schedule", label: "大赛流程" },
+  { key: "prizes", label: "政策支持" },
+  { key: "materialDescription", label: "赛事资料" }
 ];
 
 // 标签页内容
 const tabContent = computed(() => {
-  if (!competitionData.value) return '';
+  if (!competitionData.value) return "";
 
   const content: Record<string, string> = {
-    summary: competitionData.value.summary || '暂无大赛简介',
-    description: competitionData.value.description || '暂无大赛主题',
-    organizer: competitionData.value.coOrganizers || '暂无组织机构信息',
-    requirements: competitionData.value.requirements || '暂无参赛条件',
-    schedule: competitionData.value.schedule || '暂无大赛流程',
-    prizes: competitionData.value.prizes || '暂无政策支持',
-    materialDescription: competitionData.value.materialDescription || '暂无赛事资料说明',
+    summary: competitionData.value.summary || "暂无大赛简介",
+    description: competitionData.value.description || "暂无大赛主题",
+    organizer: competitionData.value.coOrganizers || "暂无组织机构信息",
+    requirements: competitionData.value.requirements || "暂无参赛条件",
+    schedule: competitionData.value.schedule || "暂无大赛流程",
+    prizes: competitionData.value.prizes || "暂无政策支持",
+    materialDescription:
+      competitionData.value.materialDescription || "暂无赛事资料说明"
   };
 
-  return content[activeTab.value] || '';
+  return content[activeTab.value] || "";
 });
 
 // 格式化文件大小
 const formatFileSize = (bytes: number): string => {
-  if (!bytes) return '0 B';
+  if (!bytes) return "0 B";
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const sizes = ["B", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
 };
 
 // 状态配置映射 - 使用PC端的样式
 const statusConfig = computed(() => {
-  if (!competitionData.value) return { text: '', class: '' };
+  if (!competitionData.value) return { text: "", class: "" };
 
   const statusClassMap: Record<number, { text: string; class: string }> = {
-    0: { text: '草稿', class: 'bg-gray-100 text-gray-600' },
-    1: { text: '报名中', class: 'bg-green-100 text-green-600' },
-    2: { text: '进行中', class: 'bg-primary text-white' },
-    3: { text: '已结束', class: 'bg-gray-100 text-gray-600' },
-    4: { text: '已取消', class: 'bg-red-100 text-red-600' },
-    5: { text: '审核中', class: 'bg-yellow-100 text-yellow-600' },
-    6: { text: '已拒绝', class: 'bg-red-100 text-red-600' },
+    0: { text: "草稿", class: "bg-gray-100 text-gray-600" },
+    1: { text: "报名中", class: "bg-green-100 text-green-600" },
+    2: { text: "进行中", class: "bg-primary text-white" },
+    3: { text: "已结束", class: "bg-gray-100 text-gray-600" },
+    4: { text: "已取消", class: "bg-red-100 text-red-600" },
+    5: { text: "审核中", class: "bg-yellow-100 text-yellow-600" },
+    6: { text: "已拒绝", class: "bg-red-100 text-red-600" }
   };
 
-  return statusClassMap[competitionData.value.status] || { text: '未知状态', class: 'bg-gray-100 text-gray-600' };
+  return (
+    statusClassMap[competitionData.value.status] || {
+      text: "未知状态",
+      class: "bg-gray-100 text-gray-600"
+    }
+  );
 });
 
 // 组件挂载时获取数据
@@ -153,11 +161,13 @@ const reviewCompetition = (status: number) => {
       cancelButtonText: "取消",
       inputPattern: /^.{1,200}$/,
       inputErrorMessage: "拒绝原因长度应在1-200个字符之间"
-    }).then(({ value }) => {
-      reviewCompetitionAction(id, status, value);
-    }).catch(() => {
-      ElMessage.info("已取消拒绝");
-    });
+    })
+      .then(({ value }) => {
+        reviewCompetitionAction(id, status, value);
+      })
+      .catch(() => {
+        ElMessage.info("已取消拒绝");
+      });
   } else {
     const action = status === 1 ? "通过" : "审核";
     ElMessageBox.confirm(`确认要${action}该大赛吗？`, "确认操作", {
@@ -171,7 +181,8 @@ const reviewCompetition = (status: number) => {
         if (competitionData.value) {
           competitionData.value.status = status;
           if (status !== 1) {
-            competitionData.value.reviewComment = result.data?.reviewComment || "";
+            competitionData.value.reviewComment =
+              result.data?.reviewComment || "";
             competitionData.value.reviewTime = result.data?.reviewTime || "";
           }
         }
@@ -211,12 +222,12 @@ const switchTab = (tabKey: string) => {
 // 添加PC端的功能函数（仅为保持一致性，不具备实际功能）
 const handleFavorite = () => {
   // 管理端不需要收藏功能，仅为保持UI一致性
-  console.log('管理端不支持收藏功能');
+  console.log("管理端不支持收藏功能");
 };
 
 const handleShare = () => {
   // 管理端不需要分享功能，仅为保持UI一致性
-  console.log('管理端不支持分享功能');
+  console.log("管理端不支持分享功能");
 };
 
 // 加载相关大赛数据（可选实现）
@@ -225,7 +236,7 @@ const loadRelatedCompetitions = async () => {
     // 这里可以调用API获取相关大赛，暂时使用空数组
     relatedCompetitions.value = [];
   } catch (error) {
-    console.error('加载相关大赛失败:', error);
+    console.error("加载相关大赛失败:", error);
     relatedCompetitions.value = [];
   }
 };
@@ -233,15 +244,17 @@ const loadRelatedCompetitions = async () => {
 // 加载竞赛资料列表
 const loadMaterials = async () => {
   if (!competitionIdNumber.value) return;
-  
+
   try {
     materialsLoading.value = true;
-    const result = await getMaterials({ competitionId: competitionIdNumber.value });
+    const result = await getMaterials({
+      competitionId: competitionIdNumber.value
+    });
     if (result.code === 200) {
       materials.value = result.data.list;
     }
   } catch (error) {
-    console.error('加载资料列表失败:', error);
+    console.error("加载资料列表失败:", error);
     materials.value = [];
   } finally {
     materialsLoading.value = false;
@@ -252,23 +265,23 @@ const loadMaterials = async () => {
 const handleLogoError = (event: Event) => {
   const target = event.target as HTMLImageElement;
   if (target) {
-    target.style.display = 'none';
+    target.style.display = "none";
   }
 };
 
 // 下载资料
 const downloadMaterial = (material: CompetitionMaterial) => {
-  if (material.category === 'download' && material.fileUrl) {
+  if (material.category === "download" && material.fileUrl) {
     // 文件下载 - 构造完整URL并新开窗口下载
     const fullUrl = getFullImageUrl(material.fileUrl);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = fullUrl;
     link.download = material.fileName || material.title;
-    link.target = '_blank';
+    link.target = "_blank";
     link.click();
-  } else if (material.category === 'link' && material.linkUrl) {
+  } else if (material.category === "link" && material.linkUrl) {
     // 链接访问 - 新开窗口访问
-    window.open(material.linkUrl, '_blank');
+    window.open(material.linkUrl, "_blank");
   }
 };
 </script>
@@ -287,22 +300,29 @@ const downloadMaterial = (material: CompetitionMaterial) => {
         </template>
         <template #extra>
           <!-- 管理操作区 - 放在最右侧 -->
-          <div v-if="!loading && competitionData" class="flex items-center space-x-3">
+          <div
+            v-if="!loading && competitionData"
+            class="flex items-center space-x-3"
+          >
             <el-button
+              v-if="competitionData.status === 5"
               type="primary"
               :icon="useRenderIcon('ep:check')"
               @click="() => reviewCompetition(1)"
-              v-if="competitionData.status === 5"
             >
               审核
             </el-button>
             <el-button
-              :type="competitionData.isRecommended ? 'warning' : 'default'"
-              :icon="useRenderIcon(competitionData.isRecommended ? 'ep:star-filled' : 'ep:star')"
-              @click="toggleRecommend"
               v-if="[1, 2, 3].includes(competitionData.status)"
+              :type="competitionData.isRecommended ? 'warning' : 'default'"
+              :icon="
+                useRenderIcon(
+                  competitionData.isRecommended ? 'ep:star-filled' : 'ep:star'
+                )
+              "
+              @click="toggleRecommend"
             >
-              {{ competitionData.isRecommended ? '取消推荐' : '推荐大赛' }}
+              {{ competitionData.isRecommended ? "取消推荐" : "推荐大赛" }}
             </el-button>
           </div>
         </template>
@@ -312,9 +332,12 @@ const downloadMaterial = (material: CompetitionMaterial) => {
     <!-- 主内容区域 - 调整padding适合admin端 -->
     <main class="pb-10">
       <div class="container mx-auto">
-
         <!-- 加载状态 -->
-        <div v-if="loading" class="flex justify-center items-center py-20" v-loading="loading">
+        <div
+          v-if="loading"
+          v-loading="loading"
+          class="flex justify-center items-center py-20"
+        >
           <div class="text-gray-500">加载中...</div>
         </div>
 
@@ -324,7 +347,9 @@ const downloadMaterial = (material: CompetitionMaterial) => {
           <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
             <div class="relative">
               <!-- 使用海报图片作为背景，如果没有则使用渐变背景 -->
-              <div class="w-full h-64 bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center relative">
+              <div
+                class="w-full h-64 bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center relative"
+              >
                 <!-- 如果有海报图片则显示为背景 -->
                 <img
                   v-if="competitionData.poster && !posterError"
@@ -334,25 +359,35 @@ const downloadMaterial = (material: CompetitionMaterial) => {
                   @error="posterError = true"
                 />
                 <!-- 遮罩层 -->
-                <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                <div class="absolute inset-0 bg-black bg-opacity-30" />
                 <!-- 内容层 -->
                 <div class="relative z-10 container mx-auto px-8">
                   <div class="max-w-4xl">
                     <span
                       :class="[
                         'inline-block px-3 py-1 text-sm rounded-full mb-4',
-                        statusConfig.class,
+                        statusConfig.class
                       ]"
                     >
                       {{ statusConfig.text }}
                     </span>
-                    <h1 class="text-4xl font-bold text-white mb-4">{{ competitionData.title }}</h1>
+                    <h1 class="text-4xl font-bold text-white mb-4">
+                      {{ competitionData.title }}
+                    </h1>
                     <div class="flex items-center text-white mb-2">
-                      <i class="i-ep-calendar mr-2"></i>
-                      <span>报名时间：{{ dayjs(competitionData.startTime).format('YYYY-MM-DD') }} 至 {{ dayjs(competitionData.endTime).format('YYYY-MM-DD') }}</span>
+                      <i class="i-ep-calendar mr-2" />
+                      <span
+                        >报名时间：{{
+                          dayjs(competitionData.startTime).format("YYYY-MM-DD")
+                        }}
+                        至
+                        {{
+                          dayjs(competitionData.endTime).format("YYYY-MM-DD")
+                        }}</span
+                      >
                     </div>
                     <div class="flex items-center text-white">
-                      <i class="i-ep-location mr-2"></i>
+                      <i class="i-ep-location mr-2" />
                       <span>举办地点：{{ competitionData.location }}</span>
                     </div>
                   </div>
@@ -364,7 +399,9 @@ const downloadMaterial = (material: CompetitionMaterial) => {
               <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center">
                   <!-- 主办方logo -->
-                  <div class="w-16 h-16 rounded-full bg-gray-100 border-2 border-gray-200 flex items-center justify-center">
+                  <div
+                    class="w-16 h-16 rounded-full bg-gray-100 border-2 border-gray-200 flex items-center justify-center"
+                  >
                     <img
                       v-if="competitionData.organizerLogo"
                       :src="getFullImageUrl(competitionData.organizerLogo)"
@@ -372,10 +409,15 @@ const downloadMaterial = (material: CompetitionMaterial) => {
                       class="w-full h-full rounded-full object-cover"
                       @error="handleLogoError"
                     />
-                    <i v-else class="i-ep-office-building text-2xl text-gray-500"></i>
+                    <i
+                      v-else
+                      class="i-ep-office-building text-2xl text-gray-500"
+                    />
                   </div>
                   <div class="ml-4">
-                    <h3 class="text-lg font-semibold">{{ competitionData.organizer }}</h3>
+                    <h3 class="text-lg font-semibold">
+                      {{ competitionData.organizer }}
+                    </h3>
                     <p class="text-gray-600 text-sm">主办方</p>
                   </div>
                 </div>
@@ -389,22 +431,25 @@ const downloadMaterial = (material: CompetitionMaterial) => {
                     :disabled="!competitionIdNumber"
                     @click="goToRegistration"
                   >
-                    <IconifyIconOffline :icon="DocumentIcon" class="mr-2 w-4 h-4" />
+                    <IconifyIconOffline
+                      :icon="DocumentIcon"
+                      class="mr-2 w-4 h-4"
+                    />
                     报名管理
                   </el-button>
                   <el-button
-                    type="primary"
-                    @click="reviewCompetition(1)"
                     v-if="competitionData.status === 5"
+                    type="primary"
                     size="default"
+                    @click="reviewCompetition(1)"
                   >
                     通过审核
                   </el-button>
                   <el-button
-                    type="danger"
-                    @click="reviewCompetition(6)"
                     v-if="competitionData.status === 5"
+                    type="danger"
                     size="default"
+                    @click="reviewCompetition(6)"
                   >
                     拒绝
                   </el-button>
@@ -417,10 +462,7 @@ const downloadMaterial = (material: CompetitionMaterial) => {
                     size="default"
                     disabled
                   >
-                    <IconifyIconOffline
-                      :icon="EditIcon"
-                      class="mr-2 w-4 h-4"
-                    />
+                    <IconifyIconOffline :icon="EditIcon" class="mr-2 w-4 h-4" />
                     立即报名
                   </el-button>
                   <el-button
@@ -443,23 +485,38 @@ const downloadMaterial = (material: CompetitionMaterial) => {
                     size="default"
                     disabled
                   >
-                    <IconifyIconOffline :icon="ShareIcon" class="mr-2 w-4 h-4" />分享
+                    <IconifyIconOffline
+                      :icon="ShareIcon"
+                      class="mr-2 w-4 h-4"
+                    />分享
                   </el-button>
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-100 pt-6">
+              <div
+                class="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-100 pt-6"
+              >
                 <div class="text-center">
                   <p class="text-gray-600 mb-1 text-sm">报名截止</p>
-                  <p class="text-lg md:text-xl font-bold">{{ dayjs(competitionData.registrationDeadline).format('YYYY-MM-DD') }}</p>
+                  <p class="text-lg md:text-xl font-bold">
+                    {{
+                      dayjs(competitionData.registrationDeadline).format(
+                        "YYYY-MM-DD"
+                      )
+                    }}
+                  </p>
                 </div>
                 <div class="text-center">
                   <p class="text-gray-600 mb-1 text-sm">已报名</p>
-                  <p class="text-lg md:text-xl font-bold">{{ competitionData.registrationCount || 0 }}</p>
+                  <p class="text-lg md:text-xl font-bold">
+                    {{ competitionData.registrationCount || 0 }}
+                  </p>
                 </div>
                 <div class="text-center">
                   <p class="text-gray-600 mb-1 text-sm">浏览量</p>
-                  <p class="text-lg md:text-xl font-bold">{{ (competitionData.viewCount || 0).toLocaleString() }}</p>
+                  <p class="text-lg md:text-xl font-bold">
+                    {{ (competitionData.viewCount || 0).toLocaleString() }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -472,13 +529,13 @@ const downloadMaterial = (material: CompetitionMaterial) => {
                 <button
                   v-for="tab in tabs"
                   :key="tab.key"
-                  @click="switchTab(tab.key)"
                   :class="[
                     'px-6 py-4 text-center whitespace-nowrap font-medium bg-transparent',
                     activeTab === tab.key
                       ? 'text-primary border-b-2 border-primary'
-                      : 'text-gray-600 hover:text-primary',
+                      : 'text-gray-600 hover:text-primary'
                   ]"
+                  @click="switchTab(tab.key)"
                 >
                   {{ tab.label }}
                 </button>
@@ -489,79 +546,109 @@ const downloadMaterial = (material: CompetitionMaterial) => {
               <!-- 资料标签页特殊处理 -->
               <div v-if="activeTab === 'materialDescription'" class="max-w-4xl">
                 <!-- 富文本说明 -->
-                <div v-if="tabContent" class="tab-content mb-8" v-html="tabContent"></div>
-                
+                <div
+                  v-if="tabContent"
+                  class="tab-content mb-8"
+                  v-html="tabContent"
+                />
+
                 <!-- 资料列表 -->
                 <div class="materials-section">
                   <div class="materials-header mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">附件</h3>
-                    <span class="text-sm text-gray-500" v-if="materials.length > 0">
+                    <span
+                      v-if="materials.length > 0"
+                      class="text-sm text-gray-500"
+                    >
                       共 {{ materials.length }} 个资料
                     </span>
                   </div>
-                  
+
                   <!-- 加载状态 -->
                   <div v-if="materialsLoading" class="flex justify-center py-8">
                     <el-icon class="animate-spin text-2xl text-gray-400">
                       <loading />
                     </el-icon>
                   </div>
-                  
+
                   <!-- 资料列表 -->
                   <div v-else-if="materials.length > 0" class="materials-grid">
-                    <div 
-                      v-for="material in materials" 
+                    <div
+                      v-for="material in materials"
                       :key="material.id"
                       class="material-card"
                     >
                       <!-- 左侧：图标 -->
                       <div class="material-icon">
-                        <el-icon v-if="material.category === 'download'" class="text-blue-500 text-2xl">
+                        <el-icon
+                          v-if="material.category === 'download'"
+                          class="text-blue-500 text-2xl"
+                        >
                           <document />
                         </el-icon>
                         <el-icon v-else class="text-green-500 text-2xl">
                           <link />
                         </el-icon>
                       </div>
-                      
+
                       <!-- 中间：标题和大小信息 -->
                       <div class="material-info">
                         <h4 class="material-title">{{ material.title }}</h4>
                         <div class="material-meta">
-                          <span v-if="material.category === 'download' && material.fileSize" class="meta-item">
+                          <span
+                            v-if="
+                              material.category === 'download' &&
+                              material.fileSize
+                            "
+                            class="meta-item"
+                          >
                             {{ formatFileSize(material.fileSize) }}
                           </span>
-                          <span v-if="material.category === 'link'" class="meta-item">
-                            {{ material.linkType || '外部链接' }}
+                          <span
+                            v-if="material.category === 'link'"
+                            class="meta-item"
+                          >
+                            {{ material.linkType || "外部链接" }}
                           </span>
-                          <span v-if="material.isRequired" class="meta-item badge required">
+                          <span
+                            v-if="material.isRequired"
+                            class="meta-item badge required"
+                          >
                             必读
                           </span>
                         </div>
-                        <p v-if="material.description" class="material-description">
+                        <p
+                          v-if="material.description"
+                          class="material-description"
+                        >
                           {{ material.description }}
                         </p>
                       </div>
-                      
+
                       <!-- 右侧：下载按钮 -->
                       <div class="material-actions">
-                        <el-button 
-                          type="primary" 
+                        <el-button
+                          type="primary"
                           size="small"
                           @click="downloadMaterial(material)"
                         >
                           <el-icon class="mr-1">
                             <download />
                           </el-icon>
-                          {{ material.category === 'download' ? '下载' : '访问' }}
+                          {{
+                            material.category === "download" ? "下载" : "访问"
+                          }}
                         </el-button>
-                        <span v-if="material.downloadCount" class="download-count">
+                        <span
+                          v-if="material.downloadCount"
+                          class="download-count"
+                        >
                           下载 {{ material.downloadCount }} 次
                         </span>
                       </div>
                     </div>
                   </div>
-                  
+
                   <!-- 空状态 -->
                   <div v-else class="empty-state">
                     <el-icon class="text-4xl text-gray-300 mb-2">
@@ -571,9 +658,9 @@ const downloadMaterial = (material: CompetitionMaterial) => {
                   </div>
                 </div>
               </div>
-              
+
               <!-- 其他标签页 -->
-              <div v-else class="max-w-4xl tab-content" v-html="tabContent"></div>
+              <div v-else class="max-w-4xl tab-content" v-html="tabContent" />
             </div>
           </div>
         </div>
@@ -581,7 +668,9 @@ const downloadMaterial = (material: CompetitionMaterial) => {
         <!-- 错误状态 -->
         <div v-else class="text-center py-20">
           <div class="text-gray-500 text-lg">大赛信息加载失败</div>
-          <el-button @click="goBack" type="primary" class="mt-4"> 返回列表 </el-button>
+          <el-button type="primary" class="mt-4" @click="goBack">
+            返回列表
+          </el-button>
         </div>
       </div>
     </main>
@@ -791,10 +880,18 @@ img[style*="display:none"] + span {
   color: #1f2937 !important;
 }
 
-:deep(.tab-content h1) { font-size: 1.875rem !important; }
-:deep(.tab-content h2) { font-size: 1.5rem !important; }
-:deep(.tab-content h3) { font-size: 1.25rem !important; }
-:deep(.tab-content h4) { font-size: 1.125rem !important; }
+:deep(.tab-content h1) {
+  font-size: 1.875rem !important;
+}
+:deep(.tab-content h2) {
+  font-size: 1.5rem !important;
+}
+:deep(.tab-content h3) {
+  font-size: 1.25rem !important;
+}
+:deep(.tab-content h4) {
+  font-size: 1.125rem !important;
+}
 
 :deep(.tab-content p) {
   margin: 1rem 0 !important;
@@ -860,7 +957,7 @@ img[style*="display:none"] + span {
   background-color: #f3f4f6 !important;
   padding: 0.25rem 0.5rem !important;
   border-radius: 0.375rem !important;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace !important;
   font-size: 0.875rem !important;
   color: #dc2626 !important;
 }
@@ -997,13 +1094,11 @@ img[style*="display:none"] + span {
   .materials-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .materials-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
 }
-
-
 </style>

@@ -94,14 +94,26 @@ const handleDrawerSubmit = (data: FormItemProps) => {
 
 // 组件挂载时监听事件
 onMounted(() => {
-  window.addEventListener('openAddCompetitionDrawer', handleOpenAddDrawer as EventListener);
-  window.addEventListener('openEditCompetitionDrawer', handleOpenEditDrawer as EventListener);
+  window.addEventListener(
+    "openAddCompetitionDrawer",
+    handleOpenAddDrawer as EventListener
+  );
+  window.addEventListener(
+    "openEditCompetitionDrawer",
+    handleOpenEditDrawer as EventListener
+  );
 });
 
 // 组件卸载时移除事件监听
 onUnmounted(() => {
-  window.removeEventListener('openAddCompetitionDrawer', handleOpenAddDrawer as EventListener);
-  window.removeEventListener('openEditCompetitionDrawer', handleOpenEditDrawer as EventListener);
+  window.removeEventListener(
+    "openAddCompetitionDrawer",
+    handleOpenAddDrawer as EventListener
+  );
+  window.removeEventListener(
+    "openEditCompetitionDrawer",
+    handleOpenEditDrawer as EventListener
+  );
 });
 </script>
 
@@ -171,7 +183,10 @@ onUnmounted(() => {
       ref="contentRef"
       :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
     >
-      <div :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']" class="w-full min-w-0">
+      <div
+        :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']"
+        class="w-full min-w-0"
+      >
         <PureTableBar
           class="w-full min-w-0"
           style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
@@ -253,7 +268,7 @@ onUnmounted(() => {
         </PureTableBar>
       </div>
     </div>
-    
+
     <!-- 竞赛表单抽屉 -->
     <CompetitionDrawer
       ref="drawerRef"

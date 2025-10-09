@@ -61,7 +61,7 @@ export interface NewsListParams {
   endDate?: string;
   keyword?: string;
   sortBy?: keyof NewsItem;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 // 资讯分类接口
@@ -105,7 +105,7 @@ export interface PaginationResponse<T> {
 // 状态信息接口
 export interface StatusInfo {
   label: string;
-  type: 'success' | 'info' | 'warning' | 'danger' | 'primary';
+  type: "success" | "info" | "warning" | "danger" | "primary";
   color?: string;
 }
 

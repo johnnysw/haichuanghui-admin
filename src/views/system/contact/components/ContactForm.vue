@@ -27,7 +27,7 @@ const formRef = ref<FormInstance>();
 
 watch(
   () => formRef.value,
-  (instance) => {
+  instance => {
     if (instance) emit("register", instance);
   },
   { immediate: true }
@@ -173,7 +173,10 @@ watch(
             <el-col :span="24">
               <el-form-item prop="quickLinks">
                 <div class="quick-links-wrapper">
-                  <div v-if="formModel.quickLinks.length === 0" class="empty-links-tip">
+                  <div
+                    v-if="formModel.quickLinks.length === 0"
+                    class="empty-links-tip"
+                  >
                     <i class="ri-link-m" />
                     <span>暂无快捷链接，点击下方按钮添加</span>
                   </div>
@@ -287,7 +290,12 @@ watch(
 
       <!-- 操作按钮 -->
       <div class="form-actions">
-        <el-button type="primary" size="large" :loading="submitLoading" @click="handleSubmit">
+        <el-button
+          type="primary"
+          size="large"
+          :loading="submitLoading"
+          @click="handleSubmit"
+        >
           <i class="ri-save-line" />
           保存设置
         </el-button>
@@ -560,4 +568,3 @@ watch(
   }
 }
 </style>
-

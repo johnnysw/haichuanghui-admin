@@ -1,5 +1,5 @@
 import type { FormRules } from "element-plus";
-import { Menu } from "@/types/system";
+import type { Menu } from "@/types/system";
 
 /** 表单校验规则 */
 export const formRules: FormRules = {

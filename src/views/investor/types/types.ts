@@ -14,10 +14,10 @@ export interface NamedOption {
 
 /** 投资人状态枚举 */
 export enum InvestorStatus {
-  DISABLED = 0,   // 禁用
-  NORMAL = 1,     // 正常
-  REVIEWING = 2,  // 审核中
-  REJECTED = 3    // 已拒绝
+  DISABLED = 0, // 禁用
+  NORMAL = 1, // 正常
+  REVIEWING = 2, // 审核中
+  REJECTED = 3 // 已拒绝
 }
 
 /** 投资人状态信息映射 */
@@ -41,16 +41,16 @@ export interface PaginationQuery {
 
 /** 投资人查询参数 */
 export interface InvestorQueryParams extends PaginationQuery {
-  search?: string;        // 搜索关键词（姓名/机构）
-  region?: string;        // 地区 ID
-  type?: string;          // 投资人类型 ID
-  field?: string;         // 关注行业 ID
-  stage?: string;         // 偏好阶段 ID
+  search?: string; // 搜索关键词（姓名/机构）
+  region?: string; // 地区 ID
+  type?: string; // 投资人类型 ID
+  field?: string; // 关注行业 ID
+  stage?: string; // 偏好阶段 ID
   status?: string | number; // 状态：0-禁用, 1-正常(已认证), 2-审核中, 3-已拒绝
-  isFeatured?: string;    // 是否精选
+  isFeatured?: string; // 是否精选
   isRecommended?: string; // 是否推荐
-  sortField?: string;     // 排序字段
-  sortOrder?: string;     // 排序方式
+  sortField?: string; // 排序字段
+  sortOrder?: string; // 排序方式
   createdTimeRange?: string[]; // 创建时间范围
 }
 
@@ -58,7 +58,7 @@ export interface InvestorQueryParams extends PaginationQuery {
 export interface InvestorInfo {
   id: number;
   userId?: number;
-  
+
   // 用户基础信息
   user?: {
     id: number;
@@ -71,7 +71,7 @@ export interface InvestorInfo {
     lastLoginTime?: string;
     loginIp?: string;
   };
-  
+
   // 投资人核心信息
   name: string;
   avatar?: string;
@@ -79,13 +79,13 @@ export interface InvestorInfo {
   investmentInstitution?: string;
   position?: string;
   location?: string;
-  
+
   // 投资范围
   investmentAmountMin?: number;
   investmentAmountMax?: number;
   investmentRange?: string; // 格式化后的投资范围（旧字段）
   investmentRangeText?: string; // 格式化后的投资范围（新字段，如 "500万 - 5000万"）
-  
+
   // 描述信息
   description?: string;
   investmentPreference?: string;
@@ -93,20 +93,20 @@ export interface InvestorInfo {
   bio?: string;
   investmentCases?: string; // 投资案例（富文本HTML）
   certificationFiles?: CertificationFiles; // 认证文件
-  
+
   // 联系方式
   phone?: string;
   email?: string;
   wechat?: string;
   website?: string;
-  
+
   // 关联数据（作为 NamedOption 数组）
   region?: NamedOption;
   investorType?: NamedOption;
   focusIndustries?: NamedOption[];
   preferredStages?: NamedOption[];
   preferredRegions?: NamedOption[];
-  
+
   // 统计数据
   investmentCount?: number;
   successfulExits?: number;
@@ -115,12 +115,12 @@ export interface InvestorInfo {
   avgResponseTime?: string;
   viewCount?: number;
   followCount?: number;
-  
+
   // 状态字段（status: 0-禁用, 1-正常(已认证), 2-审核中, 3-已拒绝）
   status: InvestorStatus;
   isFeatured?: boolean;
   isRecommended?: boolean;
-  
+
   // 审核信息
   reviewerId?: number;
   reviewer?: {
@@ -130,7 +130,7 @@ export interface InvestorInfo {
   };
   reviewComment?: string;
   reviewTime?: string;
-  
+
   // 时间戳
   createdTime?: string;
   updatedTime?: string;

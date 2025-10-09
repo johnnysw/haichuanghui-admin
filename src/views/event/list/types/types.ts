@@ -63,7 +63,7 @@ export interface EventListParams {
   startDate?: string;
   endDate?: string;
   sortBy?: keyof Event;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 // API 响应基础接口
@@ -85,7 +85,7 @@ export interface PaginationResponse<T> {
 // 状态信息接口
 export interface StatusInfo {
   label: string;
-  type: 'success' | 'info' | 'warning' | 'danger' | 'primary';
+  type: "success" | "info" | "warning" | "danger" | "primary";
 }
 
 // 活动统计接口

@@ -1,5 +1,5 @@
 import { http } from "@/utils/http";
-import type { 
+import type {
   ApplicationQueryParams,
   InvestorApplication,
   ApplicationDocument,
@@ -13,44 +13,44 @@ const mockDocuments: ApplicationDocument[] = [
   {
     id: 1,
     applicationId: 1,
-    type: 'identity',
-    fileName: '身份证正面.jpg',
-    fileUrl: 'https://picsum.photos/seed/id1/400/300',
+    type: "identity",
+    fileName: "身份证正面.jpg",
+    fileUrl: "https://picsum.photos/seed/id1/400/300",
     fileSize: 1024 * 500, // 500KB
-    uploadTime: '2024-01-10 14:30:00',
-    status: 'approved',
-    comment: '文件清晰，信息完整'
+    uploadTime: "2024-01-10 14:30:00",
+    status: "approved",
+    comment: "文件清晰，信息完整"
   },
   {
     id: 2,
     applicationId: 1,
-    type: 'identity',
-    fileName: '身份证反面.jpg',
-    fileUrl: 'https://picsum.photos/seed/id2/400/300',
+    type: "identity",
+    fileName: "身份证反面.jpg",
+    fileUrl: "https://picsum.photos/seed/id2/400/300",
     fileSize: 1024 * 480,
-    uploadTime: '2024-01-10 14:31:00',
-    status: 'approved'
+    uploadTime: "2024-01-10 14:31:00",
+    status: "approved"
   },
   {
     id: 3,
     applicationId: 1,
-    type: 'institution',
-    fileName: '工作证明.pdf',
-    fileUrl: '/files/work-certificate-1.pdf',
+    type: "institution",
+    fileName: "工作证明.pdf",
+    fileUrl: "/files/work-certificate-1.pdf",
     fileSize: 1024 * 1024 * 2, // 2MB
-    uploadTime: '2024-01-10 14:32:00',
-    status: 'pending'
+    uploadTime: "2024-01-10 14:32:00",
+    status: "pending"
   },
   {
     id: 4,
     applicationId: 1,
-    type: 'investment',
-    fileName: '投资案例证明.pdf',
-    fileUrl: '/files/investment-cases-1.pdf',
+    type: "investment",
+    fileName: "投资案例证明.pdf",
+    fileUrl: "/files/investment-cases-1.pdf",
     fileSize: 1024 * 1024 * 3, // 3MB
-    uploadTime: '2024-01-10 14:35:00',
-    status: 'rejected',
-    comment: '投资案例不够详细，请补充更多信息'
+    uploadTime: "2024-01-10 14:35:00",
+    status: "rejected",
+    comment: "投资案例不够详细，请补充更多信息"
   }
 ];
 
@@ -284,7 +284,8 @@ const mockApplications: InvestorApplication[] = [
     investmentAmountMax: 5000,
     description: "专注硬科技投资的专业机构",
     investmentPreference: "重点投资半导体、新能源、智能制造等硬科技领域",
-    institutionInfo: "深圳科技创投专注硬科技投资15年，投资项目估值累计超过500亿",
+    institutionInfo:
+      "深圳科技创投专注硬科技投资15年，投资项目估值累计超过500亿",
     bio: "清华大学博士，15年硬科技投资经验",
     status: 1, // 已通过
     reviewerId: 1,
@@ -624,19 +625,22 @@ const mockApplications: InvestorApplication[] = [
 }; */
 
 // 获取申请列表
-export const getApplicationList = (params: ApplicationQueryParams): Promise<ApiResponse<PaginatedResponse<InvestorApplication>>> => {
-  return new Promise((resolve) => {
+export const getApplicationList = (
+  params: ApplicationQueryParams
+): Promise<ApiResponse<PaginatedResponse<InvestorApplication>>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       let filteredData = [...mockApplications];
 
       // 搜索过滤
       if (params.search) {
         const searchTerm = params.search.toLowerCase();
-        filteredData = filteredData.filter(item => 
-          item.user.realName?.toLowerCase().includes(searchTerm) ||
-          item.investmentInstitution.toLowerCase().includes(searchTerm) ||
-          item.user.email?.toLowerCase().includes(searchTerm) ||
-          item.user.phone?.includes(searchTerm)
+        filteredData = filteredData.filter(
+          item =>
+            item.user.realName?.toLowerCase().includes(searchTerm) ||
+            item.investmentInstitution.toLowerCase().includes(searchTerm) ||
+            item.user.email?.toLowerCase().includes(searchTerm) ||
+            item.user.phone?.includes(searchTerm)
         );
       }
 
@@ -648,7 +652,9 @@ export const getApplicationList = (params: ApplicationQueryParams): Promise<ApiR
 
       // 审核员过滤
       if (params.reviewerId) {
-        filteredData = filteredData.filter(item => item.reviewerId === params.reviewerId);
+        filteredData = filteredData.filter(
+          item => item.reviewerId === params.reviewerId
+        );
       }
 
       // 日期范围过滤
@@ -656,7 +662,9 @@ export const getApplicationList = (params: ApplicationQueryParams): Promise<ApiR
         const [startDate, endDate] = params.dateRange;
         filteredData = filteredData.filter(item => {
           const submitDate = new Date(item.submittedTime);
-          return submitDate >= new Date(startDate) && submitDate <= new Date(endDate);
+          return (
+            submitDate >= new Date(startDate) && submitDate <= new Date(endDate)
+          );
         });
       }
 
@@ -681,8 +689,10 @@ export const getApplicationList = (params: ApplicationQueryParams): Promise<ApiR
 };
 
 // 获取申请详情
-export const getApplicationDetail = (id: number): Promise<ApiResponse<InvestorApplication>> => {
-  return new Promise((resolve) => {
+export const getApplicationDetail = (
+  id: number
+): Promise<ApiResponse<InvestorApplication>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const application = mockApplications.find(item => item.id === id);
       if (application) {
@@ -705,8 +715,11 @@ export const getApplicationDetail = (id: number): Promise<ApiResponse<InvestorAp
 };
 
 // 审核申请
-export const reviewApplication = (id: number, reviewData: ReviewForm): Promise<ApiResponse<InvestorApplication>> => {
-  return new Promise((resolve) => {
+export const reviewApplication = (
+  id: number,
+  reviewData: ReviewForm
+): Promise<ApiResponse<InvestorApplication>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const index = mockApplications.findIndex(item => item.id === id);
       if (index !== -1) {
@@ -714,15 +727,17 @@ export const reviewApplication = (id: number, reviewData: ReviewForm): Promise<A
           ...mockApplications[index],
           status: reviewData.status,
           reviewComment: reviewData.comment,
-          reviewTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
+          reviewTime: new Date().toISOString().slice(0, 19).replace("T", " "),
           reviewerId: 1, // 当前审核员ID
-          updatedTime: new Date().toISOString().slice(0, 19).replace('T', ' ')
+          updatedTime: new Date().toISOString().slice(0, 19).replace("T", " ")
         };
 
         // 如果有文档审核信息，更新文档状态
         if (reviewData.documentReviews) {
           reviewData.documentReviews.forEach(docReview => {
-            const docIndex = mockDocuments.findIndex(doc => doc.id === docReview.documentId);
+            const docIndex = mockDocuments.findIndex(
+              doc => doc.id === docReview.documentId
+            );
             if (docIndex !== -1) {
               mockDocuments[docIndex] = {
                 ...mockDocuments[docIndex],
@@ -732,7 +747,7 @@ export const reviewApplication = (id: number, reviewData: ReviewForm): Promise<A
             }
           });
         }
-        
+
         resolve({
           code: 200,
           success: true,
@@ -752,11 +767,14 @@ export const reviewApplication = (id: number, reviewData: ReviewForm): Promise<A
 };
 
 // 批量审核申请
-export const batchReviewApplications = (ids: number[], reviewData: ReviewForm): Promise<ApiResponse<null>> => {
-  return new Promise((resolve) => {
+export const batchReviewApplications = (
+  ids: number[],
+  reviewData: ReviewForm
+): Promise<ApiResponse<null>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       let successCount = 0;
-      
+
       ids.forEach(id => {
         const index = mockApplications.findIndex(item => item.id === id);
         if (index !== -1) {
@@ -764,14 +782,14 @@ export const batchReviewApplications = (ids: number[], reviewData: ReviewForm): 
             ...mockApplications[index],
             status: reviewData.status,
             reviewComment: reviewData.comment,
-            reviewTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            reviewTime: new Date().toISOString().slice(0, 19).replace("T", " "),
             reviewerId: 1,
-            updatedTime: new Date().toISOString().slice(0, 19).replace('T', ' ')
+            updatedTime: new Date().toISOString().slice(0, 19).replace("T", " ")
           };
           successCount++;
         }
       });
-      
+
       resolve({
         code: 200,
         success: true,
@@ -784,7 +802,7 @@ export const batchReviewApplications = (ids: number[], reviewData: ReviewForm): 
 
 // 删除申请
 export const deleteApplication = (id: number): Promise<ApiResponse<null>> => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const index = mockApplications.findIndex(item => item.id === id);
       if (index !== -1) {
@@ -808,14 +826,16 @@ export const deleteApplication = (id: number): Promise<ApiResponse<null>> => {
 };
 
 // 获取申请统计信息
-export const getApplicationStats = (): Promise<ApiResponse<{
-  total: number;
-  pending: number;
-  approved: number;
-  rejected: number;
-  todaySubmitted: number;
-}>> => {
-  return new Promise((resolve) => {
+export const getApplicationStats = (): Promise<
+  ApiResponse<{
+    total: number;
+    pending: number;
+    approved: number;
+    rejected: number;
+    todaySubmitted: number;
+  }>
+> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const stats = {
         total: mockApplications.length,
@@ -839,45 +859,71 @@ export const getApplicationStats = (): Promise<ApiResponse<{
 };
 
 // 更新申请（基础信息）
-export const updateApplication = (id: number, payload: Partial<InvestorApplication>): Promise<ApiResponse<InvestorApplication>> => {
-  return new Promise((resolve) => {
+export const updateApplication = (
+  id: number,
+  payload: Partial<InvestorApplication>
+): Promise<ApiResponse<InvestorApplication>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const index = mockApplications.findIndex(item => item.id === id);
       if (index !== -1) {
         mockApplications[index] = {
           ...mockApplications[index],
           ...payload,
-          updatedTime: new Date().toISOString().slice(0, 19).replace('T', ' ')
+          updatedTime: new Date().toISOString().slice(0, 19).replace("T", " ")
         };
-        resolve({ code: 200, success: true, data: mockApplications[index], message: '更新申请成功' });
+        resolve({
+          code: 200,
+          success: true,
+          data: mockApplications[index],
+          message: "更新申请成功"
+        });
       } else {
-        resolve({ code: 404, success: false, data: null, message: '申请不存在' });
+        resolve({
+          code: 404,
+          success: false,
+          data: null,
+          message: "申请不存在"
+        });
       }
     }, 300);
   });
 };
 
 // 审核员列表（模拟）
-export const getReviewerList = (): Promise<ApiResponse<Array<{ id: number; username: string; realName?: string }>>> => {
-  return new Promise((resolve) => {
+export const getReviewerList = (): Promise<
+  ApiResponse<Array<{ id: number; username: string; realName?: string }>>
+> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const reviewers = [
         { id: 1, username: "admin", realName: "管理员" },
         { id: 2, username: "reviewer1", realName: "审核员1" },
         { id: 3, username: "reviewer2", realName: "审核员2" }
       ];
-      resolve({ code: 200, success: true, data: reviewers, message: "获取审核员列表成功" });
+      resolve({
+        code: 200,
+        success: true,
+        data: reviewers,
+        message: "获取审核员列表成功"
+      });
     }, 150);
   });
 };
 
 // 指派审核员
-export const assignReviewer = (id: number, reviewerId: number): Promise<ApiResponse<InvestorApplication>> => {
-  return new Promise((resolve) => {
+export const assignReviewer = (
+  id: number,
+  reviewerId: number
+): Promise<ApiResponse<InvestorApplication>> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       const index = mockApplications.findIndex(item => item.id === id);
       if (index !== -1) {
-        const reviewerMap: Record<number, { id: number; username: string; realName?: string }> = {
+        const reviewerMap: Record<
+          number,
+          { id: number; username: string; realName?: string }
+        > = {
           1: { id: 1, username: "admin", realName: "管理员" },
           2: { id: 2, username: "reviewer1", realName: "审核员1" },
           3: { id: 3, username: "reviewer2", realName: "审核员2" }
@@ -886,11 +932,21 @@ export const assignReviewer = (id: number, reviewerId: number): Promise<ApiRespo
           ...mockApplications[index],
           reviewerId,
           reviewer: reviewerMap[reviewerId],
-          updatedTime: new Date().toISOString().slice(0, 19).replace('T', ' ')
+          updatedTime: new Date().toISOString().slice(0, 19).replace("T", " ")
         };
-        resolve({ code: 200, success: true, data: mockApplications[index], message: "指派审核员成功" });
+        resolve({
+          code: 200,
+          success: true,
+          data: mockApplications[index],
+          message: "指派审核员成功"
+        });
       } else {
-        resolve({ code: 404, success: false, data: null, message: "申请不存在" });
+        resolve({
+          code: 404,
+          success: false,
+          data: null,
+          message: "申请不存在"
+        });
       }
     }, 200);
   });

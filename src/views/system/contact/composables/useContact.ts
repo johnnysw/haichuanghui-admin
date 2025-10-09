@@ -1,5 +1,9 @@
 import { ref, reactive, computed, onMounted } from "vue";
-import type { FormInstance, FormRules, UploadRequestOptions } from "element-plus";
+import type {
+  FormInstance,
+  FormRules,
+  UploadRequestOptions
+} from "element-plus";
 import { message } from "@/utils/message";
 import { getFullImageUrl } from "@/utils/image";
 import { uploadImage } from "@/api/upload";
@@ -9,7 +13,7 @@ import { getContactInfo, updateContactInfo } from "../api";
 import {
   defaultContactForm,
   type ContactFormModel,
-  type ContactInfo,
+  type ContactInfo
 } from "../types/types";
 
 /** 邮箱校验正则 */
@@ -45,8 +49,8 @@ export const useContact = () => {
             return;
           }
           callback();
-        },
-      },
+        }
+      }
     ],
     email: [
       {
@@ -63,8 +67,8 @@ export const useContact = () => {
             return;
           }
           callback();
-        },
-      },
+        }
+      }
     ],
     wechat: [
       {
@@ -77,8 +81,8 @@ export const useContact = () => {
             return;
           }
           callback();
-        },
-      },
+        }
+      }
     ],
     address: [
       {
@@ -91,8 +95,8 @@ export const useContact = () => {
             return;
           }
           callback();
-        },
-      },
+        }
+      }
     ],
     about: [
       {
@@ -105,8 +109,8 @@ export const useContact = () => {
             return;
           }
           callback();
-        },
-      },
+        }
+      }
     ],
     quickLinks: [
       {
@@ -148,21 +152,21 @@ export const useContact = () => {
           }
 
           callback();
-        },
-      },
-    ],
+        }
+      }
+    ]
   };
 
   /** 生成默认快捷链接数组 */
   const normalizeQuickLinks = (links: ContactInfo["quickLinks"]) => {
     if (!Array.isArray(links)) return [];
     return links
-      .filter((item) => item && typeof item === "object")
-      .map((item) => ({
+      .filter(item => item && typeof item === "object")
+      .map(item => ({
         name: (item.name ?? "").trim(),
-        url: (item.url ?? "").trim(),
+        url: (item.url ?? "").trim()
       }))
-      .filter((item) => item.name || item.url);
+      .filter(item => item.name || item.url);
   };
 
   /** 将接口数据写入表单 */
@@ -174,13 +178,13 @@ export const useContact = () => {
       address: data?.address ?? "",
       about: data?.about ?? "",
       wechatQr: data?.wechatQr ?? null,
-      quickLinks: normalizeQuickLinks(data?.quickLinks),
+      quickLinks: normalizeQuickLinks(data?.quickLinks)
     };
 
     Object.assign(formModel, payload);
     originalData.value = {
       ...payload,
-      quickLinks: payload.quickLinks.map((item) => ({ ...item })),
+      quickLinks: payload.quickLinks.map(item => ({ ...item }))
     };
   };
 
@@ -197,7 +201,8 @@ export const useContact = () => {
         message(res.message || "获取联系方式失败", { type: "error" });
       }
     } catch (error: any) {
-      const errorMsg = error?.response?.data?.message || error?.message || "获取联系方式失败";
+      const errorMsg =
+        error?.response?.data?.message || error?.message || "获取联系方式失败";
       message(errorMsg, { type: "error" });
     } finally {
       loading.value = false;
@@ -223,7 +228,8 @@ export const useContact = () => {
         options.onError?.(new Error(errMsg));
       }
     } catch (error: any) {
-      const errorMsg = error?.response?.data?.message || error?.message || "上传失败";
+      const errorMsg =
+        error?.response?.data?.message || error?.message || "上传失败";
       message(errorMsg, { type: "error" });
       options.onError?.(new Error(errorMsg));
     } finally {
@@ -241,7 +247,7 @@ export const useContact = () => {
   const handleReset = () => {
     Object.assign(formModel, {
       ...originalData.value,
-      quickLinks: originalData.value.quickLinks.map((item) => ({ ...item })),
+      quickLinks: originalData.value.quickLinks.map(item => ({ ...item }))
     });
     formRef.value?.clearValidate();
   };
@@ -261,11 +267,11 @@ export const useContact = () => {
       about: formModel.about.trim(),
       wechatQr: formModel.wechatQr,
       quickLinks: formModel.quickLinks
-        .map((item) => ({
+        .map(item => ({
           name: item.name.trim(),
-          url: item.url.trim(),
+          url: item.url.trim()
         }))
-        .filter((item) => item.name || item.url),
+        .filter(item => item.name || item.url)
     };
 
     submitLoading.value = true;
@@ -278,7 +284,8 @@ export const useContact = () => {
         message(res.message || "联系方式更新失败", { type: "error" });
       }
     } catch (error: any) {
-      const errorMsg = error?.response?.data?.message || error?.message || "联系方式更新失败";
+      const errorMsg =
+        error?.response?.data?.message || error?.message || "联系方式更新失败";
       message(errorMsg, { type: "error" });
     } finally {
       submitLoading.value = false;
@@ -304,7 +311,6 @@ export const useContact = () => {
     handleReset,
     handleUploadQr,
     handleRemoveQr,
-    registerForm,
+    registerForm
   };
 };
-

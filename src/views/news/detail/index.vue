@@ -5,16 +5,22 @@
       <div class="container mx-auto px-4">
         <!-- 面包屑导航 -->
         <div class="mb-6 text-sm">
-          <el-button @click="goBack" :icon="useRenderIcon('ep:arrow-left')" link>
+          <el-button
+            :icon="useRenderIcon('ep:arrow-left')"
+            link
+            @click="goBack"
+          >
             返回列表
           </el-button>
           <span class="mx-2 text-gray-400">/</span>
-          <span class="text-gray-700">{{ detail?.title || '加载中...' }}</span>
+          <span class="text-gray-700">{{ detail?.title || "加载中..." }}</span>
         </div>
 
         <!-- 加载中 -->
         <div v-if="loading" class="py-20 text-center">
-          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div
+            class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"
+          />
           <p class="mt-4 text-gray-500">正在加载资讯详情...</p>
         </div>
 
@@ -39,7 +45,7 @@
             @recommend-change="handleRecommendChange"
             @top-change="handleTopChange"
           />
-          
+
           <!-- 资讯详情内容标签页 -->
           <NewsTabs
             v-if="detail"
@@ -51,11 +57,24 @@
               <!-- 资讯内容 -->
               <div v-if="currentTab === 'content'">
                 <div class="mb-8">
-                  <h2 class="text-2xl font-bold text-gray-800 mb-4">资讯正文</h2>
+                  <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                    资讯正文
+                  </h2>
                   <div class="prose max-w-none">
-                    <p v-if="detail.summary" class="text-gray-700 leading-relaxed mb-6 text-lg font-medium">{{ detail.summary }}</p>
-                    <div v-if="detail.content" v-html="detail.content" class="text-gray-700"></div>
-                    <div v-else class="text-gray-500 text-center py-8">暂无正文内容</div>
+                    <p
+                      v-if="detail.summary"
+                      class="text-gray-700 leading-relaxed mb-6 text-lg font-medium"
+                    >
+                      {{ detail.summary }}
+                    </p>
+                    <div
+                      v-if="detail.content"
+                      class="text-gray-700"
+                      v-html="detail.content"
+                    />
+                    <div v-else class="text-gray-500 text-center py-8">
+                      暂无正文内容
+                    </div>
                   </div>
                 </div>
 
@@ -95,33 +114,47 @@
                         <span class="text-gray-600">来源：</span>
                         <span class="font-medium">{{ detail.source }}</span>
                       </div>
-                      <div v-if="detail.categoryName" class="flex items-center gap-3">
+                      <div
+                        v-if="detail.categoryName"
+                        class="flex items-center gap-3"
+                      >
                         <el-icon class="text-gray-500">
                           <component :is="useRenderIcon('ep:collection-tag')" />
                         </el-icon>
                         <span class="text-gray-600">分类：</span>
-                        <el-tag type="info" effect="plain">{{ detail.categoryName }}</el-tag>
+                        <el-tag type="info" effect="plain">{{
+                          detail.categoryName
+                        }}</el-tag>
                       </div>
                       <div class="flex items-center gap-3">
                         <el-icon class="text-gray-500">
                           <component :is="useRenderIcon('ep:calendar')" />
                         </el-icon>
                         <span class="text-gray-600">创建时间：</span>
-                        <span class="font-medium">{{ formatDateTime(detail.createdTime) }}</span>
+                        <span class="font-medium">{{
+                          formatDateTime(detail.createdTime)
+                        }}</span>
                       </div>
-                      <div v-if="detail.publishTime" class="flex items-center gap-3">
+                      <div
+                        v-if="detail.publishTime"
+                        class="flex items-center gap-3"
+                      >
                         <el-icon class="text-gray-500">
                           <component :is="useRenderIcon('ep:calendar-check')" />
                         </el-icon>
                         <span class="text-gray-600">发布时间：</span>
-                        <span class="font-medium">{{ formatDateTime(detail.publishTime) }}</span>
+                        <span class="font-medium">{{
+                          formatDateTime(detail.publishTime)
+                        }}</span>
                       </div>
                       <div class="flex items-center gap-3">
                         <el-icon class="text-gray-500">
                           <component :is="useRenderIcon('ep:refresh')" />
                         </el-icon>
                         <span class="text-gray-600">更新时间：</span>
-                        <span class="font-medium">{{ formatDateTime(detail.updatedTime) }}</span>
+                        <span class="font-medium">{{
+                          formatDateTime(detail.updatedTime)
+                        }}</span>
                       </div>
                     </div>
                   </div>
@@ -135,7 +168,9 @@
                   <div class="bg-white rounded-lg p-6 shadow-sm border">
                     <div class="flex items-center justify-between">
                       <div>
-                        <div class="text-2xl font-bold text-blue-600">{{ detail.viewCount }}</div>
+                        <div class="text-2xl font-bold text-blue-600">
+                          {{ detail.viewCount }}
+                        </div>
                         <div class="text-sm text-gray-500">浏览量</div>
                       </div>
                       <el-icon class="text-blue-500" size="32">
@@ -143,11 +178,13 @@
                       </el-icon>
                     </div>
                   </div>
-                  
+
                   <div class="bg-white rounded-lg p-6 shadow-sm border">
                     <div class="flex items-center justify-between">
                       <div>
-                        <div class="text-2xl font-bold text-green-600">{{ detail.commentCount }}</div>
+                        <div class="text-2xl font-bold text-green-600">
+                          {{ detail.commentCount }}
+                        </div>
                         <div class="text-sm text-gray-500">评论数</div>
                       </div>
                       <el-icon class="text-green-500" size="32">
@@ -155,11 +192,13 @@
                       </el-icon>
                     </div>
                   </div>
-                  
+
                   <div class="bg-white rounded-lg p-6 shadow-sm border">
                     <div class="flex items-center justify-between">
                       <div>
-                        <div class="text-2xl font-bold text-red-600">{{ detail.likeCount }}</div>
+                        <div class="text-2xl font-bold text-red-600">
+                          {{ detail.likeCount }}
+                        </div>
                         <div class="text-sm text-gray-500">点赞数</div>
                       </div>
                       <el-icon class="text-red-500" size="32">
@@ -167,11 +206,13 @@
                       </el-icon>
                     </div>
                   </div>
-                  
+
                   <div class="bg-white rounded-lg p-6 shadow-sm border">
                     <div class="flex items-center justify-between">
                       <div>
-                        <div class="text-2xl font-bold text-orange-600">{{ detail.favoriteCount }}</div>
+                        <div class="text-2xl font-bold text-orange-600">
+                          {{ detail.favoriteCount }}
+                        </div>
                         <div class="text-sm text-gray-500">收藏数</div>
                       </div>
                       <el-icon class="text-orange-500" size="32">
@@ -189,16 +230,33 @@
                   <div class="bg-gray-50 rounded-lg p-6">
                     <div class="space-y-4">
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">SEO标题</label>
-                        <div class="text-gray-900">{{ detail.seoTitle || detail.title }}</div>
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-1"
+                          >SEO标题</label
+                        >
+                        <div class="text-gray-900">
+                          {{ detail.seoTitle || detail.title }}
+                        </div>
                       </div>
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">SEO关键词</label>
-                        <div class="text-gray-900">{{ detail.seoKeywords || '未设置' }}</div>
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-1"
+                          >SEO关键词</label
+                        >
+                        <div class="text-gray-900">
+                          {{ detail.seoKeywords || "未设置" }}
+                        </div>
                       </div>
                       <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">SEO描述</label>
-                        <div class="text-gray-900">{{ detail.seoDescription || detail.summary || '未设置' }}</div>
+                        <label
+                          class="block text-sm font-medium text-gray-700 mb-1"
+                          >SEO描述</label
+                        >
+                        <div class="text-gray-900">
+                          {{
+                            detail.seoDescription || detail.summary || "未设置"
+                          }}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -235,10 +293,10 @@ const activeTab = ref("content");
 
 // 标签页配置
 const tabs = [
-  { key: 'content', label: '资讯内容' },
-  { key: 'info', label: '基本信息' },
-  { key: 'stats', label: '统计信息' },
-  { key: 'seo', label: 'SEO信息' }
+  { key: "content", label: "资讯内容" },
+  { key: "info", label: "基本信息" },
+  { key: "stats", label: "统计信息" },
+  { key: "seo", label: "SEO信息" }
 ];
 
 // 获取资讯ID
@@ -299,13 +357,13 @@ const fetchNewsDetail = async () => {
   const id = getNewsId();
   console.log("当前路由参数:", route.params);
   console.log("解析得到的ID:", id);
-  
+
   if (!id || isNaN(id)) {
     console.error("无效的资讯ID:", id);
     ElMessage.error("资讯ID无效");
     return;
   }
-  
+
   loading.value = true;
   try {
     console.log("开始获取资讯详情, ID:", id);
@@ -314,7 +372,7 @@ const fetchNewsDetail = async () => {
     detail.value = response.data;
   } catch (error: any) {
     console.error("获取资讯详情失败:", error);
-    ElMessage.error(`获取详情失败: ${error.message || '数据不存在'}`);
+    ElMessage.error(`获取详情失败: ${error.message || "数据不存在"}`);
     detail.value = null;
   } finally {
     loading.value = false;
@@ -327,7 +385,7 @@ onMounted(() => {
 });
 
 // 监听路由变化
-const stopWatcher = router.beforeEach((to) => {
+const stopWatcher = router.beforeEach(to => {
   if (to.name === "NewsDetail" && to.params.id !== route.params.id) {
     fetchNewsDetail();
   }

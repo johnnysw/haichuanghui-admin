@@ -56,7 +56,10 @@
         >
           搜索
         </el-button>
-        <el-button :icon="useRenderIcon('ri:refresh-line')" @click="resetSearch">
+        <el-button
+          :icon="useRenderIcon('ri:refresh-line')"
+          @click="resetSearch"
+        >
           重置
         </el-button>
       </el-form-item>
@@ -66,7 +69,10 @@
       ref="contentRef"
       :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
     >
-      <div :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']" class="w-full min-w-0">
+      <div
+        :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']"
+        class="w-full min-w-0"
+      >
         <PureTableBar
           class="w-full min-w-0"
           style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
@@ -126,7 +132,12 @@
               <template #name="{ row }">
                 <div class="flex flex-col">
                   <div class="font-medium text-gray-900">{{ row.name }}</div>
-                  <div v-if="row.description" class="text-xs text-gray-500 mt-1">{{ row.description }}</div>
+                  <div
+                    v-if="row.description"
+                    class="text-xs text-gray-500 mt-1"
+                  >
+                    {{ row.description }}
+                  </div>
                 </div>
               </template>
 
@@ -136,7 +147,7 @@
                   effect="plain"
                   :size="size === 'small' ? 'small' : 'default'"
                 >
-                  {{ row.level === 1 ? '一级分类' : `${row.level}级分类` }}
+                  {{ row.level === 1 ? "一级分类" : `${row.level}级分类` }}
                 </el-tag>
               </template>
 
@@ -171,7 +182,9 @@
               </template>
 
               <template #articleCount="{ row }">
-                <span class="font-medium text-blue-600">{{ row.articleCount }}</span>
+                <span class="font-medium text-blue-600">{{
+                  row.articleCount
+                }}</span>
               </template>
 
               <template #createdTime="{ row }">
@@ -222,7 +235,7 @@
                         审核拒绝
                       </el-dropdown-item>
                       <el-dropdown-item @click="handleToggleNavigation(row)">
-                        {{ row.isNavigation ? '取消导航' : '显示导航' }}
+                        {{ row.isNavigation ? "取消导航" : "显示导航" }}
                       </el-dropdown-item>
                       <el-dropdown-item divided @click="handleDelete(row.id)">
                         删除
@@ -236,7 +249,7 @@
         </PureTableBar>
       </div>
     </div>
-    
+
     <!-- 新增/编辑弹窗 -->
     <CategoryDialog
       v-model:visible="dialogVisible"
@@ -256,7 +269,14 @@ import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 import CategoryDialog from "./components/CategoryDialog.vue";
-import { getCategoryList, deleteCategory, batchDeleteCategory, toggleCategoryActive, toggleCategoryNavigation, updateCategoryStatus } from "./api/index";
+import {
+  getCategoryList,
+  deleteCategory,
+  batchDeleteCategory,
+  toggleCategoryActive,
+  toggleCategoryNavigation,
+  updateCategoryStatus
+} from "./api/index";
 import type { NewsCategory, CategoryListParams } from "./types/types";
 
 defineOptions({ name: "NewsCategory" });
@@ -300,7 +320,7 @@ const columns: TableColumnList = [
     type: "selection",
     width: 55,
     align: "left",
-    hide: (opts) => !opts?.checkList?.includes("勾选列")
+    hide: opts => !opts?.checkList?.includes("勾选列")
   },
   {
     label: "ID",
@@ -382,7 +402,7 @@ const getData = async () => {
       pageSize: pagination.pageSize,
       ...searchForm
     };
-    
+
     const { data } = await getCategoryList(params);
     dataList.value = data.list;
     pagination.total = data.total;
@@ -451,12 +471,12 @@ const handleDelete = async (id: number) => {
         type: "warning"
       }
     );
-    
+
     await deleteCategory(id);
     ElMessage.success("删除成功");
     getData();
   } catch (error) {
-    if (error !== 'cancel') {
+    if (error !== "cancel") {
       console.error("删除失败:", error);
       ElMessage.error("删除失败");
     }
@@ -469,7 +489,7 @@ const handleBatchDelete = async () => {
     ElMessage.warning("请选择要删除的分类");
     return;
   }
-  
+
   try {
     await ElMessageBox.confirm(
       `此操作将永久删除选中的 ${selectedIds.value.length} 个分类，是否继续？`,
@@ -480,13 +500,13 @@ const handleBatchDelete = async () => {
         type: "warning"
       }
     );
-    
+
     await batchDeleteCategory(selectedIds.value);
     ElMessage.success("批量删除成功");
     selectedIds.value = [];
     getData();
   } catch (error) {
-    if (error !== 'cancel') {
+    if (error !== "cancel") {
       console.error("批量删除失败:", error);
       ElMessage.error("批量删除失败");
     }
@@ -546,19 +566,27 @@ const handleReject = async (row: NewsCategory) => {
 // 工具函数
 const getStatusType = (status: number) => {
   switch (status) {
-    case 0: return "warning";
-    case 1: return "success";
-    case 2: return "danger";
-    default: return "info";
+    case 0:
+      return "warning";
+    case 1:
+      return "success";
+    case 2:
+      return "danger";
+    default:
+      return "info";
   }
 };
 
 const getStatusText = (status: number) => {
   switch (status) {
-    case 0: return "待审核";
-    case 1: return "已审核";
-    case 2: return "已拒绝";
-    default: return "未知";
+    case 0:
+      return "待审核";
+    case 1:
+      return "已审核";
+    case 2:
+      return "已拒绝";
+    default:
+      return "未知";
   }
 };
 

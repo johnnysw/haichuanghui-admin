@@ -1,7 +1,6 @@
 import { reactive, ref, onMounted } from "vue";
 import { getIndustryList, getRegionList } from "../api";
 
-
 export function useCompetitionFilter() {
   const form = reactive({
     title: "",
@@ -49,7 +48,7 @@ export function useCompetitionFilter() {
     fetchRegionOptions();
   });
 
-  const resetForm = (formEl) => {
+  const resetForm = formEl => {
     if (!formEl) return;
     formEl.resetFields();
   };

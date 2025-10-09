@@ -111,21 +111,25 @@ async function handleToggleDisable() {
               v-if="detail.status !== 3"
               :icon="useRenderIcon('ep:bottom')"
               :loading="actionLoading"
+              style="background: #e8a859; color: white; border: none"
               @click="handleToggleOnline"
-              style="background: #E8A859; color: white; border: none;"
             >
               {{ detail.status === 1 ? "下线" : "上线" }}
             </el-button>
 
             <el-button
-              :icon="useRenderIcon(detail.status === 3 ? 'ep:circle-check' : 'ep:circle-close')"
+              :icon="
+                useRenderIcon(
+                  detail.status === 3 ? 'ep:circle-check' : 'ep:circle-close'
+                )
+              "
               :loading="actionLoading"
-              @click="handleToggleDisable"
               :style="{
                 background: detail.status === 3 ? '#67C23A' : '#F56C6C',
                 color: 'white',
                 border: 'none'
               }"
+              @click="handleToggleDisable"
             >
               {{ detail.status === 3 ? "解除禁用" : "禁用" }}
             </el-button>
@@ -136,7 +140,9 @@ async function handleToggleDisable() {
 
     <!-- 加载中 -->
     <div v-if="loading" class="py-20 text-center">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div
+        class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"
+      />
       <p class="mt-4 text-gray-500">正在加载双创载体详情...</p>
     </div>
 

@@ -4,29 +4,30 @@ import ReCol from "@/components/ReCol";
 import { Role } from "@/types/system";
 
 const props = withDefaults(defineProps<{ formInline: Role.FormData }>(), {
-  formInline: () => ({
-    username: "",
-    nickname: "",
-    roleOptions: [],
-    ids: [],
-    name: "",
-    code: "",
-    status: 1,
-    remark: ""
-  } as Role.FormData)
+  formInline: () =>
+    ({
+      username: "",
+      nickname: "",
+      roleOptions: [],
+      ids: [],
+      name: "",
+      code: "",
+      status: 1,
+      remark: ""
+    }) as Role.FormData
 });
 
 // 使用计算属性确保数据类型正确
 const roleOptions = computed(() => {
-  return Array.isArray(props.formInline.roleOptions) 
-    ? props.formInline.roleOptions 
+  return Array.isArray(props.formInline.roleOptions)
+    ? props.formInline.roleOptions
     : [];
 });
 
 // 使用计算属性确保ids是数字数组
 const selectedIds = computed(() => {
-  return Array.isArray(props.formInline.ids) 
-    ? props.formInline.ids.map(id => Number(id)) 
+  return Array.isArray(props.formInline.ids)
+    ? props.formInline.ids.map(id => Number(id))
     : [];
 });
 </script>

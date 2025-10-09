@@ -16,7 +16,7 @@ import ProjectDetailModal from "./components/ProjectDetailModal.vue";
 import type {
   RegistrationListItem,
   RegistrationDetail,
-  RegistrationQueryParams,
+  RegistrationQueryParams
 } from "./types/types";
 
 import Check from "@iconify-icons/ep/check";
@@ -29,7 +29,7 @@ import CircleClose from "@iconify-icons/ep/circle-close";
 import InfoFilled from "@iconify-icons/ep/info-filled";
 
 defineOptions({
-  name: "CompetitionRegistration",
+  name: "CompetitionRegistration"
 });
 
 const route = useRoute();
@@ -45,15 +45,10 @@ const {
   columns,
   fetchData,
   handleSizeChange,
-  handleCurrentChange,
+  handleCurrentChange
 } = useRegistrationTable();
 
-const {
-  form,
-  formRef,
-  statusOptions,
-  resetForm,
-} = useRegistrationFilter();
+const { form, formRef, statusOptions, resetForm } = useRegistrationFilter();
 
 const contentRef = ref();
 
@@ -69,13 +64,13 @@ const summaryCards = computed(() => [
   { label: "待审核", value: summary.value.pending, type: "warning" },
   { label: "已通过", value: summary.value.approved, type: "success" },
   { label: "已拒绝", value: summary.value.rejected, type: "danger" },
-  { label: "已取消", value: summary.value.cancelled, type: "info" },
+  { label: "已取消", value: summary.value.cancelled, type: "info" }
 ]);
 
 const buildQueryParams = (): RegistrationQueryParams => {
   const params: RegistrationQueryParams = {
     pageNum: pagination.currentPage,
-    pageSize: pagination.pageSize,
+    pageSize: pagination.pageSize
   };
 
   const status = form.status;
@@ -127,7 +122,8 @@ const loadDetail = async (id: number) => {
   try {
     detailLoading.value = true;
     const res = await getRegistrationDetail(id);
-    const payload = (res as any)?.data?.data ?? res.data ?? (res as any)?.data ?? res;
+    const payload =
+      (res as any)?.data?.data ?? res.data ?? (res as any)?.data ?? res;
     detail.value = payload || null;
   } catch (error: any) {
     detail.value = null;
@@ -145,7 +141,9 @@ const openDetail = async (row: RegistrationListItem) => {
 
 const refreshCurrentRow = () => {
   if (!selectedRow.value) return;
-  const current = dataList.value.find((item) => item.id === selectedRow.value!.id);
+  const current = dataList.value.find(
+    item => item.id === selectedRow.value!.id
+  );
   if (current) {
     selectedRow.value = current;
   }
@@ -298,13 +296,25 @@ onMounted(async () => {
         </el-select>
       </el-form-item>
       <el-form-item label="团队名称" prop="teamName">
-        <el-input v-model.trim="form.teamName" placeholder="请输入团队名称" class="!w-[140px]" />
+        <el-input
+          v-model.trim="form.teamName"
+          placeholder="请输入团队名称"
+          class="!w-[140px]"
+        />
       </el-form-item>
       <el-form-item label="联系人" prop="contactName">
-        <el-input v-model.trim="form.contactName" placeholder="请输入联系人" class="!w-[120px]" />
+        <el-input
+          v-model.trim="form.contactName"
+          placeholder="请输入联系人"
+          class="!w-[120px]"
+        />
       </el-form-item>
       <el-form-item label="手机号" prop="contactPhone">
-        <el-input v-model.trim="form.contactPhone" placeholder="请输入手机号" class="!w-[140px]" />
+        <el-input
+          v-model.trim="form.contactPhone"
+          placeholder="请输入手机号"
+          class="!w-[140px]"
+        />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -325,7 +335,10 @@ onMounted(async () => {
       ref="contentRef"
       :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
     >
-      <div :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']" class="w-full min-w-0">
+      <div
+        :class="[isShow ? 'md:col-span-7 col-span-12' : 'col-span-12']"
+        class="w-full min-w-0"
+      >
         <PureTableBar
           class="w-full min-w-0"
           style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
@@ -347,7 +360,7 @@ onMounted(async () => {
               :pagination="{ ...pagination, size }"
               :header-cell-style="{
                 background: 'var(--el-fill-color-light)',
-                color: 'var(--el-text-color-primary)',
+                color: 'var(--el-text-color-primary)'
               }"
               @page-size-change="onPageSizeChange"
               @page-current-change="onPageCurrentChange"
@@ -370,7 +383,8 @@ onMounted(async () => {
                   type="success"
                   :size="size"
                   :icon="useRenderIcon(Check)"
-                  @click="handleApprove(row)">
+                  @click="handleApprove(row)"
+                >
                   通过
                 </el-button>
                 <el-button
@@ -427,7 +441,7 @@ onMounted(async () => {
     margin-bottom: 0;
     margin-right: 16px;
   }
-  
+
   :deep(.el-form-item:last-child) {
     margin-right: 0;
   }

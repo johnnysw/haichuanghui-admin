@@ -10,7 +10,7 @@
     <el-divider content-position="left">
       <el-icon><User /></el-icon> 基本信息
     </el-divider>
-    
+
     <el-row :gutter="24">
       <el-col :span="8">
         <el-form-item label="关联用户ID" prop="userId">
@@ -24,18 +24,12 @@
       </el-col>
       <el-col :span="8">
         <el-form-item label="真实姓名" prop="realName">
-          <el-input
-            v-model="form.realName"
-            placeholder="请输入真实姓名"
-          />
+          <el-input v-model="form.realName" placeholder="请输入真实姓名" />
         </el-form-item>
       </el-col>
       <el-col :span="8">
         <el-form-item label="手机号码" prop="phone">
-          <el-input
-            v-model="form.phone"
-            placeholder="请输入手机号码"
-          />
+          <el-input v-model="form.phone" placeholder="请输入手机号码" />
         </el-form-item>
       </el-col>
     </el-row>
@@ -43,10 +37,7 @@
     <el-row :gutter="24">
       <el-col :span="8">
         <el-form-item label="邮箱地址" prop="email">
-          <el-input
-            v-model="form.email"
-            placeholder="请输入邮箱地址"
-          />
+          <el-input v-model="form.email" placeholder="请输入邮箱地址" />
         </el-form-item>
       </el-col>
       <el-col :span="8">
@@ -144,11 +135,15 @@
     <el-divider content-position="left">
       <el-icon><TrendCharts /></el-icon> 投资偏好
     </el-divider>
-    
+
     <el-form-item label="关注领域" prop="focusIndustries">
       <el-checkbox-group v-model="form.focusIndustries">
         <el-row :gutter="16">
-          <el-col :span="4" v-for="option in industryFieldOptions" :key="option.value">
+          <el-col
+            v-for="option in industryFieldOptions"
+            :key="option.value"
+            :span="4"
+          >
             <el-checkbox :value="option.value" :label="option.label" />
           </el-col>
         </el-row>
@@ -158,7 +153,11 @@
     <el-form-item label="投资阶段" prop="preferredStages">
       <el-checkbox-group v-model="form.preferredStages">
         <el-row :gutter="16">
-          <el-col :span="4" v-for="option in investmentStageOptions" :key="option.value">
+          <el-col
+            v-for="option in investmentStageOptions"
+            :key="option.value"
+            :span="4"
+          >
             <el-checkbox :value="option.value" :label="option.label" />
           </el-col>
         </el-row>
@@ -214,15 +213,16 @@
             :auto-upload="false"
             multiple
             accept=".jpg,.jpeg,.png,.pdf"
-            :on-change="(file: any, fileList: any) => handleFileChange('idDocuments', fileList)"
+            :on-change="
+              (file: any, fileList: any) =>
+                handleFileChange('idDocuments', fileList)
+            "
           >
             <el-button size="small" type="primary">
               <el-icon><Upload /></el-icon> 选择文件
             </el-button>
             <template #tip>
-              <div class="el-upload__tip">
-                jpg/png/pdf文件，大小不超过10MB
-              </div>
+              <div class="el-upload__tip">jpg/png/pdf文件，大小不超过10MB</div>
             </template>
           </el-upload>
         </el-form-item>
@@ -235,15 +235,16 @@
             :auto-upload="false"
             multiple
             accept=".jpg,.jpeg,.png,.pdf"
-            :on-change="(file: any, fileList: any) => handleFileChange('institutionDocuments', fileList)"
+            :on-change="
+              (file: any, fileList: any) =>
+                handleFileChange('institutionDocuments', fileList)
+            "
           >
             <el-button size="small" type="primary">
               <el-icon><Upload /></el-icon> 选择文件
             </el-button>
             <template #tip>
-              <div class="el-upload__tip">
-                工作证明、营业执照等
-              </div>
+              <div class="el-upload__tip">工作证明、营业执照等</div>
             </template>
           </el-upload>
         </el-form-item>
@@ -256,15 +257,16 @@
             :auto-upload="false"
             multiple
             accept=".jpg,.jpeg,.png,.pdf"
-            :on-change="(file: any, fileList: any) => handleFileChange('investmentDocuments', fileList)"
+            :on-change="
+              (file: any, fileList: any) =>
+                handleFileChange('investmentDocuments', fileList)
+            "
           >
             <el-button size="small" type="primary">
               <el-icon><Upload /></el-icon> 选择文件
             </el-button>
             <template #tip>
-              <div class="el-upload__tip">
-                投资案例、资产证明等
-              </div>
+              <div class="el-upload__tip">投资案例、资产证明等</div>
             </template>
           </el-upload>
         </el-form-item>
@@ -328,8 +330,19 @@
 import { ref, reactive, watch, onMounted } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import type { InvestorForm, InvestorInfo, BaseOption } from "../types/types";
-import { getRegionList, getIndustryList, getFundingStageList, getInvestorTypeList } from "../api";
-import { User, TrendCharts, Document, Setting, Upload } from "@element-plus/icons-vue";
+import {
+  getRegionList,
+  getIndustryList,
+  getFundingStageList,
+  getInvestorTypeList
+} from "../api";
+import {
+  User,
+  TrendCharts,
+  Document,
+  Setting,
+  Upload
+} from "@element-plus/icons-vue";
 
 interface Props {
   modelValue?: InvestorInfo | null;
@@ -414,7 +427,11 @@ const rules: FormRules = {
   ],
   phone: [
     { required: true, message: "请输入手机号码", trigger: "blur" },
-    { pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号码", trigger: "blur" }
+    {
+      pattern: /^1[3-9]\d{9}$/,
+      message: "请输入正确的手机号码",
+      trigger: "blur"
+    }
   ],
   email: [
     { required: true, message: "请输入邮箱地址", trigger: "blur" },
@@ -424,16 +441,17 @@ const rules: FormRules = {
     { required: true, message: "请输入投资机构名称", trigger: "blur" },
     { min: 2, max: 100, message: "机构名称长度在2-100个字符", trigger: "blur" }
   ],
-  position: [
-    { required: true, message: "请选择职位", trigger: "change" }
-  ],
+  position: [{ required: true, message: "请选择职位", trigger: "change" }],
   bio: [
     { required: true, message: "请输入个人简介", trigger: "blur" },
-    { min: 50, max: 500, message: "个人简介长度在50-500个字符", trigger: "blur" }
+    {
+      min: 50,
+      max: 500,
+      message: "个人简介长度在50-500个字符",
+      trigger: "blur"
+    }
   ],
-  status: [
-    { required: true, message: "请选择状态", trigger: "change" }
-  ]
+  status: [{ required: true, message: "请选择状态", trigger: "change" }]
 };
 
 // 获取选项数据
@@ -471,7 +489,7 @@ const handleFileChange = (type: string, fileList: any[]) => {
 // 监听表单变化
 watch(
   () => form,
-  (newForm) => {
+  newForm => {
     emit("update:modelValue", { ...newForm });
   },
   { deep: true }
@@ -480,7 +498,7 @@ watch(
 // 监听props变化
 watch(
   () => props.modelValue,
-  (newValue) => {
+  newValue => {
     if (newValue) {
       Object.assign(form, {
         id: newValue.id,
@@ -531,7 +549,7 @@ watch(
 // 表单验证
 const validate = async (): Promise<boolean> => {
   if (!formRef.value) return false;
-  
+
   try {
     await formRef.value.validate();
     return true;
