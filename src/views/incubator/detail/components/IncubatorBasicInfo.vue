@@ -5,8 +5,8 @@
         <!-- 左侧：Logo和联系信息 -->
         <div class="flex flex-col md:w-1/4 mb-6 md:mb-0">
           <img
-            v-if="incubator.logo"
-            :src="incubator.logo"
+            v-if="logoUrl"
+            :src="logoUrl"
             :alt="incubator.name"
             class="w-full h-64 md:h-48 object-cover rounded-lg mb-4"
           />
@@ -55,11 +55,11 @@
               <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ incubator.name }}</h1>
               <div class="flex items-center flex-wrap gap-2">
                 <span
-                  v-if="incubator.type"
-                  :class="getTypeColor(incubator.type)"
-                  class="px-3 py-1 rounded-full text-sm"
+                  v-if="centerTypeTag"
+                  :class="['px-3 py-1 rounded-full text-sm', centerTypeTag.className]"
+                  :style="centerTypeTag.style"
                 >
-                  {{ getTypeLabel(incubator.type) }}
+                  {{ centerTypeTag.text }}
                 </span>
                 <span
                   v-if="incubator.location"
@@ -85,48 +85,16 @@
           </div>
 
           <!-- 统计数据 -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" v-loading="statsLoading">
-            <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+            <div
+              v-for="card in statisticCards"
+              :key="card.key"
+              class="bg-gray-50 rounded-lg p-4 text-center"
+            >
               <div class="text-2xl font-bold text-primary">
-                {{ stats?.todayViews || 0 }}
+                {{ card.value }}
               </div>
-              <div class="text-gray-600 text-sm">今日浏览</div>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-primary">{{ stats?.applications || 0 }}</div>
-              <div class="text-gray-600 text-sm">申请数量</div>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-primary">{{ stats?.monthlyViews || 0 }}</div>
-              <div class="text-gray-600 text-sm">本月浏览</div>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-primary">{{ stats?.favorites || 0 }}</div>
-              <div class="text-gray-600 text-sm">收藏数量</div>
-            </div>
-          </div>
-
-          <!-- 载体信息 -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-gray-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-primary">
-                {{ incubator.companyCount || 0 }}+
-              </div>
-              <div class="text-gray-600 text-sm">入驻企业</div>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-primary">{{ incubator.graduatedCount || 0 }}+</div>
-              <div class="text-gray-600 text-sm">毕业企业</div>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-primary">{{ getEstablishedYear() }}年</div>
-              <div class="text-gray-600 text-sm">成立时间</div>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4 text-center">
-              <div class="text-2xl font-bold text-primary">
-                {{ formatNumber(incubator.areaSize) }}㎡
-              </div>
-              <div class="text-gray-600 text-sm">场地面积</div>
+              <div class="text-gray-600 text-sm">{{ card.label }}</div>
             </div>
           </div>
 
@@ -150,19 +118,20 @@ import Phone from "@iconify-icons/ep/phone";
 import Message from "@iconify-icons/ep/message";
 import Link from "@iconify-icons/ep/link";
 import OfficeBuilding from "@iconify-icons/ep/office-building";
-import type { IncubatorDetail, IncubatorStats } from "../types/types";
+import type { IncubatorDetail } from "../types/types";
+import { computed } from "vue";
+import { getFullImageUrl } from "@/utils/image";
 
 // Props
 const props = defineProps<{
   incubator: IncubatorDetail;
-  stats?: IncubatorStats | null;
-  statsLoading?: boolean;
 }>();
 
 // 格式化数字（添加千位分隔符）
 const formatNumber = (value: any) => {
-  if (!value) return '0';
-  return Number(value).toLocaleString();
+  const numberValue = Number(value ?? 0);
+  if (Number.isNaN(numberValue)) return '0';
+  return numberValue.toLocaleString();
 };
 
 // 获取服务领域
@@ -188,46 +157,87 @@ const getServiceFields = (services: any) => {
   return [];
 };
 
-// 获取类型标签
-const getTypeLabel = (type?: string) => {
-  switch (type) {
-    case "科技园":
-      return "科技园";
-    case "science-park":
-      return "科技园区";
-    case "创业园":
-      return "创业园";
-    case "孵化器":
-      return "孵化器";
-    case "加速器":
-      return "加速器";
-    default:
-      return type || "双创载体";
-  }
-};
-
-// 获取类型颜色
-const getTypeColor = (type?: string) => {
-  switch (type) {
-    case "科技园":
-    case "science-park":
-      return 'bg-purple-100 text-purple-600';
-    case "创业园":
-      return 'bg-green-100 text-green-600';
-    case "孵化器":
-      return 'bg-blue-100 text-primary';
-    case "加速器":
-      return 'bg-orange-100 text-orange-600';
-    default:
-      return 'bg-gray-100 text-gray-600';
-  }
-};
-
 // 获取成立年份
 const getEstablishedYear = () => {
-  if (props.incubator.establishedDate) {
-    return new Date(props.incubator.establishedDate).getFullYear();
+  if (props.incubator.establishedYear) {
+    return props.incubator.establishedYear;
   }
-  return '未知';
+
+  if (props.incubator.establishedDate) {
+    const year = new Date(props.incubator.establishedDate).getFullYear();
+    if (!Number.isNaN(year)) return year;
+  }
+
+  return null;
 };
+
+const centerTypeTag = computed(() => {
+  const centerType = props.incubator.centerType;
+  if (centerType) {
+    const text = centerType.name || centerType.code || "双创载体";
+    if (centerType.color) {
+      return {
+        text,
+        className: '',
+        style: {
+          backgroundColor: centerType.color,
+          color: '#fff'
+        }
+      };
+    }
+    return {
+      text,
+      className: 'bg-primary/10 text-primary',
+      style: {}
+    };
+  }
+
+  return null;
+});
+
+const statisticCards = computed(() => {
+  const establishedYear = getEstablishedYear();
+  const settledCompanies = props.incubator.settledCompaniesCount ?? props.incubator.companyCount ?? 0;
+  const graduatedCompanies = props.incubator.graduatedCount ?? props.incubator.successCases ?? 0;
+  const areaValue = props.incubator.area ?? props.incubator.areaSize ?? 0;
+
+  return [
+    {
+      key: "views",
+      label: "浏览量",
+      value: formatNumber(props.incubator.totalViews ?? props.incubator.viewCount ?? 0)
+    },
+    {
+      key: "favorites",
+      label: "收藏数量",
+      value: formatNumber(props.incubator.favorites ?? 0)
+    },
+    {
+      key: "companies",
+      label: "入驻企业",
+      value: `${formatNumber(settledCompanies)}+`
+    },
+    {
+      key: "graduates",
+      label: "毕业企业",
+      value: `${formatNumber(graduatedCompanies)}+`
+    },
+    {
+      key: "established",
+      label: "成立时间",
+      value: establishedYear ? `${establishedYear}年` : "未知年"
+    },
+    {
+      key: "area",
+      label: "场地面积",
+      value: `${formatNumber(areaValue)}㎡`
+    }
+  ];
+});
+
+const logoUrl = computed(() => {
+  const logo = props.incubator.logo;
+  if (!logo) return "";
+  return getFullImageUrl(logo);
+});
 </script>

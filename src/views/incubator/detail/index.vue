@@ -3,11 +3,8 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useIncubatorDetail } from "./composables/useIncubatorDetail";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessageBox } from "element-plus";
 import ArrowLeft from "@iconify-icons/ep/arrow-left";
-import Check from "@iconify-icons/ep/check";
-import Close from "@iconify-icons/ep/close";
-import Lock from "@iconify-icons/ep/lock";
 
 // 导入自定义组件
 import IncubatorBasicInfo from "./components/IncubatorBasicInfo.vue";
@@ -22,20 +19,15 @@ const activeTab = ref("introduction");
 
 const {
   loading,
-  statsLoading,
   actionLoading,
   detail,
-  stats,
   fetchDetail,
-  fetchStats,
   updateStatus,
-  getStatusInfo,
-  getTypeLabel
+  getStatusInfo
 } = useIncubatorDetail(id.value);
 
 onMounted(() => {
   fetchDetail();
-  fetchStats();
 });
 
 function goBack() {
@@ -47,62 +39,14 @@ const handleTabChange = (tab: string) => {
   activeTab.value = tab;
 };
 
-// 审核通过
-async function handleApprove() {
+// 上线/下线切换
+async function handleToggleOnline() {
   if (!detail.value) return;
-  
-  const result = await ElMessageBox.confirm(
-    `确定要通过 "${detail.value.name}" 的审核吗？`,
-    "审核通过",
-    {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning"
-    }
-  );
 
-  if (result === "confirm") {
-    const success = await updateStatus(1);
-    if (success) {
-      await fetchDetail();
-    }
-  }
-}
+  const isOnline = detail.value.status === 1;
+  const newStatus = isOnline ? 2 : 1;
+  const actionText = isOnline ? "下线" : "上线";
 
-// 审核拒绝
-async function handleReject() {
-  if (!detail.value) return;
-  
-  const { value: reason } = await ElMessageBox.prompt(
-    "请输入拒绝原因:",
-    "审核拒绝",
-    {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      inputValidator: (value) => {
-        if (!value) {
-          return "请输入拒绝原因";
-        }
-        return true;
-      }
-    }
-  );
-
-  if (reason) {
-    const success = await updateStatus(3, reason);
-    if (success) {
-      await fetchDetail();
-    }
-  }
-}
-
-// 启用/禁用切换
-async function handleToggleStatus() {
-  if (!detail.value) return;
-  
-  const newStatus = detail.value.status === 0 ? 1 : 0;
-  const actionText = newStatus === 1 ? "启用" : "禁用";
-  
   const result = await ElMessageBox.confirm(
     `确定要${actionText} "${detail.value.name}" 吗？`,
     `${actionText}载体`,
@@ -120,55 +64,74 @@ async function handleToggleStatus() {
     }
   }
 }
+
+// 禁用/解除禁用
+async function handleToggleDisable() {
+  if (!detail.value) return;
+
+  const isDisabled = detail.value.status === 3;
+  const newStatus = isDisabled ? 1 : 3;
+  const actionText = isDisabled ? "解除禁用" : "禁用";
+
+  const result = await ElMessageBox.confirm(
+    `确定要${actionText} "${detail.value.name}" 吗？`,
+    `${actionText}载体`,
+    {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: isDisabled ? "info" : "warning"
+    }
+  );
+
+  if (result === "confirm") {
+    const success = await updateStatus(newStatus);
+    if (success) {
+      await fetchDetail();
+    }
+  }
+}
 </script>
 
 <template>
-  <div>
-    <!-- 面包屑导航 -->
-    <div class="bg-white shadow-sm border-b px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <el-button @click="goBack" :icon="useRenderIcon(ArrowLeft)" link>
-            返回列表
-          </el-button>
-          <div class="text-sm text-gray-500">双创载体详情</div>
-        </div>
-        
-        <!-- 管理操作按钮 -->
-        <div v-if="detail" class="flex gap-3">
-          <!-- 审核操作 -->
-          <el-button
-            v-if="detail.status === 2"
-            type="success"
-            :icon="useRenderIcon(Check)"
-            :loading="actionLoading"
-            @click="handleApprove"
-          >
-            审核通过
-          </el-button>
-          
-          <el-button
-            v-if="detail.status === 2"
-            type="danger"
-            :icon="useRenderIcon(Close)"
-            :loading="actionLoading"
-            @click="handleReject"
-          >
-            审核拒绝
-          </el-button>
-          
-          <!-- 启用/禁用 -->
-          <el-button
-            v-if="detail.status !== 2"
-            :type="detail.status === 0 ? 'success' : 'warning'"
-            :icon="useRenderIcon(Lock)"
-            :loading="actionLoading"
-            @click="handleToggleStatus"
-          >
-            {{ detail.status === 0 ? '启用' : '禁用' }}
-          </el-button>
-        </div>
-      </div>
+  <div class="incubator-detail-page">
+    <!-- 页面头部 -->
+    <div class="page-header mb-6">
+      <el-page-header @back="goBack">
+        <template #content>
+          <div class="flex items-center justify-between w-full">
+            <div class="flex items-center">
+              <span class="text-lg font-medium">双创载体详情</span>
+            </div>
+          </div>
+        </template>
+        <template #extra>
+          <!-- 管理操作区 - 放在最右侧 -->
+          <div v-if="!loading && detail" class="flex items-center space-x-3">
+            <el-button
+              v-if="detail.status !== 3"
+              :icon="useRenderIcon('ep:bottom')"
+              :loading="actionLoading"
+              @click="handleToggleOnline"
+              style="background: #E8A859; color: white; border: none;"
+            >
+              {{ detail.status === 1 ? "下线" : "上线" }}
+            </el-button>
+
+            <el-button
+              :icon="useRenderIcon(detail.status === 3 ? 'ep:circle-check' : 'ep:circle-close')"
+              :loading="actionLoading"
+              @click="handleToggleDisable"
+              :style="{
+                background: detail.status === 3 ? '#67C23A' : '#F56C6C',
+                color: 'white',
+                border: 'none'
+              }"
+            >
+              {{ detail.status === 3 ? "解除禁用" : "禁用" }}
+            </el-button>
+          </div>
+        </template>
+      </el-page-header>
     </div>
 
     <!-- 加载中 -->
@@ -190,7 +153,7 @@ async function handleToggleStatus() {
 
     <template v-else-if="detail">
       <!-- 基本信息卡片 -->
-      <IncubatorBasicInfo :incubator="detail" :stats="stats" :stats-loading="statsLoading" />
+      <IncubatorBasicInfo :incubator="detail" />
 
       <!-- 详情标签页 -->
       <IncubatorDetailTabs
@@ -202,7 +165,18 @@ async function handleToggleStatus() {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+.incubator-detail-page {
+  min-height: 100vh;
+}
+
+.page-header {
+  background: white;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 .animate-spin {
   animation: spin 1s linear infinite;
 }

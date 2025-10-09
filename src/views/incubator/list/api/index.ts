@@ -1,36 +1,45 @@
-import type { ApiResponse, PaginatedResponse, IncubatorItem, IncubatorQueryParams } from "../types/types";
+import { http } from "@/utils/http";
+import type { Response, PageResponse } from "@/types/response";
+import type { IncubatorItem, IncubatorQueryParams } from "../types/types";
 
-// 本地模拟数据（可替换为真实接口）
-const mockIncubators: IncubatorItem[] = [
-  { id: 1, name: "深圳创新孵化器", location: "深圳", type: "科技园", status: 1, isRecommended: true, viewCount: 1200, createdTime: "2024-01-01 10:00:00" },
-  { id: 2, name: "杭州未来科技城", location: "杭州", type: "science-park", status: 1, isRecommended: false, viewCount: 2250, createdTime: "2024-01-03 09:30:00" },
-  { id: 3, name: "北京创客空间", location: "北京", type: "创业园", status: 2, isRecommended: false, viewCount: 560, createdTime: "2024-01-05 08:20:00" },
-];
-
-export const getIncubatorList = (params: IncubatorQueryParams): Promise<ApiResponse<PaginatedResponse<IncubatorItem>>> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      let data = [...mockIncubators];
-      if (params.name) data = data.filter(i => i.name.includes(params.name as string));
-      if (params.location) data = data.filter(i => (i.location || "").includes(params.location as string));
-      if (params.status !== undefined && params.status !== "") data = data.filter(i => String(i.status) === String(params.status));
-      if (params.recommended !== undefined && params.recommended !== "") data = data.filter(i => String(!!i.isRecommended) === (params.recommended === "1" ? "true" : "false"));
-
-      const start = (params.page - 1) * params.limit;
-      const end = start + params.limit;
-      const list = data.slice(start, end);
-      resolve({ code: 200, success: true, data: { list, total: data.length, page: params.page, limit: params.limit }, message: "ok" });
-    }, 200);
+export const getIncubatorList = (params: IncubatorQueryParams) => {
+  return http.request<PageResponse<IncubatorItem[]>>("get", "/api/v1/admin/incubators", {
+    params: {
+      page: params.page,
+      pageSize: params.pageSize,
+      name: params.name,
+      regionId: params.regionId,
+      status: params.status,
+      isRecommended: params.isRecommended,
+    }
   });
 };
 
-export const deleteIncubator = (id: number): Promise<ApiResponse<null>> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const index = mockIncubators.findIndex(i => i.id === id);
-      if (index !== -1) mockIncubators.splice(index, 1);
-      resolve({ code: 200, success: true, data: null, message: "删除成功" });
-    }, 200);
-  });
+export const getIncubatorDetail = (id: number) => {
+  return http.request<Response<IncubatorItem>>("get", `/api/v1/admin/incubators/${id}`);
+};
+
+export const createIncubator = (data: Partial<IncubatorItem>) => {
+  return http.request<Response<IncubatorItem>>("post", "/api/v1/admin/incubators", { data });
+};
+
+export const updateIncubator = (id: number, data: Partial<IncubatorItem>) => {
+  return http.request<Response<IncubatorItem>>("put", `/api/v1/admin/incubators/${id}`, { data });
+};
+
+export const deleteIncubator = (id: number) => {
+  return http.request<Response>("delete", `/api/v1/admin/incubators/${id}`);
+};
+
+export const getIndustryList = () => {
+  return http.request<Response<Array<{ id: number; name: string }>>>("get", "/api/v1/industries");
+};
+
+export const getRegionList = () => {
+  return http.request<Response<Array<{ id: number; name: string; code: string }>>>("get", "/api/v1/regions");
+};
+
+export const getCenterTypeList = () => {
+  return http.request<Response<Array<{ id: number; name: string; code: string }>>>("get", "/api/v1/offshore-center-types");
 };
 
