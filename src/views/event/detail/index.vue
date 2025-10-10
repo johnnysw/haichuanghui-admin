@@ -1,393 +1,565 @@
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import dayjs from "dayjs";
+import { useEventDetail } from "./composables/useEventDetail";
+import { message } from "@/utils/message";
+import { getFullImageUrl } from "@/utils/image";
+import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+
+const route = useRoute();
+const router = useRouter();
+
+const { eventDetail, loading, fetchEventDetail } = useEventDetail();
+const activeTab = ref("details");
+
+const eventId = computed(() => Number(route.params.id || 0));
+
+onMounted(async () => {
+  if (!eventId.value) {
+    message("缺少有效的活动 ID", { type: "error" });
+    router.back();
+    return;
+  }
+  await fetchEventDetail(eventId.value);
+});
+
+const goBack = () => router.back();
+const goRegistration = () => {
+  if (!eventId.value) return;
+  router.push(`/event/registration/${eventId.value}`);
+};
+
+const formatDateTime = (value?: string) => (value ? dayjs(value).format("YYYY-MM-DD HH:mm") : "-");
+
+const posterUrl = computed(() => {
+  const poster = eventDetail.value?.poster;
+  return poster ? getFullImageUrl(poster) : "";
+});
+
+const statusText = computed(() => {
+  const status = eventDetail.value?.status;
+  const STATUS_MAP: Record<number, string> = {
+    0: "草稿",
+    1: "报名中",
+    2: "进行中",
+    3: "已结束",
+    4: "已取消"
+  };
+  return STATUS_MAP[status ?? -1] ?? "未知";
+});
+
+const statusClass = computed(() => {
+  const status = eventDetail.value?.status;
+  const CLASS_MAP: Record<number, string> = {
+    0: "bg-gray-100 text-gray-700",
+    1: "bg-blue-100 text-blue-700",
+    2: "bg-green-100 text-green-700",
+    3: "bg-yellow-100 text-yellow-700",
+    4: "bg-red-100 text-red-700"
+  };
+  return CLASS_MAP[status ?? -1] ?? "bg-gray-100 text-gray-700";
+});
+
+const priceText = computed(() => {
+  const fee = eventDetail.value?.registrationFee;
+  if (fee == null || Number(fee) === 0) return "免费";
+  return `¥${fee}`;
+});
+
+const tabs = [
+  { key: "details", label: "活动详情" },
+  { key: "schedule", label: "活动日程" },
+  { key: "faq", label: "常见问题" }
+];
+
+const handleTabChange = (tabName: string) => {
+  activeTab.value = tabName;
+};
+
+const tags = computed(() => {
+  const value = eventDetail.value?.tags;
+  if (Array.isArray(value)) return value;
+  const strValue = value as string;
+  if (typeof strValue === "string" && strValue.trim()) {
+    try {
+      const parsed = JSON.parse(strValue);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (error) {
+      return strValue.split(/[\n,，]/).map(item => item.trim()).filter(Boolean);
+    }
+  }
+  return [];
+});
+
+const highlights = computed(() => {
+  const value = eventDetail.value?.highlights;
+  if (Array.isArray(value)) return value;
+  const strValue = value as string;
+  if (typeof strValue === "string" && strValue.trim()) {
+    try {
+      const parsed = JSON.parse(strValue);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (error) {
+      return strValue
+        .split(/\n+/)
+        .map((text, index) => ({ title: `亮点 ${index + 1}`, description: text.trim() }))
+        .filter(item => item.description);
+    }
+  }
+  return [];
+});
+</script>
+
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- 主内容区域 -->
-    <main class="pt-6 pb-10">
-      <div class="container mx-auto px-4">
-        <!-- 面包屑导航 -->
-        <div class="mb-6 text-sm">
+  <div class="event-detail-page">
+    <!-- 页面头部 -->
+    <div class="page-header mb-6">
+    <el-page-header @back="goBack">
+      <template #content>
+          <div class="flex items-center justify-between w-full">
+            <div class="flex items-center">
+              <span class="text-lg font-medium">活动详情</span>
+              <el-tag v-if="eventDetail" :class="['ml-4', statusClass]" size="large">
+                {{ statusText }}
+              </el-tag>
+            </div>
+        </div>
+      </template>
+      <template #extra>
           <el-button
-            :icon="useRenderIcon('ep:arrow-left')"
-            link
-            @click="goBack"
+            v-if="eventDetail"
+            :icon="useRenderIcon('ep:list')"
+            type="primary"
+            @click="goRegistration"
           >
-            返回列表
-          </el-button>
-          <span class="mx-2 text-gray-400">/</span>
-          <span class="text-gray-700">{{ detail?.title || "加载中..." }}</span>
-        </div>
+          报名管理
+        </el-button>
+      </template>
+    </el-page-header>
+    </div>
 
-        <!-- 加载中 -->
-        <div v-if="loading" class="py-20 text-center">
-          <div
-            class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"
-          />
-          <p class="mt-4 text-gray-500">正在加载活动详情...</p>
-        </div>
-
-        <!-- 加载失败 -->
-        <div v-else-if="!loading && !detail" class="py-20 text-center">
-          <div class="text-red-500 mb-4">
-            <el-icon size="48">
-              <component :is="useRenderIcon('ep:warning')" />
-            </el-icon>
+    <!-- 主内容区域 -->
+    <main class="pb-10">
+      <div class="mx-auto">
+        <!-- 活动基本信息 - 参照 EventHeader 布局 -->
+        <div v-if="eventDetail" class="bg-white rounded-lg shadow-md overflow-hidden mb-8" v-loading="loading">
+          <!-- 活动海报 -->
+          <div class="relative">
+            <el-image
+              v-if="posterUrl"
+              :src="posterUrl"
+              :alt="eventDetail.title"
+              fit="cover"
+              class="w-full h-64 md:h-80"
+            />
+            <div v-else class="w-full h-64 md:h-80 bg-gray-200 flex items-center justify-center">
+              <span class="text-gray-400">暂无海报</span>
+            </div>
+            <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm">
+              {{ eventDetail.eventType?.name || '活动' }}
+            </div>
           </div>
-          <p class="text-xl text-gray-700 mb-2">活动不存在</p>
-          <p class="text-gray-500 mb-8">请检查活动ID是否正确</p>
+          
+          <!-- 活动基本信息 -->
+          <div class="p-6 md:p-8">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-start">
+              <div class="md:w-2/3">
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">{{ eventDetail.title }}</h1>
+                
+                <!-- 活动时间和地点 -->
+                <div class="space-y-3 mb-6">
+                  <div class="flex items-center text-gray-600">
+                    <IconifyIconOnline icon="fa-solid:clock" width="16px" height="16px" class="text-primary mr-2" />
+                    <span>{{ formatDateTime(eventDetail.startTime) }} - {{ formatDateTime(eventDetail.endTime) }}</span>
+                  </div>
+                  <div class="flex items-center text-gray-600">
+                    <IconifyIconOnline icon="fa-solid:calendar-times" width="16px" height="16px" class="text-primary mr-2" />
+                    <span>报名截止: {{ formatDateTime(eventDetail.registrationDeadline) }}</span>
+                  </div>
+                  <div class="flex items-center text-gray-600">
+                    <IconifyIconOnline icon="fa-solid:map-marker-alt" width="16px" height="16px" class="text-primary mr-2" />
+                    <span>{{ eventDetail.region?.name || '-' }} · {{ eventDetail.location || '待定' }}</span>
+                  </div>
+                </div>
+                
+                <!-- 活动标签 -->
+                <div v-if="tags.length" class="flex flex-wrap gap-2">
+                  <span
+                    v-for="(tag, index) in tags"
+                    :key="index"
+                    :class="[
+                      'px-3 py-1 rounded-full text-sm font-medium',
+                      index === 0
+                        ? 'bg-blue-100 text-primary'
+                        : 'bg-gray-100 text-gray-700 border border-gray-200'
+                    ]"
+                  >
+                    {{ tag }}
+                  </span>
+                </div>
+              </div>
+              
+              <!-- 右侧信息区域 -->
+              <div class="md:w-1/3 md:pl-6 md:ml-4 mt-6 md:mt-0">
+                <!-- 名额上限和费用 - 显示在右上角 -->
+                <div class="flex justify-end items-start gap-12 mb-4">
+                  <div class="text-center">
+                    <div class="text-sm text-gray-500 mb-1">名额上限</div>
+                    <div class="text-3xl font-bold text-green-600">{{ eventDetail.maxParticipants ?? '--' }}</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="text-sm text-gray-500 mb-1">费用</div>
+                    <div class="text-3xl font-bold text-primary">{{ priceText }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 信息卡片展示 -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+              <!-- 报名人数 -->
+              <div class="bg-blue-50 rounded-lg p-4 text-center">
+                <div class="flex items-center justify-center">
+                  <div class="text-2xl font-bold text-blue-600">{{ eventDetail.registrationCount ?? 0 }}</div>
+                  <el-tag v-if="eventDetail.isFull" type="warning" size="small" class="ml-2">已满</el-tag>
+                </div>
+                <div class="text-sm text-gray-600 mt-1">报名人数</div>
+              </div>
+              
+              <!-- 浏览量 -->
+              <div class="bg-purple-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-purple-600">{{ eventDetail.viewCount ?? 0 }}</div>
+                <div class="text-sm text-gray-600 mt-1">浏览量</div>
+              </div>
+              
+              <!-- 活动状态 -->
+              <div class="bg-gray-50 rounded-lg p-4 text-center flex flex-col items-center justify-center">
+                <el-tag :class="statusClass" size="default">
+                  {{ statusText }}
+                </el-tag>
+                <div class="text-sm text-gray-600 mt-2">状态</div>
+              </div>
+              
+              <!-- 是否推荐 -->
+              <div class="bg-gray-50 rounded-lg p-4 text-center flex flex-col items-center justify-center">
+                <el-tag :type="eventDetail.isRecommended ? 'success' : 'info'" size="default">
+                  {{ eventDetail.isRecommended ? '是' : '否' }}
+                </el-tag>
+                <div class="text-sm text-gray-600 mt-2">推荐</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <template v-else-if="detail">
-          <!-- 活动基本信息 -->
-          <EventHeader
-            v-if="detail"
-            :event="detail"
-            :is-admin="true"
-            @status-change="handleStatusChange"
-            @recommend-change="handleRecommendChange"
-          />
-
-          <!-- 活动详情内容标签页 -->
-          <EventTabs
-            v-if="detail"
-            :tabs="tabs"
-            :default-tab="activeTab"
-            @tab-change="handleTabChange"
-          >
-            <template #default="{ activeTab: currentTab }">
-              <!-- 活动详情 -->
-              <div v-if="currentTab === 'details'">
-                <div class="mb-8">
-                  <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                    活动简介
-                  </h2>
-                  <div class="prose max-w-none">
-                    <p class="text-gray-700 leading-relaxed mb-4">
-                      {{ detail.description }}
-                    </p>
-                    <div
-                      v-if="detail.detailedIntro"
-                      class="text-gray-700"
-                      v-html="detail.detailedIntro"
-                    />
+        <!-- 活动详情内容标签页 - 参照 EventTabs 布局 -->
+        <div v-if="eventDetail" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <!-- 左侧：标签页内容 -->
+          <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg shadow-md p-6 md:p-8">
+              <el-tabs v-model="activeTab" @tab-change="handleTabChange">
+                <!-- 活动详情 -->
+                <el-tab-pane label="活动详情" name="details">
+                  <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">活动详情</h2>
+                    <div v-if="eventDetail.description" class="prose max-w-none" v-html="eventDetail.description"></div>
+                    <p v-else class="text-gray-500">暂无活动详情</p>
                   </div>
-                </div>
 
-                <!-- 活动信息 -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  <div class="border border-gray-200 rounded-lg p-6">
-                    <div class="text-primary text-3xl mb-4">
-                      <el-icon class="w-8 h-8">
-                        <component :is="useRenderIcon('ep:calendar')" />
-                      </el-icon>
+                  <div v-if="highlights.length" class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">活动亮点</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div
+                        v-for="(highlight, index) in highlights"
+                        :key="index"
+                        class="border border-gray-200 rounded-lg p-6"
+                      >
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">{{ highlight.title }}</h4>
+                        <p class="text-gray-600">{{ highlight.description }}</p>
+                      </div>
                     </div>
-                    <h4 class="text-lg font-semibold text-gray-800 mb-2">
-                      活动时间
-                    </h4>
-                    <p class="text-gray-600">
-                      {{ formatDateTime(detail.startTime) }}
-                    </p>
-                    <p class="text-gray-600">
-                      {{ formatDateTime(detail.endTime) }}
-                    </p>
                   </div>
+                </el-tab-pane>
+                
+                <!-- 活动日程 -->
+                <el-tab-pane label="活动日程" name="schedule">
+                  <h2 class="text-2xl font-bold text-gray-800 mb-6">活动日程</h2>
+                  <div v-if="eventDetail.schedule" class="prose max-w-none" v-html="eventDetail.schedule"></div>
+                  <p v-else class="text-gray-500">暂无活动日程</p>
+                </el-tab-pane>
+                
+                <!-- 常见问题 -->
+                <el-tab-pane label="常见问题" name="faq">
+                  <h2 class="text-2xl font-bold text-gray-800 mb-6">常见问题</h2>
+                  <div v-if="eventDetail.faq" class="prose max-w-none" v-html="eventDetail.faq"></div>
+                  <p v-else class="text-gray-500">暂无常见问题</p>
+                </el-tab-pane>
+              </el-tabs>
+            </div>
+          </div>
 
-                  <div class="border border-gray-200 rounded-lg p-6">
-                    <div class="text-primary text-3xl mb-4">
-                      <el-icon class="w-8 h-8">
-                        <component :is="useRenderIcon('ep:location')" />
-                      </el-icon>
+          <!-- 右侧：信息卡片 -->
+          <div class="space-y-6">
+            <!-- 主办单位信息 -->
+            <el-card shadow="never">
+              <template #header>
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                  <el-icon class="mr-2">
+                    <component :is="useRenderIcon('ep:office-building')" />
+                  </el-icon>
+                  主办单位
+                </h3>
+      </template>
+
+              <div class="space-y-3">
+                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <el-icon class="text-primary mr-3" :size="20">
+                    <component :is="useRenderIcon('ep:office-building')" />
+                  </el-icon>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium">主办方</div>
+                    <div class="text-gray-800 font-medium">
+                      {{ eventDetail.organizer || '-' }}
                     </div>
-                    <h4 class="text-lg font-semibold text-gray-800 mb-2">
-                      活动地点
-                    </h4>
-                    <p class="text-gray-600">{{ detail.location }}</p>
-                    <p class="text-gray-600">{{ detail.address }}</p>
                   </div>
+                </div>
 
-                  <div class="border border-gray-200 rounded-lg p-6">
-                    <div class="text-primary text-3xl mb-4">
-                      <el-icon class="w-8 h-8">
-                        <component :is="useRenderIcon('ep:user')" />
-                      </el-icon>
+                <div v-if="eventDetail.coOrganizers" class="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <el-icon class="text-primary mr-3" :size="20">
+                    <component :is="useRenderIcon('ep:connection')" />
+                  </el-icon>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium">协办方</div>
+                    <div class="text-gray-800 font-medium">
+                      {{ eventDetail.coOrganizers }}
                     </div>
-                    <h4 class="text-lg font-semibold text-gray-800 mb-2">
-                      参与人数
-                    </h4>
-                    <p class="text-gray-600">
-                      已报名：{{ detail.participantCount }}人
-                    </p>
-                    <p v-if="detail.maxParticipants" class="text-gray-600">
-                      限额：{{ detail.maxParticipants }}人
-                    </p>
+                  </div>
+                </div>
+
+                <div v-if="!eventDetail.coOrganizers" class="text-center py-4">
+                  <p class="text-gray-400 text-sm">暂无协办方信息</p>
+                </div>
+              </div>
+    </el-card>
+
+            <!-- 联系方式 -->
+            <el-card shadow="never">
+              <template #header>
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                  <el-icon class="mr-2">
+                    <component :is="useRenderIcon('ep:phone')" />
+                  </el-icon>
+                  联系方式
+                </h3>
+              </template>
+
+              <div v-if="eventDetail.contactInfo || eventDetail.onlineUrl" class="space-y-3">
+                <div v-if="eventDetail.contactInfo" class="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <el-icon class="text-primary mr-3" :size="20">
+                    <component :is="useRenderIcon('ep:phone')" />
+                  </el-icon>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium">联系方式</div>
+                    <div class="text-gray-800 font-medium">
+                      {{ eventDetail.contactInfo }}
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="eventDetail.onlineUrl" class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <el-icon class="text-primary mr-3" :size="20">
+                    <component :is="useRenderIcon('ep:link')" />
+                  </el-icon>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-xs text-gray-500 font-medium">线上链接</div>
+                    <a
+                      :href="eventDetail.onlineUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-gray-800 font-medium hover:text-primary transition-colors truncate block"
+                    >
+                      {{ eventDetail.onlineUrl }}
+                    </a>
                   </div>
                 </div>
               </div>
 
-              <!-- 活动议程 -->
-              <div v-if="currentTab === 'agenda'">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">活动议程</h2>
-                <div class="prose max-w-none">
-                  <p class="text-gray-700 leading-relaxed">
-                    {{ detail.agenda || "暂无详细议程安排" }}
-                  </p>
+              <div v-else class="text-center py-6">
+                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <el-icon class="text-gray-400" :size="24">
+                    <component :is="useRenderIcon('ep:message')" />
+                  </el-icon>
                 </div>
+                <p class="text-gray-500 text-sm">暂未设置联系方式</p>
               </div>
+    </el-card>
 
-              <!-- 嘉宾介绍 -->
-              <div v-if="currentTab === 'speakers'">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">嘉宾介绍</h2>
-                <div
-                  v-if="detail.speakers && detail.speakers.length > 0"
-                  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
-                  <div
-                    v-for="speaker in detail.speakers"
-                    :key="speaker.id"
-                    class="border border-gray-200 rounded-lg p-6 text-center"
-                  >
-                    <el-avatar
-                      v-if="speaker.avatar"
-                      :src="speaker.avatar"
-                      :size="80"
-                      class="mx-auto mb-4"
-                    />
-                    <el-avatar v-else :size="80" class="mx-auto mb-4">
-                      {{ speaker.name.charAt(0) }}
-                    </el-avatar>
-                    <h4 class="text-lg font-semibold text-gray-800 mb-2">
-                      {{ speaker.name }}
-                    </h4>
-                    <p class="text-sm text-gray-600 mb-1">
-                      {{ speaker.title }}
-                    </p>
-                    <p class="text-sm text-blue-600 mb-3">
-                      {{ speaker.company }}
-                    </p>
-                    <p v-if="speaker.bio" class="text-xs text-gray-600">
-                      {{ speaker.bio }}
-                    </p>
-                    <p v-if="speaker.topic" class="text-xs text-primary mt-2">
-                      演讲主题：{{ speaker.topic }}
-                    </p>
+            <!-- 系统信息 -->
+            <el-card shadow="never">
+              <template #header>
+                <h3 class="text-lg font-semibold text-gray-800">系统信息</h3>
+              </template>
+              <div class="space-y-3">
+                <!-- 创建时间和更新时间 - 一行两个 -->
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="bg-gray-50 rounded-lg p-3">
+                    <label class="block text-xs text-gray-500 font-medium mb-1">创建时间</label>
+                    <div class="text-gray-800 font-medium text-sm">
+                      {{ formatDateTime(eventDetail.createdTime) }}
+                    </div>
                   </div>
-                </div>
-                <div v-else class="text-center text-gray-500 py-8">
-                  暂无嘉宾信息
-                </div>
-              </div>
-
-              <!-- 参与须知 -->
-              <div v-if="currentTab === 'requirements'">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">参与须知</h2>
-                <div class="prose max-w-none">
-                  <p class="text-gray-700 leading-relaxed">
-                    {{ detail.requirements || "暂无特殊要求" }}
-                  </p>
-                </div>
-              </div>
-
-              <!-- 联系信息 -->
-              <div v-if="currentTab === 'contact'">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">联系信息</h2>
-                <div class="max-w-2xl">
-                  <div class="bg-gray-50 rounded-lg p-6">
-                    <div class="space-y-4">
-                      <div class="flex items-center gap-3">
-                        <el-icon class="text-gray-500">
-                          <component
-                            :is="useRenderIcon('ep:office-building')"
-                          />
-                        </el-icon>
-                        <span class="text-gray-600">主办方：</span>
-                        <span class="font-medium">{{ detail.organizer }}</span>
-                      </div>
-                      <div class="flex items-center gap-3">
-                        <el-icon class="text-gray-500">
-                          <component :is="useRenderIcon('ep:user')" />
-                        </el-icon>
-                        <span class="text-gray-600">联系人：</span>
-                        <span class="font-medium">{{
-                          detail.contactPerson
-                        }}</span>
-                      </div>
-                      <div class="flex items-center gap-3">
-                        <el-icon class="text-gray-500">
-                          <component :is="useRenderIcon('ep:phone')" />
-                        </el-icon>
-                        <span class="text-gray-600">电话：</span>
-                        <span class="font-medium">{{
-                          detail.contactPhone
-                        }}</span>
-                      </div>
-                      <div class="flex items-center gap-3">
-                        <el-icon class="text-gray-500">
-                          <component :is="useRenderIcon('ep:message')" />
-                        </el-icon>
-                        <span class="text-gray-600">邮箱：</span>
-                        <span class="font-medium">{{
-                          detail.contactEmail
-                        }}</span>
-                      </div>
+                  <div class="bg-gray-50 rounded-lg p-3">
+                    <label class="block text-xs text-gray-500 font-medium mb-1">更新时间</label>
+                    <div class="text-gray-800 font-medium text-sm">
+                      {{ formatDateTime(eventDetail.updatedTime) }}
                     </div>
                   </div>
                 </div>
               </div>
-            </template>
-          </EventTabs>
-        </template>
+    </el-card>
+          </div>
+        </div>
       </div>
     </main>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { ElMessage } from "element-plus";
-
-import EventHeader from "./components/EventHeader.vue";
-import EventTabs from "./components/EventTabs.vue";
-import { getEventDetail } from "./api/index";
-import type { EventDetail } from "./types/types";
-
-defineOptions({ name: "EventDetail" });
-
-const route = useRoute();
-const router = useRouter();
-
-// 响应式数据
-const detail = ref<EventDetail | null>(null);
-const loading = ref(false);
-const activeTab = ref("details");
-
-// 标签页配置
-const tabs = [
-  { key: "details", label: "活动详情" },
-  { key: "agenda", label: "活动议程" },
-  { key: "speakers", label: "嘉宾介绍" },
-  { key: "requirements", label: "参与须知" },
-  { key: "contact", label: "联系信息" }
-];
-
-// 获取活动ID
-const getEventId = (): number => {
-  const id = route.params.id;
-  return Array.isArray(id) ? parseInt(id[0]) : parseInt(id as string);
-};
-
-// 返回列表
-const goBack = () => {
-  router.push("/event/list");
-};
-
-// 标签页切换
-const handleTabChange = (tabKey: string) => {
-  activeTab.value = tabKey;
-};
-
-// 状态变更处理
-const handleStatusChange = (status: number) => {
-  if (detail.value) {
-    detail.value.status = status;
-    ElMessage.success("状态更新成功");
-  }
-};
-
-// 推荐状态变更处理
-const handleRecommendChange = (isRecommended: boolean) => {
-  if (detail.value) {
-    detail.value.isRecommended = isRecommended;
-    ElMessage.success(isRecommended ? "设为推荐成功" : "取消推荐成功");
-  }
-};
-
-// 格式化日期时间
-const formatDateTime = (dateStr: string) => {
-  if (!dateStr) return "-";
-  const date = new Date(dateStr);
-  return date.toLocaleString("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-};
-
-// 获取活动详情
-const fetchEventDetail = async () => {
-  const id = getEventId();
-  console.log("当前路由参数:", route.params);
-  console.log("解析得到的ID:", id);
-
-  if (!id || isNaN(id)) {
-    console.error("无效的活动ID:", id);
-    ElMessage.error("活动ID无效");
-    return;
-  }
-
-  loading.value = true;
-  try {
-    console.log("开始获取活动详情, ID:", id);
-    const response = await getEventDetail(id);
-    console.log("获取详情成功:", response);
-    detail.value = response.data;
-  } catch (error: any) {
-    console.error("获取活动详情失败:", error);
-    ElMessage.error(`获取详情失败: ${error.message || "数据不存在"}`);
-    detail.value = null;
-  } finally {
-    loading.value = false;
-  }
-};
-
-// 组件挂载时获取数据
-onMounted(() => {
-  fetchEventDetail();
-});
-
-// 监听路由变化
-const stopWatcher = router.beforeEach(to => {
-  if (to.name === "EventDetail" && to.params.id !== route.params.id) {
-    fetchEventDetail();
-  }
-});
-
-// 组件卸载时清理监听器
-onUnmounted(() => {
-  stopWatcher();
-});
-</script>
-
 <style scoped lang="scss">
-.prose {
-  max-width: none;
+.event-detail-page {
+  min-height: 100vh;
 }
 
-.prose p {
+.page-header {
+  background: white;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card {
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.info-chip-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  border-radius: 12px;
+  border: 1px solid #dcdfe6;
+  background: #f9fafb;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.price-chip-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  border-radius: 12px;
+  border: 1px solid #e4e7ed;
+  background: linear-gradient(135deg, #f9fafb 0%, #f0f4ff 100%);
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(31, 106, 255, 0.1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(31, 106, 255, 0.15);
+  }
+}
+
+.prose {
+  max-width: none;
+  line-height: 1.75;
+  color: #374151;
+}
+
+.prose :deep(p) {
   margin-bottom: 1rem;
 }
 
-.prose ul {
-  list-style-type: disc;
-  padding-left: 1.5rem;
+.prose :deep(p:last-child) {
+  margin-bottom: 0;
 }
 
-.prose li {
-  margin-bottom: 0.5rem;
+.prose :deep(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
 }
 
-.prose h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
+.prose :deep(h1),
+.prose :deep(h2),
+.prose :deep(h3),
+.prose :deep(h4) {
+  margin-top: 1.5rem;
   margin-bottom: 0.75rem;
-  color: #374151;
+  font-weight: 600;
+  color: #1f2937;
 }
 
-.prose h4 {
-  font-size: 1rem;
-  font-weight: 600;
+.prose :deep(ul),
+.prose :deep(ol) {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose :deep(li) {
   margin-bottom: 0.5rem;
-  color: #374151;
+}
+
+.prose :deep(blockquote) {
+  border-left: 4px solid var(--el-color-primary);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.prose :deep(code) {
+  background-color: #f3f4f6;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+.prose :deep(pre) {
+  background-color: #f3f4f6;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1rem 0;
 }
 </style>

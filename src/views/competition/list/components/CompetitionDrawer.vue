@@ -267,170 +267,144 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="24">
-        <el-col :span="24">
-          <el-form-item label="大赛简介" prop="summary">
-            <div class="wangeditor-container">
-              <Toolbar
-                :editor="summaryEditorRef"
-                :defaultConfig="toolbarConfig"
-                mode="default"
-                class="wangeditor-toolbar"
-              />
-              <Editor
-                v-model="formInline.summary"
-                :defaultConfig="editorConfig"
-                mode="default"
-                class="wangeditor-editor"
-                style="height: 320px"
-                @onCreated="handleSummaryCreated"
-              />
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <!-- 大赛详情标签页 -->
+      <el-tabs v-model="activeTab" class="competition-detail-tabs">
+        <el-tab-pane label="大赛简介" name="summary">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="summaryEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="formInline.summary"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              style="height: 400px"
+              @onCreated="handleSummaryCreated"
+            />
+          </div>
+        </el-tab-pane>
 
-      <el-row :gutter="24">
-        <el-col :span="24">
-          <el-form-item label="大赛主题" prop="description">
-            <div class="wangeditor-container">
-              <Toolbar
-                :editor="descriptionEditorRef"
-                :defaultConfig="toolbarConfig"
-                mode="default"
-                class="wangeditor-toolbar"
-              />
-              <Editor
-                v-model="formInline.description"
-                :defaultConfig="editorConfig"
-                mode="default"
-                class="wangeditor-editor"
-                style="height: 320px"
-                @onCreated="handleDescriptionCreated"
-              />
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <el-tab-pane label="大赛主题" name="description">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="descriptionEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="formInline.description"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              style="height: 400px"
+              @onCreated="handleDescriptionCreated"
+            />
+          </div>
+        </el-tab-pane>
 
-      <el-row :gutter="24">
-        <el-col :span="24">
-          <el-form-item label="组织机构" prop="coOrganizers">
-            <div class="wangeditor-container">
-              <Toolbar
-                :editor="coOrganizersEditorRef"
-                :defaultConfig="toolbarConfig"
-                mode="default"
-                class="wangeditor-toolbar"
-              />
-              <Editor
-                v-model="formInline.coOrganizers"
-                :defaultConfig="editorConfig"
-                mode="default"
-                class="wangeditor-editor"
-                style="height: 320px"
-                @onCreated="handleCoOrganizersCreated"
-              />
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <el-tab-pane label="组织机构" name="coOrganizers">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="coOrganizersEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="formInline.coOrganizers"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              style="height: 400px"
+              @onCreated="handleCoOrganizersCreated"
+            />
+          </div>
+        </el-tab-pane>
 
-      <el-row :gutter="24">
-        <el-col :span="24">
-          <el-form-item label="参赛条件" prop="requirements">
-            <div class="wangeditor-container">
-              <Toolbar
-                :editor="requirementsEditorRef"
-                :defaultConfig="toolbarConfig"
-                mode="default"
-                class="wangeditor-toolbar"
-              />
-              <Editor
-                v-model="formInline.requirements"
-                :defaultConfig="editorConfig"
-                mode="default"
-                class="wangeditor-editor"
-                style="height: 320px"
-                @onCreated="handleRequirementsCreated"
-              />
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <el-tab-pane label="参赛条件" name="requirements">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="requirementsEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="formInline.requirements"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              style="height: 400px"
+              @onCreated="handleRequirementsCreated"
+            />
+          </div>
+        </el-tab-pane>
 
-      <el-row :gutter="24">
-        <el-col :span="24">
-          <el-form-item label="政策支持" prop="prizes">
-            <div class="wangeditor-container">
-              <Toolbar
-                :editor="prizesEditorRef"
-                :defaultConfig="toolbarConfig"
-                mode="default"
-                class="wangeditor-toolbar"
-              />
-              <Editor
-                v-model="formInline.prizes"
-                :defaultConfig="editorConfig"
-                mode="default"
-                class="wangeditor-editor"
-                style="height: 320px"
-                @onCreated="handlePrizesCreated"
-              />
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <el-tab-pane label="政策支持" name="prizes">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="prizesEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="formInline.prizes"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              style="height: 400px"
+              @onCreated="handlePrizesCreated"
+            />
+          </div>
+        </el-tab-pane>
 
-      <el-row :gutter="24">
-        <el-col :span="24">
-          <el-form-item label="大赛流程" prop="schedule">
-            <div class="wangeditor-container">
-              <Toolbar
-                :editor="scheduleEditorRef"
-                :defaultConfig="toolbarConfig"
-                mode="default"
-                class="wangeditor-toolbar"
-              />
-              <Editor
-                v-model="formInline.schedule"
-                :defaultConfig="editorConfig"
-                mode="default"
-                class="wangeditor-editor"
-                style="height: 320px"
-                @onCreated="handleScheduleCreated"
-              />
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <el-tab-pane label="大赛流程" name="schedule">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="scheduleEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="formInline.schedule"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              style="height: 400px"
+              @onCreated="handleScheduleCreated"
+            />
+          </div>
+        </el-tab-pane>
 
-      <el-row :gutter="24">
-        <el-col :span="24">
-          <el-form-item label="评委信息" prop="judges">
-            <div class="wangeditor-container">
-              <Toolbar
-                :editor="judgesEditorRef"
-                :defaultConfig="toolbarConfig"
-                mode="default"
-                class="wangeditor-toolbar"
-              />
-              <Editor
-                v-model="formInline.judges"
-                :defaultConfig="editorConfig"
-                mode="default"
-                class="wangeditor-editor"
-                style="height: 320px"
-                @onCreated="handleJudgesCreated"
-              />
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
+        <el-tab-pane label="评委信息" name="judges">
+          <div class="wangeditor-container">
+            <Toolbar
+              :editor="judgesEditorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="wangeditor-toolbar"
+            />
+            <Editor
+              v-model="formInline.judges"
+              :defaultConfig="editorConfig"
+              mode="default"
+              class="wangeditor-editor"
+              style="height: 400px"
+              @onCreated="handleJudgesCreated"
+            />
+          </div>
+        </el-tab-pane>
 
-      <el-row :gutter="24">
-        <el-col :span="24">
-          <el-form-item label="赛事资料说明" prop="materialDescription">
+        <el-tab-pane label="赛事资料" name="materials">
+          <!-- 赛事资料说明 -->
+          <el-form-item label="资料说明" prop="materialDescription" class="mb-4">
             <div class="wangeditor-container">
               <Toolbar
                 :editor="materialDescriptionEditorRef"
@@ -443,17 +417,14 @@
                 :defaultConfig="editorConfig"
                 mode="default"
                 class="wangeditor-editor"
-                style="height: 320px"
+                style="height: 200px"
                 @onCreated="handleMaterialDescriptionCreated"
               />
             </div>
           </el-form-item>
-        </el-col>
-      </el-row>
 
-      <el-row :gutter="24">
-        <el-col :span="24">
-          <el-form-item label="赛事资料">
+          <!-- 资料管理 -->
+          <el-form-item label="资料文件">
             <div class="materials-management">
               <!-- 文件上传区域 -->
               <div class="upload-section">
@@ -556,8 +527,8 @@
               </div>
             </div>
           </el-form-item>
-        </el-col>
-      </el-row>
+        </el-tab-pane>
+      </el-tabs>
     </el-form>
 
     <template #footer>
@@ -637,6 +608,7 @@ const drawerVisible = ref(false);
 const drawerTitle = ref(props.title);
 const formRef = ref();
 const submitLoading = ref(false);
+const activeTab = ref("summary");
 
 const formInline = reactive<FormItemProps>({
   id: undefined,
@@ -1419,6 +1391,23 @@ defineExpose({
   font-size: 18px;
   font-weight: bold;
   color: #303133;
+}
+
+/* 标签页样式 */
+.competition-detail-tabs {
+  margin-top: 20px;
+}
+
+.competition-detail-tabs :deep(.el-tabs__header) {
+  margin-bottom: 20px;
+}
+
+.competition-detail-tabs :deep(.el-tabs__nav-wrap::after) {
+  height: 1px;
+}
+
+.competition-detail-tabs :deep(.el-tab-pane) {
+  padding: 0;
 }
 </style>
 

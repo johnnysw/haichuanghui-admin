@@ -1,99 +1,65 @@
-// 活动基础信息接口
-export interface Event {
-  id: number;
-  title: string;
-  description?: string;
-  type: string;
-  organizer: string;
-  poster?: string;
-  location: string;
-  address: string;
-  startTime: string;
-  endTime: string;
-  registrationStartTime?: string;
-  registrationEndTime?: string;
-  maxParticipants?: number;
-  participantCount: number;
-  status: number; // 0: 报名中, 1: 进行中, 2: 已结束, 3: 已取消
-  isRecommended: boolean;
-  contactPerson: string;
-  contactPhone: string;
-  contactEmail: string;
-  requirements?: string;
-  agenda?: string;
-  benefits?: string;
-  tags?: string[];
-  createdTime: string;
-  updatedTime: string;
-}
-
-// 活动创建表单接口
-export interface EventCreateForm {
-  title: string;
-  description?: string;
-  type: string;
-  organizer: string;
-  poster?: string;
-  location: string;
-  address: string;
-  startTime: string;
-  endTime: string;
-  registrationStartTime?: string;
-  registrationEndTime?: string;
-  maxParticipants?: number;
-  contactPerson: string;
-  contactPhone: string;
-  contactEmail: string;
-  requirements?: string;
-  agenda?: string;
-  benefits?: string;
-  tags?: string[];
-}
-
-// 活动列表查询参数接口
-export interface EventListParams {
-  page?: number;
+export interface EventQueryParams {
+  pageNum?: number;
   pageSize?: number;
   title?: string;
-  type?: string;
-  organizer?: string;
-  status?: number;
-  isRecommended?: boolean;
+  eventTypeId?: string;
+  regionId?: string;
+  status?: string;
+}
+
+export interface EventForm {
+  id?: number;
+  title: string;
+  organizer: string;
+  eventTypeId?: number | null;
+  regionId?: number | null;
+  coOrganizers?: string;
+  startTime?: string;
+  endTime?: string;
+  registrationDeadline?: string;
   location?: string;
-  startDate?: string;
-  endDate?: string;
-  sortBy?: keyof Event;
-  sortOrder?: "asc" | "desc";
+  onlineUrl?: string;
+  description?: string;
+  summary?: string;
+  schedule?: string;
+  faq?: string;
+  contactInfo?: string;
+  maxParticipants?: number | null;
+  registrationFee?: number | null;
+  priceNote?: string;
+  status: number;
+  poster?: string;
+  tags?: string[];
+  highlights?: any[];
+  isRecommended?: boolean;
 }
 
-// API 响应基础接口
-export interface ApiResponse<T> {
-  code: number;
-  success: boolean;
-  message: string;
-  data: T;
+export interface EventInfo extends EventForm {
+  id: number;
+  registrationCount?: number;
+  isFull?: boolean;  // 是否已满
+  displayStatus?: string;  // 派生状态
+  viewCount?: number;
+  createdTime?: string;
+  updatedTime?: string;
+  eventType?: OptionItem | null;
+  region?: OptionItem | null;
 }
 
-// 分页响应接口
-export interface PaginationResponse<T> {
-  list: T[];
+export interface EventListResponse {
+  list: EventInfo[];
   total: number;
-  page: number;
   pageSize: number;
+  currentPage: number;
 }
 
-// 状态信息接口
-export interface StatusInfo {
-  label: string;
-  type: "success" | "info" | "warning" | "danger" | "primary";
+export interface OptionItem {
+  id: number;
+  name: string;
 }
 
-// 活动统计接口
-export interface EventStats {
-  totalEvents: number;
-  ongoingEvents: number;
-  upcomingEvents: number;
-  completedEvents: number;
-  totalParticipants: number;
-  recommendedEvents: number;
+export interface EventDrawerSubmitPayload {
+  data: EventForm;
+  mode: "create" | "edit";
 }
+
