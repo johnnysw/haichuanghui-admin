@@ -158,30 +158,6 @@
               </el-button>
 
               <el-button
-                v-if="news.status === 3"
-                type="primary"
-                class="w-full"
-                @click="handleApprove"
-              >
-                <el-icon class="mr-2">
-                  <component :is="useRenderIcon('ep:check')" />
-                </el-icon>
-                审核通过
-              </el-button>
-
-              <el-button
-                v-if="news.status === 3"
-                type="danger"
-                class="w-full"
-                @click="handleReject"
-              >
-                <el-icon class="mr-2">
-                  <component :is="useRenderIcon('ep:close')" />
-                </el-icon>
-                审核拒绝
-              </el-button>
-
-              <el-button
                 :type="news.isRecommended ? 'warning' : 'success'"
                 class="w-full"
                 @click="handleToggleRecommend"
@@ -270,10 +246,6 @@ const getStatusText = (status: number) => {
       return "已发布";
     case 2:
       return "已下线";
-    case 3:
-      return "审核中";
-    case 4:
-      return "已拒绝";
     default:
       return "未知";
   }
@@ -287,16 +259,6 @@ const handlePublish = () => {
 // 下线
 const handleOffline = () => {
   emit("status-change", 2);
-};
-
-// 审核通过
-const handleApprove = () => {
-  emit("status-change", 1);
-};
-
-// 审核拒绝
-const handleReject = () => {
-  emit("status-change", 4);
 };
 
 // 切换推荐状态

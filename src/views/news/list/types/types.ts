@@ -9,7 +9,7 @@ export interface NewsItem {
   content?: string;
   coverImage?: string;
   publishTime?: string;
-  status: number; // 0-草稿, 1-已发布, 2-已下线, 3-审核中, 4-已拒绝
+  status: number; // 0-草稿, 1-已发布, 2-已下线
   reviewComment?: string;
   reviewTime?: string;
   isRecommended: boolean;
@@ -18,12 +18,8 @@ export interface NewsItem {
   commentCount: number;
   likeCount: number;
   favoriteCount: number;
-  seoTitle?: string;
-  seoKeywords?: string;
-  seoDescription?: string;
   categoryId?: number;
   categoryName?: string;
-  tags?: string[];
   createdTime: string;
   updatedTime: string;
 }
@@ -41,18 +37,16 @@ export interface NewsCreateForm {
   categoryId?: number;
   isRecommended: boolean;
   isTop: boolean;
-  seoTitle?: string;
-  seoKeywords?: string;
-  seoDescription?: string;
-  tags?: string[];
+  viewCount?: number;
+  likeCount?: number;
+  favoriteCount?: number;
 }
 
 // 资讯列表查询参数接口
 export interface NewsListParams {
-  page?: number;
-  pageSize?: number;
+  page?: string;
+  limit?: string;
   title?: string;
-  author?: string;
   categoryId?: number;
   status?: number;
   isRecommended?: boolean;
@@ -60,7 +54,7 @@ export interface NewsListParams {
   startDate?: string;
   endDate?: string;
   keyword?: string;
-  sortBy?: keyof NewsItem;
+  sortBy?: string;
   sortOrder?: "asc" | "desc";
 }
 

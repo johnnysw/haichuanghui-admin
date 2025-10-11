@@ -7,12 +7,13 @@ export interface NewsCategory {
   icon?: string;
   displayOrder: number;
   parentId?: number;
+  parentName?: string; // 父级分类名称
   level: number;
   path?: string;
   isActive: boolean;
   isNavigation: boolean;
   articleCount: number;
-  status: number; // 0-待审核, 1-已审核, 2-已拒绝
+  status: number; // 0-禁用, 1-启用
   reviewComment?: string;
   reviewTime?: string;
   children?: NewsCategory[];
@@ -23,28 +24,17 @@ export interface NewsCategory {
 // 分类创建表单接口
 export interface CategoryCreateForm {
   name: string;
-  code: string;
   description?: string;
-  icon?: string;
   displayOrder: number;
   parentId?: number;
   isActive: boolean;
-  isNavigation: boolean;
 }
 
 // 分类查询参数接口
 export interface CategoryListParams {
-  page?: number;
-  pageSize?: number;
+  page?: string;
+  limit?: string;
   name?: string;
-  code?: string;
-  status?: number;
-  isActive?: boolean;
-  parentId?: number;
-  level?: number;
-  isNavigation?: boolean;
-  sortBy?: keyof NewsCategory;
-  sortOrder?: "asc" | "desc";
 }
 
 // API 响应基础接口

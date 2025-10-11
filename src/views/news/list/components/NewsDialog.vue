@@ -1,8 +1,9 @@
 <template>
-  <el-dialog
+  <el-drawer
     v-model="dialogVisible"
     :title="dialogTitle"
-    width="900px"
+    direction="rtl"
+    size="70%"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     destroy-on-close
@@ -11,57 +12,51 @@
       ref="formRef"
       :model="form"
       :rules="rules"
-      label-width="120px"
-      label-position="left"
+      label-position="top"
       :disabled="mode === 'view'"
+      class="drawer-form"
     >
-      <!-- 基本信息 -->
-      <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3" />
-          基本信息
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <el-form-item label="资讯标题" prop="title">
-            <el-input v-model="form.title" placeholder="请输入资讯标题" />
-          </el-form-item>
-          <el-form-item label="副标题" prop="subtitle">
-            <el-input
-              v-model="form.subtitle"
-              placeholder="请输入副标题（可选）"
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <el-form-item label="资讯标题" prop="title">
+          <el-input v-model="form.title" placeholder="请输入资讯标题" />
+        </el-form-item>
+        <el-form-item label="副标题" prop="subtitle">
+          <el-input
+            v-model="form.subtitle"
+            placeholder="请输入副标题（可选）"
+          />
+        </el-form-item>
+        <el-form-item label="作者" prop="author">
+          <el-input v-model="form.author" placeholder="请输入作者" />
+        </el-form-item>
+        <el-form-item label="来源" prop="source">
+          <el-input v-model="form.source" placeholder="请输入来源（可选）" />
+        </el-form-item>
+        <el-form-item label="分类" prop="categoryId">
+          <el-select
+            v-model="form.categoryId"
+            placeholder="请选择分类"
+            class="w-full"
+          >
+            <el-option
+              v-for="category in categories"
+              :key="category.id"
+              :label="category.name"
+              :value="category.id"
             />
-          </el-form-item>
-          <el-form-item label="作者" prop="author">
-            <el-input v-model="form.author" placeholder="请输入作者" />
-          </el-form-item>
-          <el-form-item label="来源" prop="source">
-            <el-input v-model="form.source" placeholder="请输入来源（可选）" />
-          </el-form-item>
-          <el-form-item label="分类" prop="categoryId">
-            <el-select
-              v-model="form.categoryId"
-              placeholder="请选择分类"
-              class="w-full"
-            >
-              <el-option
-                v-for="category in categories"
-                :key="category.id"
-                :label="category.name"
-                :value="category.id"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="发布时间" prop="publishTime">
-            <el-date-picker
-              v-model="form.publishTime"
-              type="datetime"
-              placeholder="选择发布时间"
-              value-format="YYYY-MM-DDTHH:mm:ssZ"
-              class="w-full"
-            />
-          </el-form-item>
-        </div>
-        <el-form-item label="资讯摘要" prop="summary">
+          </el-select>
+        </el-form-item>
+        <el-form-item label="发布时间" prop="publishTime">
+          <el-date-picker
+            v-model="form.publishTime"
+            type="datetime"
+            placeholder="选择发布时间"
+            value-format="YYYY-MM-DDTHH:mm:ssZ"
+            class="w-full"
+          />
+        </el-form-item>
+
+        <el-form-item label="资讯摘要" prop="summary" class="md:col-span-2">
           <el-input
             v-model="form.summary"
             type="textarea"
@@ -69,153 +64,115 @@
             placeholder="请输入资讯摘要"
           />
         </el-form-item>
-      </div>
 
-      <!-- 封面图片 -->
-      <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3" />
-          封面图片
-        </h3>
-        <el-form-item label="封面图片" prop="coverImage">
-          <div class="w-full">
+        <el-form-item label="封面图片" prop="coverImage" class="md:col-span-2">
+          <div class="cover-uploader-wrapper">
             <el-upload
               class="cover-uploader"
-              action="#"
+              drag
               :show-file-list="false"
-              :before-upload="beforeUpload"
-              accept="image/*"
+              :http-request="handleCoverUpload"
+              :before-upload="beforeCoverUpload"
             >
-              <img
-                v-if="form.coverImage"
-                :src="form.coverImage"
-                class="cover-image"
-              />
-              <el-icon v-else class="cover-uploader-icon"><Plus /></el-icon>
+              <template v-if="!form.coverImage">
+                <div class="cover-placeholder">
+                  <el-icon class="cover-icon"><UploadFilled /></el-icon>
+                  <div class="cover-text">点击或拖拽上传封面图片</div>
+                  <div class="cover-tip">
+                    建议尺寸：400x240像素，支持 JPG、PNG 格式，文件大小不超过 5MB
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="cover-preview">
+                  <img :src="coverImageDisplayUrl" alt="cover" />
+                  <div class="cover-preview__mask">
+                    <el-button size="small" type="primary">重新上传</el-button>
+                    <el-button
+                      size="small"
+                      type="danger"
+                      @click.stop="removeCoverImage"
+                      >移除</el-button
+                    >
+                  </div>
+                </div>
+              </template>
             </el-upload>
-            <div class="text-xs text-gray-500 mt-2">
-              建议尺寸：400x240像素，支持 JPG、PNG 格式，文件大小不超过 2MB
-            </div>
           </div>
         </el-form-item>
-      </div>
 
-      <!-- 内容编辑 -->
-      <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3" />
-          内容编辑
-        </h3>
-        <el-form-item label="正文内容" prop="content">
+        <el-form-item label="正文内容" prop="content" class="md:col-span-2">
           <div class="wangeditor">
             <Toolbar
               :editor="editorRef"
               :defaultConfig="toolbarConfig"
-              :mode="mode"
+              :mode="editorMode"
               style="border-bottom: 1px solid #e5e7eb"
             />
             <Editor
               v-model="form.content"
               :defaultConfig="editorConfig"
-              :mode="mode"
+              :mode="editorMode"
               style="height: 360px; overflow-y: hidden"
               @onCreated="handleCreated"
               @onBlur="
                 () =>
-                  formRef?.value?.validateField &&
-                  formRef.value?.validateField('content')
+                  formRef?.validateField && formRef?.validateField('content')
               "
             />
           </div>
         </el-form-item>
-      </div>
 
-      <!-- 状态设置 -->
-      <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3" />
-          状态设置
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <el-form-item label="推荐状态">
-            <el-switch
-              v-model="form.isRecommended"
-              active-text="推荐"
-              inactive-text="不推荐"
-            />
-          </el-form-item>
-          <el-form-item label="置顶状态">
-            <el-switch
-              v-model="form.isTop"
-              active-text="置顶"
-              inactive-text="不置顶"
-            />
-          </el-form-item>
-        </div>
-      </div>
-
-      <!-- SEO设置 -->
-      <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3" />
-          SEO设置
-        </h3>
-        <el-form-item label="SEO标题" prop="seoTitle">
-          <el-input
-            v-model="form.seoTitle"
-            placeholder="请输入SEO标题（可选）"
+        <el-form-item label="推荐状态">
+          <el-switch
+            v-model="form.isRecommended"
+            active-text="推荐"
+            inactive-text="不推荐"
           />
         </el-form-item>
-        <el-form-item label="SEO关键词" prop="seoKeywords">
-          <el-input
-            v-model="form.seoKeywords"
-            placeholder="请输入SEO关键词，用逗号分隔（可选）"
+        <el-form-item label="置顶状态">
+          <el-switch
+            v-model="form.isTop"
+            active-text="置顶"
+            inactive-text="不置顶"
           />
         </el-form-item>
-        <el-form-item label="SEO描述" prop="seoDescription">
-          <el-input
-            v-model="form.seoDescription"
-            type="textarea"
-            :rows="2"
-            placeholder="请输入SEO描述（可选）"
-          />
-        </el-form-item>
-      </div>
 
-      <!-- 资讯标签 -->
-      <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <div class="w-1 h-5 bg-primary rounded mr-3" />
-          资讯标签
-        </h3>
-        <el-form-item label="标签">
-          <div class="w-full">
-            <div class="flex flex-wrap gap-2 mb-2">
-              <el-tag
-                v-for="(tag, index) in form.tags"
-                :key="index"
-                closable
-                @close="removeTag(index)"
-              >
-                {{ tag }}
-              </el-tag>
-            </div>
-            <div class="flex gap-2">
-              <el-input
-                v-model="tagInput"
-                placeholder="输入标签后按回车添加"
-                style="width: 200px"
-                @keyup.enter="addTag"
-              />
-              <el-button @click="addTag">添加标签</el-button>
-            </div>
-          </div>
+        <el-form-item label="浏览量" prop="viewCount">
+          <el-input-number
+            v-model="form.viewCount"
+            :min="0"
+            :step="1"
+            placeholder="请输入浏览量"
+            class="w-full"
+            controls-position="right"
+          />
+        </el-form-item>
+        <el-form-item label="点赞数" prop="likeCount">
+          <el-input-number
+            v-model="form.likeCount"
+            :min="0"
+            :step="1"
+            placeholder="请输入点赞数"
+            class="w-full"
+            controls-position="right"
+          />
+        </el-form-item>
+        <el-form-item label="收藏数" prop="favoriteCount">
+          <el-input-number
+            v-model="form.favoriteCount"
+            :min="0"
+            :step="1"
+            placeholder="请输入收藏数"
+            class="w-full"
+            controls-position="right"
+          />
         </el-form-item>
       </div>
     </el-form>
 
     <template #footer>
-      <div class="dialog-footer">
+      <div class="drawer-footer">
         <el-button @click="handleCancel">取消</el-button>
         <el-button
           v-if="mode !== 'view'"
@@ -227,7 +184,7 @@
         </el-button>
       </div>
     </template>
-  </el-dialog>
+  </el-drawer>
 </template>
 
 <script setup lang="ts">
@@ -240,12 +197,14 @@ import {
   shallowRef
 } from "vue";
 import { ElMessage } from "element-plus";
-import { Plus } from "@element-plus/icons-vue";
-import type { FormInstance, FormRules } from "element-plus";
-import { createNews, updateNews } from "../api/index";
+import { Plus, UploadFilled } from "@element-plus/icons-vue";
+import type { FormInstance, FormRules, UploadRequestOptions } from "element-plus";
+import { createNews, updateNews, getNewsDetail } from "../api/index";
 import type { NewsItem, NewsCreateForm, NewsCategory } from "../types/types";
 import "@wangeditor/editor/dist/css/style.css";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import { uploadImage } from "@/api/upload";
+import { getFullImageUrl } from "@/utils/image";
 
 interface Props {
   visible: boolean;
@@ -262,13 +221,33 @@ const emit = defineEmits<{
 
 const formRef = ref<FormInstance>();
 const loading = ref(false);
-const tagInput = ref("");
+const coverImageDisplayUrl = ref<string>("");
 
 // 富文本编辑器
-const mode = "default";
+const editorMode = "default";
 const editorRef = shallowRef();
 const toolbarConfig: any = { excludeKeys: "fullScreen" };
-const editorConfig = { placeholder: "请输入内容..." } as any;
+const editorConfig = {
+  placeholder: "请输入内容...",
+  MENU_CONF: {
+    uploadImage: {
+      async customUpload(file: File, insertFn: Function) {
+        try {
+          const result = await uploadImage(file, "news");
+          if (result && result.code === 200 && result.data?.url) {
+            const fullImageUrl = getFullImageUrl(result.data.url);
+            insertFn(fullImageUrl, "", fullImageUrl);
+            ElMessage.success(result.message || "图片上传成功");
+          } else {
+            ElMessage.error(result?.message || "图片上传失败");
+          }
+        } catch (error: any) {
+          ElMessage.error(error?.message || "图片上传失败");
+        }
+      }
+    }
+  }
+} as any;
 const handleCreated = (editor: any) => {
   editorRef.value = editor;
 };
@@ -311,16 +290,14 @@ const form = ref<NewsCreateForm>({
   categoryId: undefined,
   isRecommended: false,
   isTop: false,
-  seoTitle: "",
-  seoKeywords: "",
-  seoDescription: "",
-  tags: []
+  viewCount: 0,
+  likeCount: 0,
+  favoriteCount: 0
 });
 
 // 表单验证规则
 const rules: FormRules = {
   title: [{ required: true, message: "请输入资讯标题", trigger: "blur" }],
-  author: [{ required: true, message: "请输入作者", trigger: "blur" }],
   content: [{ required: true, message: "请输入正文内容", trigger: "blur" }],
   categoryId: [{ required: true, message: "请选择分类", trigger: "change" }]
 };
@@ -328,29 +305,40 @@ const rules: FormRules = {
 // 监听弹窗显示状态
 watch(
   () => props.visible,
-  visible => {
+  async visible => {
     if (visible) {
       if (props.mode === "add") {
         resetForm();
       } else if (props.formData) {
-        // 编辑或查看模式，填充表单数据
-        form.value = {
-          title: props.formData.title,
-          subtitle: props.formData.subtitle || "",
-          author: props.formData.author,
-          source: props.formData.source || "",
-          summary: props.formData.summary || "",
-          content: props.formData.content || "",
-          coverImage: props.formData.coverImage || "",
-          publishTime: props.formData.publishTime || "",
-          categoryId: props.formData.categoryId,
-          isRecommended: props.formData.isRecommended,
-          isTop: props.formData.isTop,
-          seoTitle: props.formData.seoTitle || "",
-          seoKeywords: props.formData.seoKeywords || "",
-          seoDescription: props.formData.seoDescription || "",
-          tags: [...(props.formData.tags || [])]
-        };
+        // 编辑或查看模式，先获取完整的资讯详情
+        try {
+          const response = await getNewsDetail(props.formData.id);
+          if (response.code === 200 && response.data) {
+            const detail = response.data;
+            form.value = {
+              title: detail.title,
+              subtitle: detail.subtitle || "",
+              author: detail.author,
+              source: detail.source || "",
+              summary: detail.summary || "",
+              content: detail.content || "",
+              coverImage: detail.coverImage || "",
+              publishTime: detail.publishTime || "",
+              categoryId: detail.categoryId,
+              isRecommended: detail.isRecommended,
+              isTop: detail.isTop,
+              viewCount: detail.viewCount || 0,
+              likeCount: detail.likeCount || 0,
+              favoriteCount: detail.favoriteCount || 0
+            };
+            updateCoverImagePreview();
+          } else {
+            ElMessage.error("获取资讯详情失败");
+          }
+        } catch (error) {
+          console.error("获取资讯详情失败:", error);
+          ElMessage.error("获取资讯详情失败");
+        }
       }
     }
   }
@@ -370,56 +358,64 @@ const resetForm = () => {
     categoryId: undefined,
     isRecommended: false,
     isTop: false,
-    seoTitle: "",
-    seoKeywords: "",
-    seoDescription: "",
-    tags: []
+    viewCount: 0,
+    likeCount: 0,
+    favoriteCount: 0
   };
-  tagInput.value = "";
+  updateCoverImagePreview();
   nextTick(() => {
     formRef.value?.clearValidate();
   });
 };
 
-// 文件上传前的处理
-const beforeUpload = (file: File) => {
+// 更新封面图片预览
+const updateCoverImagePreview = () => {
+  coverImageDisplayUrl.value = form.value.coverImage
+    ? getFullImageUrl(form.value.coverImage)
+    : "";
+};
+
+// 封面图片上传
+const handleCoverUpload = async (options: UploadRequestOptions) => {
+  const { file, onError, onSuccess } = options;
+  try {
+    const res = await uploadImage(file as File, "news");
+    if (res.code === 200 && res.data?.url) {
+      form.value.coverImage = res.data.url;
+      updateCoverImagePreview();
+      ElMessage.success(res.message || "上传成功");
+      onSuccess?.(res as any);
+    } else {
+      const msg = res.message || "上传失败";
+      ElMessage.error(msg);
+      onError?.(msg as any);
+    }
+  } catch (error: any) {
+    const msg = error?.message || "上传失败";
+    ElMessage.error(msg);
+    onError?.(msg as any);
+  }
+};
+
+// 封面图片上传前验证
+const beforeCoverUpload = (file: File) => {
   const isImage = file.type.startsWith("image/");
-  const isLt2M = file.size / 1024 / 1024 < 2;
-
   if (!isImage) {
-    ElMessage.error("只能上传图片格式的文件!");
+    ElMessage.error("仅支持上传图片文件");
     return false;
   }
-  if (!isLt2M) {
-    ElMessage.error("上传图片大小不能超过 2MB!");
+  const isLt5M = file.size / 1024 / 1024 < 5;
+  if (!isLt5M) {
+    ElMessage.error("图片大小不能超过 5MB");
     return false;
   }
-
-  // 模拟上传成功，生成一个临时URL
-  const reader = new FileReader();
-  reader.onload = e => {
-    form.value.coverImage = e.target?.result as string;
-  };
-  reader.readAsDataURL(file);
-
-  return false; // 阻止默认上传行为
+  return true;
 };
 
-// 标签相关方法
-const addTag = () => {
-  if (tagInput.value.trim()) {
-    if (!form.value.tags) {
-      form.value.tags = [];
-    }
-    if (!form.value.tags.includes(tagInput.value.trim())) {
-      form.value.tags.push(tagInput.value.trim());
-    }
-    tagInput.value = "";
-  }
-};
-
-const removeTag = (index: number) => {
-  form.value.tags?.splice(index, 1);
+// 移除封面图片
+const removeCoverImage = () => {
+  form.value.coverImage = "";
+  updateCoverImagePreview();
 };
 
 // 提交表单
@@ -430,19 +426,23 @@ const handleSubmit = async () => {
     await formRef.value.validate();
     loading.value = true;
 
+    let response;
     if (props.mode === "add") {
-      await createNews(form.value);
-      ElMessage.success("新增成功");
+      response = await createNews(form.value);
     } else {
-      await updateNews(props.formData!.id, form.value);
-      ElMessage.success("修改成功");
+      response = await updateNews(props.formData!.id, form.value);
     }
 
-    emit("success");
-    handleCancel();
-  } catch (error) {
+    if (response.code === 200) {
+      ElMessage.success(props.mode === "add" ? "新增成功" : "修改成功");
+      emit("success");
+      handleCancel();
+    } else {
+      throw new Error(response.message || "提交失败");
+    }
+  } catch (error: any) {
     console.error("提交失败:", error);
-    ElMessage.error("提交失败");
+    ElMessage.error(error.message || "提交失败");
   } finally {
     loading.value = false;
   }
@@ -456,43 +456,101 @@ const handleCancel = () => {
 </script>
 
 <style scoped lang="scss">
-.dialog-footer {
+.drawer-form {
+  padding: 0 20px 20px;
+}
+
+.drawer-footer {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--el-border-color-lighter);
+}
+
+.cover-uploader-wrapper {
+  width: 100%;
 }
 
 .cover-uploader {
-  :deep(.el-upload) {
-    border: 1px dashed var(--el-border-color);
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: var(--el-transition-duration-fast);
-
-    &:hover {
-      border-color: var(--el-color-primary);
-    }
-  }
+  width: 400px;
+  height: 240px;
+  border-radius: 8px;
 }
 
-.cover-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 120px;
-  height: 120px;
-  text-align: center;
+.cover-uploader :deep(.el-upload-dragger) {
+  width: 400px;
+  height: 240px;
+  padding: 0;
+  border: 1px dashed var(--el-border-color);
   display: flex;
-  justify-content: center;
   align-items: center;
-  background: #fafafa;
+  justify-content: center;
+  border-radius: 8px;
 }
 
-.cover-image {
-  width: 120px;
-  height: 120px;
-  display: block;
+.cover-placeholder {
+  text-align: center;
+}
+
+.cover-icon {
+  font-size: 32px;
+  color: var(--el-text-color-secondary);
+  margin-bottom: 6px;
+}
+
+.cover-text {
+  font-size: 14px;
+  color: var(--el-text-color-primary);
+}
+
+.cover-tip {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  margin-top: 4px;
+}
+
+.cover-preview {
+  position: relative;
+  width: 400px;
+  height: 240px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cover-preview img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+}
+
+.cover-preview__mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.cover-preview:hover .cover-preview__mask {
+  opacity: 1;
+}
+
+.cover-preview__mask .el-button {
+  width: 96px;
+}
+
+.wangeditor {
+  border: 1px solid var(--el-border-color);
+  border-radius: 4px;
+  overflow: hidden;
 }
 </style>

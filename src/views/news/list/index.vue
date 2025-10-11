@@ -14,14 +14,6 @@
           class="!w-[200px]"
         />
       </el-form-item>
-      <el-form-item label="作者：" prop="author">
-        <el-input
-          v-model="searchForm.author"
-          placeholder="请输入作者"
-          clearable
-          class="!w-[150px]"
-        />
-      </el-form-item>
       <el-form-item label="分类：" prop="categoryId">
         <el-select
           v-model="searchForm.categoryId"
@@ -106,14 +98,6 @@
             >
               新增资讯
             </el-button>
-            <el-button
-              type="danger"
-              :icon="useRenderIcon('ep:delete')"
-              :disabled="!selectedIds.length"
-              @click="handleBatchDelete"
-            >
-              批量删除
-            </el-button>
           </template>
           <template v-slot="{ size, dynamicColumns }">
             <pure-table
@@ -132,34 +116,9 @@
                 background: 'var(--el-fill-color-light)',
                 color: 'var(--el-text-color-primary)'
               }"
-              @selection-change="handleSelectionChange"
               @page-size-change="onPageSizeChange"
               @page-current-change="onCurrentChange"
             >
-              <template #selection>
-                <!-- 多选框列 -->
-              </template>
-
-              <template #coverImage="{ row }">
-                <el-image
-                  v-if="row.coverImage"
-                  :src="row.coverImage"
-                  :alt="row.title"
-                  class="w-16 h-12 rounded object-cover"
-                  fit="cover"
-                  :preview-src-list="[row.coverImage]"
-                  preview-teleported
-                />
-                <div
-                  v-else
-                  class="w-16 h-12 bg-gray-100 rounded flex items-center justify-center"
-                >
-                  <el-icon class="text-gray-400" size="16">
-                    <component :is="useRenderIcon('ep:picture')" />
-                  </el-icon>
-                </div>
-              </template>
-
               <template #title="{ row }">
                 <div class="flex flex-col">
                   <div class="font-medium text-gray-900 mb-1">
@@ -215,17 +174,6 @@
                   置顶
                 </el-tag>
                 <span v-else class="text-gray-400">-</span>
-              </template>
-
-              <template #publishTime="{ row }">
-                {{ row.publishTime ? formatDateTime(row.publishTime) : "-" }}
-              </template>
-
-              <template #stats="{ row }">
-                <div class="text-xs text-gray-500">
-                  <div>浏览: {{ row.viewCount }}</div>
-                  <div>评论: {{ row.commentCount }}</div>
-                </div>
               </template>
 
               <template #operation="{ row }">
@@ -304,7 +252,7 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
-import { type PaginationProps, type TableColumnList } from "@pureadmin/table";
+import { type PaginationProps } from "@pureadmin/table";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -313,7 +261,6 @@ import NewsDialog from "./components/NewsDialog.vue";
 import {
   getNewsList,
   deleteNews,
-  batchDeleteNews,
   getCategoryList,
   toggleNewsRecommend,
   toggleNewsTop,
@@ -334,7 +281,6 @@ const isShow = ref(false);
 // 搜索表单
 const searchForm = reactive<NewsListParams>({
   title: "",
-  author: "",
   // 选择器空值使用空字符串以满足 Element Plus 的类型校验
   // 在发请求时会转换为空值
   categoryId: undefined,
@@ -346,7 +292,6 @@ const searchForm = reactive<NewsListParams>({
 const dataList = ref<NewsItem[]>([]);
 const categories = ref<NewsCategory[]>([]);
 const loading = ref(false);
-const selectedIds = ref<number[]>([]);
 
 // 分页配置
 const pagination = reactive<PaginationProps>({
@@ -364,21 +309,9 @@ const currentRow = ref<NewsItem | null>(null);
 // 表格列配置
 const columns: TableColumnList = [
   {
-    type: "selection",
-    width: 55,
-    align: "left",
-    hide: opts => !opts?.checkList?.includes("勾选列")
-  },
-  {
     label: "ID",
     prop: "id",
     width: 80
-  },
-  {
-    label: "封面图",
-    prop: "coverImage",
-    width: 100,
-    slot: "coverImage"
   },
   {
     label: "标题",
@@ -387,14 +320,9 @@ const columns: TableColumnList = [
     slot: "title"
   },
   {
-    label: "作者",
-    prop: "author",
-    width: 100
-  },
-  {
     label: "分类",
     prop: "category",
-    width: 100,
+    width: 120,
     slot: "category"
   },
   {
@@ -404,28 +332,36 @@ const columns: TableColumnList = [
     slot: "status"
   },
   {
-    label: "推荐",
-    prop: "isRecommended",
-    width: 80,
-    slot: "isRecommended"
-  },
-  {
     label: "置顶",
     prop: "isTop",
     width: 80,
     slot: "isTop"
   },
   {
-    label: "发布时间",
-    prop: "publishTime",
-    width: 160,
-    slot: "publishTime"
+    label: "推荐",
+    prop: "isRecommended",
+    width: 80,
+    slot: "isRecommended"
   },
   {
-    label: "统计",
-    prop: "stats",
-    width: 80,
-    slot: "stats"
+    label: "浏览",
+    prop: "viewCount",
+    width: 90
+  },
+  {
+    label: "评论",
+    prop: "commentCount",
+    width: 90
+  },
+  {
+    label: "点赞",
+    prop: "likeCount",
+    width: 90
+  },
+  {
+    label: "收藏",
+    prop: "favoriteCount",
+    width: 90
   },
   {
     label: "操作",
@@ -439,15 +375,20 @@ const columns: TableColumnList = [
 const getData = async () => {
   loading.value = true;
   try {
-    const params: NewsListParams = {
-      page: pagination.currentPage,
-      pageSize: pagination.pageSize,
+    const params = {
+      page: pagination.currentPage.toString(),
+      limit: pagination.pageSize.toString(),
       ...searchForm
     };
 
-    const { data } = await getNewsList(params);
-    dataList.value = data.list;
-    pagination.total = data.total;
+    const response = await getNewsList(params);
+
+    if (response.code === 200 && response.data) {
+      dataList.value = response.data.list;
+      pagination.total = response.data.total;
+    } else {
+      throw new Error(response.message || "获取数据失败");
+    }
   } catch (error) {
     console.error("获取资讯列表失败:", error);
     ElMessage.error("获取数据失败");
@@ -459,8 +400,10 @@ const getData = async () => {
 // 获取分类数据
 const getCategories = async () => {
   try {
-    const { data } = await getCategoryList();
-    categories.value = data;
+    const response = await getCategoryList();
+    if (response.code === 200 && response.data) {
+      categories.value = response.data;
+    }
   } catch (error) {
     console.error("获取分类列表失败:", error);
   }
@@ -476,7 +419,6 @@ const handleSearch = () => {
 const resetSearch = () => {
   Object.assign(searchForm, {
     title: "",
-    author: "",
     categoryId: undefined,
     status: undefined,
     isRecommended: undefined
@@ -493,11 +435,6 @@ const onPageSizeChange = (size: number) => {
 const onCurrentChange = (page: number) => {
   pagination.currentPage = page;
   getData();
-};
-
-// 多选变化
-const handleSelectionChange = (selection: NewsItem[]) => {
-  selectedIds.value = selection.map(item => item.id);
 };
 
 // 查看详情
@@ -537,36 +474,6 @@ const handleDelete = async (id: number) => {
     if (error !== "cancel") {
       console.error("删除失败:", error);
       ElMessage.error("删除失败");
-    }
-  }
-};
-
-// 批量删除
-const handleBatchDelete = async () => {
-  if (!selectedIds.value.length) {
-    ElMessage.warning("请选择要删除的资讯");
-    return;
-  }
-
-  try {
-    await ElMessageBox.confirm(
-      `此操作将永久删除选中的 ${selectedIds.value.length} 条资讯，是否继续？`,
-      "确认批量删除",
-      {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }
-    );
-
-    await batchDeleteNews(selectedIds.value);
-    ElMessage.success("批量删除成功");
-    selectedIds.value = [];
-    getData();
-  } catch (error) {
-    if (error !== "cancel") {
-      console.error("批量删除失败:", error);
-      ElMessage.error("批量删除失败");
     }
   }
 };
@@ -628,10 +535,6 @@ const getStatusType = (status: number) => {
       return "success";
     case 2:
       return "warning";
-    case 3:
-      return "primary";
-    case 4:
-      return "danger";
     default:
       return "info";
   }
@@ -645,25 +548,9 @@ const getStatusText = (status: number) => {
       return "已发布";
     case 2:
       return "已下线";
-    case 3:
-      return "审核中";
-    case 4:
-      return "已拒绝";
     default:
       return "未知";
   }
-};
-
-const formatDateTime = (dateStr: string) => {
-  if (!dateStr) return "-";
-  const date = new Date(dateStr);
-  return date.toLocaleString("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
 };
 
 // 初始化
