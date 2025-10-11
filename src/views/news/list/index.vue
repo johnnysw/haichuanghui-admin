@@ -197,6 +197,28 @@
                 >
                   编辑
                 </el-button>
+                <el-button
+                  v-if="row.status === 0 || row.status === 2"
+                  class="reset-margin"
+                  link
+                  type="success"
+                  :size="size"
+                  :icon="useRenderIcon('ep:video-play')"
+                  @click="handlePublish(row)"
+                >
+                  发布
+                </el-button>
+                <el-button
+                  v-if="row.status === 1"
+                  class="reset-margin"
+                  link
+                  type="warning"
+                  :size="size"
+                  :icon="useRenderIcon('ep:video-pause')"
+                  @click="handleOffline(row)"
+                >
+                  下线
+                </el-button>
                 <el-dropdown class="ml-2">
                   <el-button
                     class="reset-margin"
@@ -212,18 +234,6 @@
                       </el-dropdown-item>
                       <el-dropdown-item @click="handleToggleTop(row)">
                         {{ row.isTop ? "取消置顶" : "设为置顶" }}
-                      </el-dropdown-item>
-                      <el-dropdown-item
-                        v-if="row.status === 0 || row.status === 2"
-                        @click="handlePublish(row)"
-                      >
-                        发布
-                      </el-dropdown-item>
-                      <el-dropdown-item
-                        v-if="row.status === 1"
-                        @click="handleOffline(row)"
-                      >
-                        下线
                       </el-dropdown-item>
                       <el-dropdown-item divided @click="handleDelete(row.id)">
                         删除
@@ -366,7 +376,7 @@ const columns: TableColumnList = [
   {
     label: "操作",
     fixed: "right",
-    width: 200,
+    width: 280,
     slot: "operation"
   }
 ];
