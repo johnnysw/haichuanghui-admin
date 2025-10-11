@@ -59,78 +59,10 @@ const {
     <LayNavMix v-if="layout === 'mix'" />
 
     <div v-if="/vertical|double/.test(layout)" class="vertical-header-right">
-      <!-- 菜单搜索 -->
-      <LaySearch id="header-search" />
-      <!-- 国际化 -->
-      <el-dropdown id="header-translation" trigger="click">
-        <GlobalizationIcon
-          class="navbar-bg-hover w-[40px] h-[48px] p-[11px] cursor-pointer outline-none"
-        />
-        <template #dropdown>
-          <el-dropdown-menu class="translation">
-            <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'zh')"
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'zh')]"
-              @click="translationCh"
-            >
-              <IconifyIconOffline
-                v-show="locale === 'zh'"
-                class="check-btn"
-                :icon="Check"
-              />
-              简体中文
-            </el-dropdown-item>
-            <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'tw')"
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'tw')]"
-              @click="translationTw"
-            >
-              <IconifyIconOffline
-                v-show="locale === 'tw'"
-                class="check-btn"
-                :icon="Check"
-              />
-              繁體中文
-            </el-dropdown-item>
-            <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'en')"
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'en')]"
-              @click="translationEn"
-            >
-              <span v-show="locale === 'en'" class="check-btn">
-                <IconifyIconOffline :icon="Check" />
-              </span>
-              English
-            </el-dropdown-item>
-            <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'ja')"
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'ja')]"
-              @click="translationJa"
-            >
-              <span v-show="locale === 'ja'" class="check-btn">
-                <IconifyIconOffline :icon="Check" />
-              </span>
-              日本語
-            </el-dropdown-item>
-            <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'ko')"
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'ko')]"
-              @click="translationKo"
-            >
-              <span v-show="locale === 'ko'" class="check-btn">
-                <IconifyIconOffline :icon="Check" />
-              </span>
-              한국어
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
       <!-- 全屏 -->
       <LaySidebarFullScreen id="full-screen" />
       <!-- 整体风格 -->
       <LaySidebarOverallStyle id="header-overall" />
-      <!-- 消息通知 -->
-      <LayNotice id="header-notice" />
       <!-- 退出登录 -->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link navbar-bg-hover select-none">
