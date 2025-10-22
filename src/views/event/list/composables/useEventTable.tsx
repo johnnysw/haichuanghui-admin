@@ -4,7 +4,7 @@ import { ElMessageBox } from "element-plus";
 import { message } from "@/utils/message";
 import { useRouter } from "vue-router";
 import type { PaginationProps } from "@pureadmin/table";
-import { getEventList, deleteEvent } from "../api";
+import { getEventList, deleteEvent, getEventStats } from "../api";
 import type { EventForm, EventInfo, EventListResponse } from "../types/types";
 
 const STATUS_MAP: Record<number, { text: string; type: string }> = {
@@ -26,6 +26,13 @@ export function useEventTable() {
 
   const dataList = ref<EventInfo[]>([]);
   const loading = ref(false);
+
+  // 统计数据
+  const stats = reactive({
+    registrationCount: 0,
+    viewCount: 0
+  });
+
   const pagination = reactive<PaginationProps>({
     total: 0,
     pageSize: 10,
@@ -81,8 +88,9 @@ export function useEventTable() {
       label: "报名人数",
       prop: "registrationCount",
       minWidth: 120,
+      sortable: true,
       cellRenderer: ({ row }: any) => (
-        <div class="flex items-center">
+        <div class="flex items-center justify-center">
           <span>{row.registrationCount ?? 0}</span>
           {row.isFull && (
             <el-tag type="warning" size="small" class="ml-2">
@@ -96,6 +104,7 @@ export function useEventTable() {
       label: "浏览量",
       prop: "viewCount",
       minWidth: 100,
+      sortable: true,
     },
     {
       label: "创建日期",
@@ -111,6 +120,19 @@ export function useEventTable() {
       slot: "operation",
     },
   ] as any;
+
+  // 刷新统计数据
+  const refreshStats = async () => {
+    try {
+      const result = await getEventStats();
+      if (result.code === 200) {
+        stats.registrationCount = result.data.totalRegistrationCount ?? 0;
+        stats.viewCount = result.data.totalViewCount ?? 0;
+      }
+    } catch (error) {
+      console.error("获取活动统计信息失败:", error);
+    }
+  };
 
   const fetchTableData = async () => {
     loading.value = true;
@@ -131,6 +153,9 @@ export function useEventTable() {
       pagination.total = payload.total ?? 0;
       pagination.pageSize = payload.pageSize ?? pagination.pageSize;
       pagination.currentPage = payload.currentPage ?? pagination.currentPage;
+
+      // 刷新统计数据
+      await refreshStats();
     } catch (error: any) {
       message(`获取活动列表失败：${error?.message ?? "未知错误"}`, {
         type: "error",
@@ -207,6 +232,7 @@ export function useEventTable() {
     loading,
     columns,
     pagination,
+    stats,
     fetchTableData,
     handleSearch,
     resetForm,

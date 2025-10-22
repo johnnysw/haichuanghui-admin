@@ -13,6 +13,8 @@ import Refresh from "@iconify-icons/ep/refresh";
 import View from "@iconify-icons/ep/view";
 import Delete from "@iconify-icons/ep/delete";
 import EditPen from "@iconify-icons/ep/edit-pen";
+import UserFilled from "@iconify-icons/ep/user-filled";
+import DataAnalysis from "@iconify-icons/ep/data-analysis";
 
 const formRef = ref();
 const tableRef = ref();
@@ -54,6 +56,7 @@ const {
   loading,
   columns,
   pagination,
+  stats,
   handleSearch,
   resetForm,
   handleSizeChange,
@@ -83,7 +86,7 @@ onMounted(() => {
 const openDrawer = async (mode: "create" | "edit", row?: EventForm) => {
   drawerMode.value = mode;
   drawerTitle.value = mode === "create" ? "新增活动" : "编辑活动";
-  
+
   if (mode === "edit" && row?.id) {
     // 编辑模式：先调用详情接口获取完整数据
     try {
@@ -211,6 +214,24 @@ const handleDrawerSubmit = async (data: EventForm, mode: "create" | "edit") => {
       </el-form-item>
     </el-form>
 
+    <!-- 统计区域 -->
+    <div class="stats-card">
+      <div class="stat-item">
+        <div class="stat-header">
+          <IconifyIconOffline :icon="UserFilled" class="stat-icon icon-user" />
+          <span class="stat-title">总报名人数</span>
+        </div>
+        <span class="stat-value">{{ stats.registrationCount.toLocaleString() }}</span>
+      </div>
+      <div class="stat-item">
+        <div class="stat-header">
+          <IconifyIconOffline :icon="DataAnalysis" class="stat-icon icon-view" />
+          <span class="stat-title">总浏览量</span>
+        </div>
+        <span class="stat-value">{{ stats.viewCount.toLocaleString() }}</span>
+      </div>
+    </div>
+
     <div :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']">
       <div class="col-span-12 w-full min-w-0">
         <PureTableBar
@@ -301,6 +322,52 @@ const handleDrawerSubmit = async (data: EventForm, mode: "create" | "edit") => {
 .search-form {
   :deep(.el-form-item) {
     margin-bottom: 12px;
+  }
+}
+
+.stats-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 16px 0 20px;
+
+  .stat-item {
+    background: var(--el-fill-color-lighter);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .stat-icon {
+        font-size: 18px;
+
+        &.icon-user {
+          color: #409eff;
+        }
+
+        &.icon-view {
+          color: #67c23a;
+        }
+      }
+
+      .stat-title {
+        font-size: 12px;
+        color: var(--el-text-color-secondary);
+      }
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--el-text-color-primary);
+      margin-left: 26px;
+    }
   }
 }
 </style>

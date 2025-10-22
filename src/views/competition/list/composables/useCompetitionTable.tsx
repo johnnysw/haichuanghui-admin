@@ -6,7 +6,8 @@ import {
   getCompetitionList,
   getIndustryList,
   recommendCompetition,
-  deleteCompetition
+  deleteCompetition,
+  getCompetitionStats
 } from "../api";
 import { addDialog } from "@/components/ReDialog";
 import { deviceDetection } from "@pureadmin/utils";
@@ -34,6 +35,12 @@ export function useCompetitionList() {
     pageSize: 10,
     currentPage: 1,
     background: true
+  });
+
+  const stats = reactive({
+    registrationCount: 0,
+    viewCount: 0,
+    favoriteCount: 0
   });
 
   const statusMap: Record<number, string> = {
@@ -109,12 +116,21 @@ export function useCompetitionList() {
     {
       label: "报名人数",
       prop: "registrationCount",
-      minWidth: 100
+      minWidth: 100,
+      sortable: true
     },
     {
       label: "浏览量",
       prop: "viewCount",
-      minWidth: 100
+      minWidth: 100,
+      sortable: true
+    },
+    {
+      label: "收藏数",
+      prop: "favoriteCount",
+      minWidth: 100,
+      sortable: true,
+      cellRenderer: ({ row }) => row.favoriteCount ?? 0
     },
     {
       label: "创建时间",
@@ -233,6 +249,7 @@ export function useCompetitionList() {
       pagination.total = data.total;
       pagination.pageSize = data.pageSize || pagination.pageSize;
       pagination.currentPage = data.currentPage || pagination.currentPage;
+      await refreshStats();
     } catch (error) {
       message("获取数据失败: " + error.message, { type: "error" });
     }
@@ -240,6 +257,19 @@ export function useCompetitionList() {
     setTimeout(() => {
       loading.value = false;
     }, 300);
+  }
+
+  async function refreshStats() {
+    try {
+      const result = await getCompetitionStats();
+      if (result.code === 200) {
+        stats.registrationCount = result.data.totalRegistrationCount ?? 0;
+        stats.viewCount = result.data.totalViewCount ?? 0;
+        stats.favoriteCount = result.data.totalFavoriteCount ?? 0;
+      }
+    } catch (error) {
+      console.error("获取竞赛统计信息失败:", error);
+    }
   }
 
   const resetForm = formEl => {
@@ -300,6 +330,7 @@ export function useCompetitionList() {
   onMounted(() => {
     fetchIndustryOptions();
     onSearch();
+    refreshStats();
   });
 
   return {
@@ -319,6 +350,8 @@ export function useCompetitionList() {
     handleCurrentChange,
     handleSelectionChange,
     handleToggleRecommend,
-    rowStyle // 添加rowStyle到返回对象中
+    rowStyle,
+    stats,
+    refreshStats
   };
 }

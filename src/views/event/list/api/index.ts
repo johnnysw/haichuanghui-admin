@@ -38,3 +38,13 @@ export const getRegionList = () => {
   return http.request<Response<OptionItem[]>>("get", "/api/v1/regions");
 };
 
+/**
+ * 获取活动统计信息
+ */
+export const getEventStats = () => {
+  return http.request<Response<{ totalViewCount: number; totalRegistrationCount: number }>>(
+    "get",
+    "/api/v1/admin/event/stats"
+  );
+};
+

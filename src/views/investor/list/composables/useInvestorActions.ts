@@ -1,5 +1,5 @@
 import { ElMessage, ElMessageBox } from "element-plus";
-import { toggleInvestorStatus } from "../../api";
+import { toggleInvestorStatus } from "../api";
 import type { InvestorInfo } from "../../types/types";
 import { InvestorStatus } from "../../types/types";
 

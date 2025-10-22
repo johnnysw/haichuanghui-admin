@@ -1,5 +1,5 @@
 import { reactive, ref, onMounted } from "vue";
-import { getRegionList, getIndustryList, getFundingStageList } from "../../api";
+import { getRegionList, getIndustryList, getFundingStageList } from "../api";
 import type { BaseOption, InvestorQueryParams } from "../../types/types";
 import { INVESTOR_STATUS_OPTIONS } from "../../types/types";
 

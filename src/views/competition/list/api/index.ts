@@ -15,6 +15,14 @@ export const getCompetitionList = (params: CompetitionQueryParams) => {
   );
 };
 
+// 获取竞赛统计
+export const getCompetitionStats = () => {
+  return http.request<Response<{ totalRegistrationCount: number; totalViewCount: number; totalFavoriteCount: number }>>(
+    "get",
+    "/api/v1/admin/competition/stats"
+  );
+};
+
 // 获取单个创业大赛详情
 export const getCompetitionDetail = (id: number) => {
   return http.request<Response<CompetitionInfo>>(

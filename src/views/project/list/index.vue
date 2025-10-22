@@ -120,6 +120,24 @@
       </el-form-item>
     </el-form>
 
+    <!-- 统计区域 -->
+    <div class="stats-card">
+      <div class="stat-item">
+        <div class="stat-header">
+          <IconifyIconOffline :icon="DataAnalysis" class="stat-icon icon-view" />
+          <span class="stat-title">总浏览量</span>
+        </div>
+        <span class="stat-value">{{ stats.viewCount.toLocaleString() }}</span>
+      </div>
+      <div class="stat-item">
+        <div class="stat-header">
+          <IconifyIconOffline :icon="Star" class="stat-icon icon-star" />
+          <span class="stat-title">总收藏数</span>
+        </div>
+        <span class="stat-value">{{ stats.favoriteCount.toLocaleString() }}</span>
+      </div>
+    </div>
+
     <div
       ref="contentRef"
       :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
@@ -222,6 +240,8 @@ import { useProjectTable } from "./composables/useProjectTable";
 
 import View from "@iconify-icons/ep/view";
 import Delete from "@iconify-icons/ep/delete";
+import DataAnalysis from "@iconify-icons/ep/data-analysis";
+import Star from "@iconify-icons/ep/star";
 
 defineOptions({ name: "ProjectList" });
 
@@ -239,6 +259,7 @@ const {
   dataList,
   pagination,
   selectedNum,
+  stats,
   industryOptions,
   regionOptions,
   fundingStageOptions,
@@ -264,6 +285,52 @@ const searchForm = form;
 .search-form {
   .el-form-item {
     margin-bottom: 12px;
+  }
+}
+
+.stats-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 16px 0 20px;
+
+  .stat-item {
+    background: var(--el-fill-color-lighter);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .stat-icon {
+        font-size: 18px;
+
+        &.icon-view {
+          color: #67c23a;
+        }
+
+        &.icon-star {
+          color: #f56c6c;
+        }
+      }
+
+      .stat-title {
+        font-size: 12px;
+        color: var(--el-text-color-secondary);
+      }
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--el-text-color-primary);
+      margin-left: 26px;
+    }
   }
 }
 </style>

@@ -133,35 +133,6 @@ export interface InvestorInfo {
 
 export type InvestorItem = InvestorInfo;
 
-export interface InvestorForm {
-  id?: number;
-  userId: number;
-  realName: string;
-  phone: string;
-  email: string;
-  investmentInstitution: string;
-  position: string;
-  regionId?: number;
-  investorTypeId?: number;
-  location: string;
-  investmentAmountMin?: number;
-  investmentAmountMax?: number;
-  description?: string;
-  investmentPreference?: string;
-  institutionInfo?: string;
-  bio: string;
-  status: InvestorStatus; // 0-禁用, 1-正常(已认证), 2-审核中, 3-已拒绝
-  isFeatured: boolean;
-  isRecommended?: boolean;
-  focusIndustries: number[];
-  preferredStages: number[];
-  preferredRegions: number[];
-  idDocuments: UploadAttachment[];
-  institutionDocuments: UploadAttachment[];
-  investmentDocuments: UploadAttachment[];
-  adminNotes?: string;
-}
-
 export interface InvestorReviewPayload {
   status: InvestorStatus;
   reviewComment?: string;

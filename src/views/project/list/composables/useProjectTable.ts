@@ -5,7 +5,7 @@ import { ref, onMounted, reactive, h } from "vue";
 import { useDateFormat } from "@vueuse/core";
 import type { PaginationProps } from "@pureadmin/table";
 import type { TableColumns } from "@pureadmin/table";
-import { getProjectList, toggleProjectRecommendation } from "../api";
+import { getProjectList, toggleProjectRecommendation, getProjectStats } from "../api";
 import { useProjectFilter } from "./useProjectFilter";
 import { useProjectActions } from "./useProjectActions";
 import type { ProjectInfo, ProjectQueryParams } from "../types/types";
@@ -36,6 +36,12 @@ export function useProjectTable() {
   const loading = ref(true);
   const isShow = ref(false);
   const selectedNum = ref(0);
+
+  // 统计数据
+  const stats = reactive({
+    viewCount: 0,
+    favoriteCount: 0
+  });
 
   // 分页配置
   const pagination = reactive<PaginationProps>({
@@ -129,7 +135,15 @@ export function useProjectTable() {
       label: "浏览量",
       prop: "viewCount",
       minWidth: 100,
+      sortable: true,
       cellRenderer: ({ row }) => row.viewCount?.toLocaleString() || "0"
+    },
+    {
+      label: "收藏数",
+      prop: "favoriteCount",
+      minWidth: 100,
+      sortable: true,
+      cellRenderer: ({ row }) => row.favoriteCount?.toLocaleString() || "0"
     },
     {
       label: "创建时间",
@@ -151,6 +165,19 @@ export function useProjectTable() {
   ];
 
   // 获取项目列表
+  // 刷新统计数据
+  async function refreshStats() {
+    try {
+      const result = await getProjectStats();
+      if (result.code === 200) {
+        stats.viewCount = result.data.totalViewCount ?? 0;
+        stats.favoriteCount = result.data.totalFavoriteCount ?? 0;
+      }
+    } catch (error) {
+      console.error("获取项目统计信息失败:", error);
+    }
+  }
+
   async function getProjectData() {
     loading.value = true;
     try {
@@ -174,6 +201,9 @@ export function useProjectTable() {
       } else {
         message("获取项目列表失败: " + result.message, { type: "error" });
       }
+
+      // 刷新统计数据
+      await refreshStats();
     } catch (error) {
       console.error("获取项目列表失败:", error);
       message("获取项目列表失败", { type: "error" });
@@ -266,6 +296,7 @@ export function useProjectTable() {
     dataList,
     pagination,
     selectedNum,
+    stats,
     industryOptions,
     regionOptions,
     fundingStageOptions,

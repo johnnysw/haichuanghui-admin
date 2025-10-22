@@ -1,7 +1,7 @@
 import { ref, reactive, computed, h, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage, ElAvatar, ElTag, ElLink } from "element-plus";
-import { getInvestorList } from "../../api";
+import { getInvestorList } from "../api";
 import { useInvestorFilter } from "./useInvestorFilter";
 import { useInvestorActions } from "./useInvestorActions";
 import type {

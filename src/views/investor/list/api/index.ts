@@ -4,7 +4,7 @@ import type {
   InvestorQueryParams,
   InvestorInfo,
   BaseOption
-} from "../types/types";
+} from "../../types/types";
 
 /**
  * 获取投资人列表

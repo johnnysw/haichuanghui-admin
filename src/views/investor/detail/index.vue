@@ -626,7 +626,7 @@ import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { getInvestorDetail, reviewInvestor } from "../api";
+import { getInvestorDetail, reviewInvestor } from "../list/api";
 import type {
   InvestorInfo,
   CertificationFiles,

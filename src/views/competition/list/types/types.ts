@@ -32,6 +32,10 @@ export interface CompetitionForm {
   status: number;
   isRecommended: boolean;
   poster?: string;
+  viewCount?: number;
+  commentCount?: number;
+  likeCount?: number;
+  favoriteCount?: number;
 }
 
 // 竞赛信息
@@ -59,6 +63,9 @@ export interface CompetitionInfo {
   isRecommended: boolean;
   poster?: string;
   viewCount: number;
+  commentCount?: number;
+  likeCount?: number;
+  favoriteCount?: number;
   registrationCount: number;
   reviewComment?: string;
   reviewTime?: string;

@@ -90,3 +90,13 @@ export const getCategoryList = (): Promise<ApiResponse<NewsCategory[]>> => {
     };
   });
 };
+
+// 获取资讯统计信息
+export const getNewsStats = (): Promise<ApiResponse<{
+  totalViewCount: number;
+  totalCommentCount: number;
+  totalLikeCount: number;
+  totalFavoriteCount: number;
+}>> => {
+  return http.get("/api/v1/admin/news/stats");
+};

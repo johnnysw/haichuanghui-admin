@@ -75,6 +75,38 @@
       </el-form-item>
     </el-form>
 
+    <!-- 统计区域 -->
+    <div class="stats-card">
+      <div class="stat-item">
+        <div class="stat-header">
+          <IconifyIconOffline :icon="DataAnalysis" class="stat-icon icon-view" />
+          <span class="stat-title">总浏览量</span>
+        </div>
+        <span class="stat-value">{{ stats.viewCount.toLocaleString() }}</span>
+      </div>
+      <div class="stat-item">
+        <div class="stat-header">
+          <IconifyIconOffline :icon="ChatDotRound" class="stat-icon icon-comment" />
+          <span class="stat-title">总评论数</span>
+        </div>
+        <span class="stat-value">{{ stats.commentCount.toLocaleString() }}</span>
+      </div>
+      <div class="stat-item">
+        <div class="stat-header">
+          <IconifyIconOffline :icon="Star" class="stat-icon icon-like" />
+          <span class="stat-title">总点赞数</span>
+        </div>
+        <span class="stat-value">{{ stats.likeCount.toLocaleString() }}</span>
+      </div>
+      <div class="stat-item">
+        <div class="stat-header">
+          <IconifyIconOffline :icon="StarFilled" class="stat-icon icon-favorite" />
+          <span class="stat-title">总收藏数</span>
+        </div>
+        <span class="stat-value">{{ stats.favoriteCount.toLocaleString() }}</span>
+      </div>
+    </div>
+
     <div
       ref="contentRef"
       :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
@@ -274,9 +306,15 @@ import {
   getCategoryList,
   toggleNewsRecommend,
   toggleNewsTop,
-  updateNewsStatus
+  updateNewsStatus,
+  getNewsStats
 } from "./api/index";
 import type { NewsItem, NewsListParams, NewsCategory } from "./types/types";
+import IconifyIconOffline from "@/components/ReIcon/src/iconifyIconOffline";
+import DataAnalysis from "@iconify-icons/ep/data-analysis";
+import ChatDotRound from "@iconify-icons/ep/chat-dot-round";
+import Star from "@iconify-icons/ep/star";
+import StarFilled from "@iconify-icons/ep/star-filled";
 
 defineOptions({ name: "NewsList" });
 
@@ -302,6 +340,14 @@ const searchForm = reactive<NewsListParams>({
 const dataList = ref<NewsItem[]>([]);
 const categories = ref<NewsCategory[]>([]);
 const loading = ref(false);
+
+// 统计数据
+const stats = reactive({
+  viewCount: 0,
+  commentCount: 0,
+  likeCount: 0,
+  favoriteCount: 0
+});
 
 // 分页配置
 const pagination = reactive<PaginationProps>({
@@ -356,22 +402,26 @@ const columns: TableColumnList = [
   {
     label: "浏览",
     prop: "viewCount",
-    width: 90
+    width: 90,
+    sortable: true
   },
   {
     label: "评论",
     prop: "commentCount",
-    width: 90
+    width: 90,
+    sortable: true
   },
   {
     label: "点赞",
     prop: "likeCount",
-    width: 90
+    width: 90,
+    sortable: true
   },
   {
     label: "收藏",
     prop: "favoriteCount",
-    width: 90
+    width: 90,
+    sortable: true
   },
   {
     label: "操作",
@@ -380,6 +430,21 @@ const columns: TableColumnList = [
     slot: "operation"
   }
 ];
+
+// 刷新统计数据
+const refreshStats = async () => {
+  try {
+    const result = await getNewsStats();
+    if (result.code === 200) {
+      stats.viewCount = result.data.totalViewCount ?? 0;
+      stats.commentCount = result.data.totalCommentCount ?? 0;
+      stats.likeCount = result.data.totalLikeCount ?? 0;
+      stats.favoriteCount = result.data.totalFavoriteCount ?? 0;
+    }
+  } catch (error) {
+    console.error("获取资讯统计信息失败:", error);
+  }
+};
 
 // 获取数据
 const getData = async () => {
@@ -399,6 +464,9 @@ const getData = async () => {
     } else {
       throw new Error(response.message || "获取数据失败");
     }
+
+    // 刷新统计数据
+    await refreshStats();
   } catch (error) {
     console.error("获取资讯列表失败:", error);
     ElMessage.error("获取数据失败");
@@ -582,6 +650,60 @@ onMounted(() => {
 .search-form {
   :deep(.el-form-item) {
     margin-bottom: 12px;
+  }
+}
+
+.stats-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 16px 0 20px;
+
+  .stat-item {
+    background: var(--el-fill-color-lighter);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .stat-icon {
+        font-size: 18px;
+
+        &.icon-view {
+          color: #67c23a;
+        }
+
+        &.icon-comment {
+          color: #409eff;
+        }
+
+        &.icon-like {
+          color: #e6a23c;
+        }
+
+        &.icon-favorite {
+          color: #f56c6c;
+        }
+      }
+
+      .stat-title {
+        font-size: 12px;
+        color: var(--el-text-color-secondary);
+      }
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--el-text-color-primary);
+      margin-left: 26px;
+    }
   }
 }
 </style>

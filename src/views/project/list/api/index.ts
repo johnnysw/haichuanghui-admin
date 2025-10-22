@@ -112,3 +112,13 @@ export const getRegionList = (): Promise<Response<BaseOption[]>> => {
 export const getFundingStageList = (): Promise<Response<BaseOption[]>> => {
   return http.get<Response<BaseOption[]>, any>("/api/v1/funding-stages");
 };
+
+/**
+ * 获取项目统计信息
+ */
+export const getProjectStats = () => {
+  return http.request<Response<{ totalViewCount: number; totalFavoriteCount: number }>>(
+    "get",
+    "/api/v1/admin/projects/stats"
+  );
+};
