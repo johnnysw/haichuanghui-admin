@@ -78,8 +78,8 @@ const buildQueryParams = (): RegistrationQueryParams => {
     params.status = Number(status);
   }
 
-  const teamName = form.teamName.trim();
-  if (teamName) params.teamName = teamName;
+  const projectStage = form.projectStage.trim();
+  if (projectStage) params.projectStage = projectStage;
 
   const contactName = form.contactName.trim();
   if (contactName) params.contactName = contactName;
@@ -295,10 +295,10 @@ onMounted(async () => {
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="团队名称" prop="teamName">
+      <el-form-item label="项目阶段" prop="projectStage">
         <el-input
-          v-model.trim="form.teamName"
-          placeholder="请输入团队名称"
+          v-model.trim="form.projectStage"
+          placeholder="请输入项目阶段"
           class="!w-[140px]"
         />
       </el-form-item>

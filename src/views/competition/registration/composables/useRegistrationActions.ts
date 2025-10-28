@@ -11,7 +11,7 @@ function extractErrorMessage(error: any, fallback = "操作失败") {
 
 export function useRegistrationActions() {
   function approveRegistration(row: RegistrationListItem) {
-    const targetName = row.teamName || row.contactName || `ID ${row.id}`;
+    const targetName = row.projectStage || row.contactName || `ID ${row.id}`;
 
     return ElMessageBox.confirm(
       `确认要通过「${targetName}」的报名申请吗？`,
@@ -46,7 +46,7 @@ export function useRegistrationActions() {
   }
 
   function rejectRegistration(row: RegistrationListItem) {
-    const targetName = row.teamName || row.contactName || `ID ${row.id}`;
+    const targetName = row.projectStage || row.contactName || `ID ${row.id}`;
 
     return ElMessageBox.prompt(
       "请输入拒绝原因：",

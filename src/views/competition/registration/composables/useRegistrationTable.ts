@@ -32,16 +32,16 @@ export function useRegistrationTable() {
 
   const columns: TableColumnList = [
     {
-      label: "团队/项目",
-      prop: "teamName",
+      label: "项目名称",
+      prop: "projectName",
       minWidth: 200,
       cellRenderer: ({ row }) =>
         h("div", { class: "flex flex-col" }, [
-          h("span", {}, row.teamName || "--"),
+          h("span", {}, row.projectName || row.companyName || "--"),
           h(
             "span",
             { class: "text-[12px] text-text_color_secondary" },
-            row.projectName || row.companyName || ""
+            row.projectStage || ""
           )
         ])
     },

@@ -46,3 +46,18 @@ export const getMemberStats = (params: MemberStatsParams) => {
   );
 };
 
+// 总会员数响应
+export interface TotalMemberCountResponse {
+  total: number;
+}
+
+/**
+ * 获取总会员数
+ */
+export const getTotalMemberCount = () => {
+  return http.request<Response<TotalMemberCountResponse>>(
+    "get",
+    "/api/v1/admin/members/total"
+  );
+};
+

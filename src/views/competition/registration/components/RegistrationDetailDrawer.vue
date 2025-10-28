@@ -49,7 +49,7 @@ const attachmentTypeMap: Record<string, string> = {
 const detailTitle = computed(() => {
   const d = props.detail;
   if (!d) return "--";
-  return d.teamName || d.companyName || d.projectName || d.contactName || "--";
+  return d.projectName || d.companyName || d.contactName || "--";
 });
 
 const formatTime = (value?: string | null) =>
@@ -121,8 +121,8 @@ const projectExpanded = ref(false);
           <div class="card-body">
             <div class="info-grid">
               <div class="info-item">
-                <span class="info-label">团队名称</span>
-                <span class="info-value">{{ detail?.teamName || "--" }}</span>
+                <span class="info-label">项目阶段</span>
+                <span class="info-value">{{ detail?.projectStage || "--" }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">公司/机构</span>
@@ -149,6 +149,10 @@ const projectExpanded = ref(false);
                 }}</span>
               </div>
               <div class="info-item">
+                <span class="info-label">微信号</span>
+                <span class="info-value">{{ detail?.wechat || "--" }}</span>
+              </div>
+              <div class="info-item">
                 <span class="info-label">职位</span>
                 <span class="info-value">{{ detail?.position || "--" }}</span>
               </div>
@@ -169,22 +173,24 @@ const projectExpanded = ref(false);
                 }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">登录账号</span>
-                <span class="info-value">{{
-                  detail?.account?.username || "--"
-                }}</span>
+                <span class="info-label">是否获得地方政策扶持</span>
+                <span class="info-value">
+                  <el-tag :type="detail?.policySupport === 1 ? 'success' : 'info'" size="small">
+                    {{ detail?.policySupport === 1 ? '是' : '否' }}
+                  </el-tag>
+                </span>
               </div>
               <div class="info-item">
-                <span class="info-label">账号邮箱</span>
-                <span class="info-value">{{
-                  detail?.account?.email || "--"
-                }}</span>
+                <span class="info-label">已融轮次</span>
+                <span class="info-value">{{ detail?.fundingRound || "--" }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">账号手机</span>
-                <span class="info-value">{{
-                  detail?.account?.phone || "--"
-                }}</span>
+                <span class="info-label">融资需求</span>
+                <span class="info-value">{{ detail?.fundingNeed || "--" }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">公司/团队成立时间</span>
+                <span class="info-value">{{ detail?.establishedDate ? dayjs(detail.establishedDate).format('YYYY-MM-DD') : '--' }}</span>
               </div>
             </div>
           </div>
@@ -220,13 +226,10 @@ const projectExpanded = ref(false);
               </div>
               <div class="info-item info-span-2">
                 <span class="info-label">项目简介</span>
-                <span class="info-value text-preline">
-                  {{
-                    detail?.project?.shortDescription ||
-                    detail?.projectDescription ||
-                    "--"
-                  }}
-                </span>
+                <div
+                  class="info-value text-preline"
+                  v-html="detail?.project?.shortDescription || detail?.projectDescription || '--'"
+                ></div>
               </div>
 
               <!-- 可折叠的详细信息 -->
@@ -236,54 +239,42 @@ const projectExpanded = ref(false);
                   class="info-item info-span-2"
                 >
                   <span class="info-label">项目介绍</span>
-                  <span class="info-value text-preline">{{
-                    detail?.project?.introduction
-                  }}</span>
+                  <div class="info-value text-preline" v-html="detail?.project?.introduction"></div>
                 </div>
                 <div
                   v-if="detail?.project?.coreTechnology"
                   class="info-item info-span-2"
                 >
                   <span class="info-label">核心技术</span>
-                  <span class="info-value text-preline">{{
-                    detail?.project?.coreTechnology
-                  }}</span>
+                  <div class="info-value text-preline" v-html="detail?.project?.coreTechnology"></div>
                 </div>
                 <div
                   v-if="detail?.project?.businessModel"
                   class="info-item info-span-2"
                 >
                   <span class="info-label">商业模式</span>
-                  <span class="info-value text-preline">{{
-                    detail?.project?.businessModel
-                  }}</span>
+                  <div class="info-value text-preline" v-html="detail?.project?.businessModel"></div>
                 </div>
                 <div
                   v-if="detail?.project?.teamInfo"
                   class="info-item info-span-2"
                 >
                   <span class="info-label">团队情况</span>
-                  <span class="info-value text-preline">{{
-                    detail?.project?.teamInfo
-                  }}</span>
+                  <div class="info-value text-preline" v-html="detail?.project?.teamInfo"></div>
                 </div>
                 <div
                   v-if="detail?.project?.marketAnalysis"
                   class="info-item info-span-2"
                 >
                   <span class="info-label">市场分析</span>
-                  <span class="info-value text-preline">{{
-                    detail?.project?.marketAnalysis
-                  }}</span>
+                  <div class="info-value text-preline" v-html="detail?.project?.marketAnalysis"></div>
                 </div>
                 <div
                   v-if="detail?.project?.competitiveAdvantage"
                   class="info-item info-span-2"
                 >
                   <span class="info-label">竞争优势</span>
-                  <span class="info-value text-preline">{{
-                    detail?.project?.competitiveAdvantage
-                  }}</span>
+                  <div class="info-value text-preline" v-html="detail?.project?.competitiveAdvantage"></div>
                 </div>
               </template>
             </div>
@@ -332,9 +323,10 @@ const projectExpanded = ref(false);
               </div>
               <div class="info-item info-span-2">
                 <span class="info-label">审核意见</span>
-                <span class="info-value text-preline">{{
-                  detail?.reviewComment || "--"
-                }}</span>
+                <div
+                  class="info-value text-preline"
+                  v-html="detail?.reviewComment || '--'"
+                ></div>
               </div>
             </div>
           </div>
@@ -474,6 +466,35 @@ const projectExpanded = ref(false);
 
 .text-preline {
   white-space: pre-line;
+}
+
+/* v-html 渲染的内容样式 */
+.info-value :deep(p) {
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+.info-value :deep(p + p) {
+  margin-top: 8px;
+}
+
+.info-value :deep(ul),
+.info-value :deep(ol) {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.info-value :deep(li) {
+  margin: 4px 0;
+  line-height: 1.6;
+}
+
+.info-value :deep(h3) {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 12px 0 8px 0;
+  color: var(--el-text-color-primary);
 }
 
 .attachment-item {

@@ -2,7 +2,7 @@ export interface RegistrationQueryParams {
   pageNum?: number | string;
   pageSize?: number | string;
   status?: number | string;
-  teamName?: string;
+  projectStage?: string;
   contactName?: string;
   contactPhone?: string;
 }
@@ -15,7 +15,7 @@ export interface ReviewerSummary {
 export interface RegistrationListItem {
   id: number;
   competitionId: number;
-  teamName?: string;
+  projectStage?: string;
   companyName?: string;
   projectName?: string;
   contactName: string;
@@ -134,7 +134,7 @@ export interface RegistrationDetail {
   id: number;
   competitionId: number;
   competition?: CompetitionSummary | null;
-  teamName?: string;
+  projectStage?: string | null;
   companyName?: string;
   projectName?: string;
   projectDescription?: string | null;
@@ -143,7 +143,12 @@ export interface RegistrationDetail {
   contactName: string;
   contactPhone: string;
   contactEmail?: string | null;
+  wechat: string;
   position?: string | null;
+  policySupport?: number | null;
+  fundingRound?: string | null;
+  fundingNeed?: string | null;
+  establishedDate?: string | null;
   industryName?: string | null;
   status: number;
   reviewComment?: string | null;

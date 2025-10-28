@@ -1,7 +1,19 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStoreHook } from "@/store/modules/user";
+import {
+  getCompetitionStats,
+  getEventStats,
+  getProjectStats,
+  getNewsStats,
+  getMemberSummary,
+  type CompetitionStats,
+  type EventStats,
+  type ProjectStats,
+  type NewsStats,
+  type MemberSummary
+} from "@/api/dashboard";
 
 defineOptions({
   name: "Welcome"
@@ -109,6 +121,56 @@ const features = [
 const handleNavigate = (path: string) => {
   router.push(path);
 };
+
+// 统计数据
+const stats = reactive({
+  competition: null as CompetitionStats | null,
+  event: null as EventStats | null,
+  project: null as ProjectStats | null,
+  news: null as NewsStats | null,
+  member: null as MemberSummary | null,
+  loading: false
+});
+
+// 获取所有统计数据
+const fetchAllStats = async () => {
+  stats.loading = true;
+  try {
+    const [competitionRes, eventRes, projectRes, newsRes, memberRes] =
+      await Promise.all([
+        getCompetitionStats(),
+        getEventStats(),
+        getProjectStats(),
+        getNewsStats(),
+        getMemberSummary()
+      ]);
+
+    if (competitionRes.code === 200) {
+      stats.competition = competitionRes.data;
+    }
+    if (eventRes.code === 200) {
+      stats.event = eventRes.data;
+    }
+    if (projectRes.code === 200) {
+      stats.project = projectRes.data;
+    }
+    if (newsRes.code === 200) {
+      stats.news = newsRes.data;
+    }
+    if (memberRes.code === 200) {
+      stats.member = memberRes.data;
+    }
+  } catch (error) {
+    console.error("获取统计数据失败:", error);
+  } finally {
+    stats.loading = false;
+  }
+};
+
+// 页面加载时获取统计数据
+onMounted(() => {
+  fetchAllStats();
+});
 </script>
 
 <template>
@@ -124,7 +186,7 @@ const handleNavigate = (path: string) => {
         <div class="icon-decoration">
           <IconifyIconOnline
             icon="fa-solid:sun"
-            width="60"
+            width="32"
             class="sun-icon"
           />
         </div>
@@ -135,7 +197,7 @@ const handleNavigate = (path: string) => {
           欢迎使用海创荟管理后台系统
         </p>
         <p class="current-date">
-          <IconifyIconOnline icon="fa-solid:calendar" width="16" class="mr-1" />
+          <IconifyIconOnline icon="fa-solid:calendar" width="14" class="mr-1" />
           {{ currentDate }}
         </p>
       </div>
@@ -153,6 +215,239 @@ const handleNavigate = (path: string) => {
           class="wave-path"
         />
       </svg>
+    </div>
+
+    <!-- 模块数据概览 -->
+    <div
+      v-motion
+      :initial="{ opacity: 0, y: 30 }"
+      :enter="{ opacity: 1, y: 0, transition: { delay: 400, duration: 500 } }"
+      class="stats-section"
+    >
+      <div class="section-title">
+        <div class="section-title-text">模块数据概览</div>
+        <div class="section-subtitle">各业务模块统计数据</div>
+      </div>
+
+      <div v-loading="stats.loading" class="module-stats">
+        <!-- 竞赛模块 -->
+        <div class="module-card">
+          <div class="module-card-header">
+            <div class="module-card-title">
+              <IconifyIconOnline icon="fa-solid:trophy" width="20" class="module-title-icon icon-competition" />
+              创业大赛
+            </div>
+            <a href="javascript:;" class="module-card-action" @click="handleNavigate('/competition/list')">查看详情</a>
+          </div>
+          <div class="module-stats-grid">
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:users" width="18" class="module-stat-icon icon-competition" />
+                <div class="module-stat-label">总报名人数</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.competition?.totalRegistrationCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:eye" width="18" class="module-stat-icon icon-competition" />
+                <div class="module-stat-label">总浏览量</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.competition?.totalViewCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:star" width="18" class="module-stat-icon icon-competition" />
+                <div class="module-stat-label">总收藏数</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.competition?.totalFavoriteCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 活动模块 -->
+        <div class="module-card">
+          <div class="module-card-header">
+            <div class="module-card-title">
+              <IconifyIconOnline icon="fa-solid:calendar-check" width="20" class="module-title-icon icon-event" />
+              创业活动
+            </div>
+            <a href="javascript:;" class="module-card-action" @click="handleNavigate('/event/list')">查看详情</a>
+          </div>
+          <div class="module-stats-grid">
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:users" width="18" class="module-stat-icon icon-event" />
+                <div class="module-stat-label">总报名人数</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.event?.totalRegistrationCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:eye" width="18" class="module-stat-icon icon-event" />
+                <div class="module-stat-label">总浏览量</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.event?.totalViewCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:calendar-alt" width="18" class="module-stat-icon icon-event" />
+                <div class="module-stat-label">本月活动</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.event?.currentMonthEventCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 项目模块 -->
+        <div class="module-card">
+          <div class="module-card-header">
+            <div class="module-card-title">
+              <IconifyIconOnline icon="fa-solid:briefcase" width="20" class="module-title-icon icon-project" />
+              创业项目
+            </div>
+            <a href="javascript:;" class="module-card-action" @click="handleNavigate('/project/list')">查看详情</a>
+          </div>
+          <div class="module-stats-grid">
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:eye" width="18" class="module-stat-icon icon-project" />
+                <div class="module-stat-label">总浏览量</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.project?.totalViewCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:star" width="18" class="module-stat-icon icon-project" />
+                <div class="module-stat-label">总收藏数</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.project?.totalFavoriteCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:chart-bar" width="18" class="module-stat-icon icon-project" />
+                <div class="module-stat-label">项目总数</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.project?.totalProjectCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 资讯模块 -->
+        <div class="module-card">
+          <div class="module-card-header">
+            <div class="module-card-title">
+              <IconifyIconOnline icon="fa-solid:newspaper" width="20" class="module-title-icon icon-news" />
+              资讯管理
+            </div>
+            <a href="javascript:;" class="module-card-action" @click="handleNavigate('/news/list')">查看详情</a>
+          </div>
+          <div class="module-stats-grid">
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:eye" width="18" class="module-stat-icon icon-news" />
+                <div class="module-stat-label">总浏览量</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.news?.totalViewCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:comments" width="18" class="module-stat-icon icon-news" />
+                <div class="module-stat-label">总评论数</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.news?.totalCommentCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:thumbs-up" width="18" class="module-stat-icon icon-news" />
+                <div class="module-stat-label">总点赞数</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.news?.totalLikeCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:star" width="18" class="module-stat-icon icon-news" />
+                <div class="module-stat-label">总收藏数</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.news?.totalFavoriteCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 会员模块 -->
+        <div class="module-card">
+          <div class="module-card-header">
+            <div class="module-card-title">
+              <IconifyIconOnline icon="fa-solid:user-friends" width="20" class="module-title-icon icon-member" />
+              会员管理
+            </div>
+            <a href="javascript:;" class="module-card-action" @click="handleNavigate('/member/list')">查看详情</a>
+          </div>
+          <div class="module-stats-grid">
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:users" width="18" class="module-stat-icon icon-member" />
+                <div class="module-stat-label">总会员数</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.member?.totalCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:calendar-day" width="18" class="module-stat-icon icon-member" />
+                <div class="module-stat-label">今日新增</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.member?.todayCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:calendar-week" width="18" class="module-stat-icon icon-member" />
+                <div class="module-stat-label">本周新增</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.member?.thisWeekCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:chart-line" width="18" class="module-stat-icon icon-member" />
+                <div class="module-stat-label">本月新增</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.member?.thisMonthCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 功能卡片区域 -->
@@ -266,7 +561,7 @@ const handleNavigate = (path: string) => {
 .welcome-container {
   position: relative;
   min-height: calc(100vh - 200px);
-  padding: 40px 20px;
+  padding: 20px;
   overflow: hidden;
 }
 
@@ -275,66 +570,64 @@ const handleNavigate = (path: string) => {
   position: relative;
   z-index: 2;
   text-align: center;
-  margin-bottom: 60px;
-  padding: 60px 20px 80px;
+  margin-bottom: 24px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 20px;
+  border-radius: 12px;
   color: white;
-  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
 }
 
 .greeting-section {
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 
 .icon-decoration {
-  margin-bottom: 20px;
-  animation: float 3s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
 .sun-icon {
-  filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
 }
 
 .greeting-text {
-  font-size: 48px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .welcome-subtitle {
-  font-size: 20px;
-  margin-bottom: 12px;
-  opacity: 0.95;
+  font-size: 14px;
+  margin: 0 0 0 12px;
+  opacity: 0.9;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .current-date {
   display: inline-flex;
   align-items: center;
-  font-size: 16px;
-  opacity: 0.9;
-  padding: 8px 20px;
+  font-size: 13px;
+  opacity: 0.85;
+  padding: 4px 12px;
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
+  border-radius: 12px;
   backdrop-filter: blur(10px);
+  margin-left: 12px;
 }
 
 /* 波浪装饰 */
 .wave-decoration {
   position: absolute;
-  top: 280px;
+  top: 164px;
   left: 0;
   width: 100%;
   overflow: hidden;
@@ -346,11 +639,11 @@ const handleNavigate = (path: string) => {
   position: relative;
   display: block;
   width: calc(100% + 1.3px);
-  height: 80px;
+  height: 40px;
 }
 
 .wave-path {
-  fill: rgba(102, 126, 234, 0.1);
+  fill: rgba(102, 126, 234, 0.06);
 }
 
 /* 功能卡片区域 */
@@ -571,13 +864,44 @@ const handleNavigate = (path: string) => {
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
-  .greeting-text {
-    font-size: 32px;
+@media (max-width: 1024px) {
+  .greeting-section {
+    flex-wrap: wrap;
+    gap: 12px;
   }
 
   .welcome-subtitle {
-    font-size: 16px;
+    border-left: none;
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  .current-date {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome-header {
+    height: auto;
+    padding: 20px;
+  }
+
+  .greeting-section {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .greeting-text {
+    font-size: 20px;
+  }
+
+  .welcome-subtitle {
+    font-size: 13px;
+  }
+
+  .current-date {
+    font-size: 12px;
   }
 
   .info-content {
@@ -593,6 +917,197 @@ const handleNavigate = (path: string) => {
   .feature-card {
     margin-bottom: 15px;
   }
+}
+
+/* 模块数据概览区域 */
+.stats-section {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 40px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-title-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303133;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &::before {
+    content: "";
+    width: 4px;
+    height: 18px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+  }
+}
+
+.section-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.module-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(560px, 1fr));
+  gap: 20px;
+}
+
+.module-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+  }
+}
+
+.module-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.module-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #1f2937;
+}
+
+.module-title-icon {
+  flex-shrink: 0;
+}
+
+.module-title-icon.icon-competition {
+  color: #409eff;
+}
+.module-title-icon.icon-event {
+  color: #ff9800;
+}
+.module-title-icon.icon-project {
+  color: #67c23a;
+}
+.module-title-icon.icon-news {
+  color: #e91e63;
+}
+.module-title-icon.icon-member {
+  color: #e6a23c;
+}
+
+.module-card-action {
+  font-size: 13px;
+  color: #667eea;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+
+  &::after {
+    content: "→";
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    color: #764ba2;
+
+    &::after {
+      transform: translateX(3px);
+    }
+  }
+}
+
+.module-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.module-stat-item {
+  padding: 16px 14px;
+  background: #fafbfc;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  border: 1px solid #f0f1f2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 92px;
+
+  &:hover {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+    border-color: #d1d5db;
+  }
+}
+
+.module-stat-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.module-stat-icon {
+  flex-shrink: 0;
+}
+
+.module-stat-icon.icon-competition {
+  color: #409eff;
+}
+.module-stat-icon.icon-event {
+  color: #ff9800;
+}
+.module-stat-icon.icon-project {
+  color: #67c23a;
+}
+.module-stat-icon.icon-news {
+  color: #e91e63;
+}
+.module-stat-icon.icon-member {
+  color: #e6a23c;
+}
+
+.module-stat-label {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.module-stat-content {
+  width: 100%;
+}
+
+.module-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.2;
+  margin-top: 8px;
 }
 
 /* 暗色模式适配 */
@@ -612,6 +1127,28 @@ html.dark {
     .info-value {
       color: #f5f5f5;
     }
+  }
+
+  .section-title-text {
+    color: #f5f5f5;
+  }
+
+  .module-card {
+    background: #1d1e1f;
+    border-color: #2c2d2e;
+
+    .module-card-title {
+      color: #f5f5f5;
+    }
+  }
+
+  .module-stat-item {
+    background: #1d1e1f;
+    border-color: #2c2d2e;
+  }
+
+  .module-stat-value {
+    color: #f5f5f5;
   }
 }
 </style>

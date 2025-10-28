@@ -3,14 +3,14 @@ import { REGISTRATION_STATUS_MAP } from "../types/types";
 
 type FormModel = {
   status: string | number | "";
-  teamName: string;
+  projectStage: string;
   contactName: string;
   contactPhone: string;
 };
 
 const INITIAL_FORM: FormModel = {
   status: "",
-  teamName: "",
+  projectStage: "",
   contactName: "",
   contactPhone: ""
 };

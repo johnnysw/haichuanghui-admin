@@ -49,15 +49,27 @@
           <template #title>
             <div class="flex items-center gap-2">
               <span class="text-base font-semibold">会员统计</span>
-              <el-tag size="small" type="info">{{ statsGranularity === 'daily' ? '每日' : statsGranularity === 'weekly' ? '每周' : '每月' }}</el-tag>
             </div>
           </template>
 
-          <div class="stats-controls mb-4">
-            <div class="flex items-center gap-4 flex-wrap">
+          <!-- 第一行：总会员数卡片 + 统计控制区域 -->
+          <div class="stats-header">
+            <!-- 左侧：总会员数卡片 -->
+            <div class="total-members-card">
+              <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+                <IconifyIconOffline :icon="User" style="color: #fff; font-size: 28px" />
+              </div>
+              <div class="stat-content">
+                <div class="stat-label">总会员数</div>
+                <div class="stat-value">{{ totalMembers.toLocaleString() }}</div>
+              </div>
+            </div>
+
+            <!-- 右侧：统计控制区域 -->
+            <div class="stats-controls">
               <!-- 粒度选择 -->
-              <div class="flex items-center gap-2">
-                <span class="text-sm text-gray-600">统计粒度:</span>
+              <div class="control-group">
+                <label class="control-label">统计粒度</label>
                 <el-radio-group v-model="statsGranularity" size="default" @change="onGranularityChange">
                   <el-radio-button label="daily">每日</el-radio-button>
                   <el-radio-button label="weekly">每周</el-radio-button>
@@ -66,8 +78,8 @@
               </div>
 
               <!-- 日期范围选择 -->
-              <div class="flex items-center gap-2">
-                <span class="text-sm text-gray-600">日期范围:</span>
+              <div class="control-group">
+                <label class="control-label">日期范围</label>
                 <el-date-picker
                   v-model="statsDateRange"
                   :type="statsDatePickerType"
@@ -76,57 +88,25 @@
                   end-placeholder="结束日期"
                   :shortcuts="statsShortcuts"
                   format="YYYY-MM-DD"
-                  class="!w-[260px]"
+                  class="!w-full"
                 />
               </div>
 
               <!-- 查询按钮 -->
-              <el-button type="primary" :loading="statsLoading" @click="fetchMemberStats">
-                查询统计
-              </el-button>
-            </div>
-          </div>
-
-          <!-- 统计卡片 -->
-          <div class="stats-summary">
-            <div class="stat-item">
-              <div class="stat-icon" style="background: #409eff20">
-                <IconifyIconOffline :icon="User" style="color: #409eff" />
-              </div>
-              <div class="stat-content">
-                <div class="stat-label">总新增会员</div>
-                <div class="stat-value">{{ statsSummary.total.toLocaleString() }}</div>
-              </div>
-            </div>
-
-            <div class="stat-item">
-              <div class="stat-icon" style="background: #67c23a20">
-                <IconifyIconOffline :icon="DataAnalysis" style="color: #67c23a" />
-              </div>
-              <div class="stat-content">
-                <div class="stat-label">单期平均</div>
-                <div class="stat-value">{{ statsSummary.avg.toLocaleString() }}</div>
-              </div>
-            </div>
-
-            <div class="stat-item">
-              <div class="stat-icon" style="background: #f56c6c20">
-                <IconifyIconOffline :icon="Trophy" style="color: #f56c6c" />
-              </div>
-              <div class="stat-content">
-                <div class="stat-label">峰值期</div>
-                <div class="stat-value">{{ statsSummary.peak.count.toLocaleString() }}</div>
-                <div class="stat-extra">{{ statsSummary.peak.label || statsSummary.peak.period }}</div>
+              <div class="control-group">
+                <el-button type="primary" :loading="statsLoading" @click="fetchMemberStats" class="w-full">
+                  查询统计
+                </el-button>
               </div>
             </div>
           </div>
 
-          <!-- 数据展示 -->
-          <div v-if="statsSeries.length > 0" class="stats-display mt-4">
+          <!-- 第二行：数据展示表格 -->
+          <div v-if="statsSeries.length > 0" class="stats-display">
             <el-table
               :data="statsSeries"
               style="width: 100%"
-              max-height="400"
+              max-height="300"
               :header-cell-style="{
                 background: 'var(--el-fill-color-light)',
                 color: 'var(--el-text-color-primary)'
@@ -226,11 +206,11 @@ import { IconifyIconOffline } from "@/components/ReIcon";
 import { useMemberTable } from "./composables/useMemberTable";
 import { useMemberDetail } from "./composables/useMemberDetail";
 import { useMemberStats } from "./composables/useMemberStats";
+import { getTotalMemberCount } from "./api/index";
 import MemberDrawer from "./components/MemberDrawer.vue";
 import View from "@iconify-icons/ep/view";
 import User from "@iconify-icons/ep/user";
-import DataAnalysis from "@iconify-icons/ep/data-analysis";
-import Trophy from "@iconify-icons/ep/trophy";
+import { ElMessage } from "element-plus";
 
 defineOptions({ name: "MemberList" });
 
@@ -269,12 +249,27 @@ const {
   dateRange: statsDateRange,
   loading: statsLoading,
   series: statsSeries,
-  summary: statsSummary,
   datePickerType: statsDatePickerType,
   shortcuts: statsShortcuts,
   onGranularityChange,
   fetchMemberStats
 } = useMemberStats();
+
+// 总会员数
+const totalMembers = ref(0);
+
+// 获取总会员数
+const fetchTotalMembers = async () => {
+  try {
+    const res = await getTotalMemberCount();
+    if (res.code === 200) {
+      totalMembers.value = res.data.total || 0;
+    }
+  } catch (error) {
+    console.error("获取总会员数失败:", error);
+    ElMessage.error("获取总会员数失败");
+  }
+};
 
 // 折叠面板控制（默认展开）
 const statsCollapseActive = ref(["stats"]);
@@ -286,6 +281,7 @@ const openDetail = (row) => {
 
 // 页面加载时获取统计数据
 onMounted(() => {
+  fetchTotalMembers();
   fetchMemberStats();
 });
 </script>
@@ -332,60 +328,91 @@ onMounted(() => {
       padding-bottom: 0;
     }
 
-    .stats-controls {
-      .flex {
-        align-items: center;
+    // 第一行：总会员数卡片 + 统计控制区域
+    .stats-header {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+
+      @media (max-width: 1200px) {
+        grid-template-columns: 1fr;
       }
     }
 
-    .stats-summary {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    // 总会员数卡片
+    .total-members-card {
+      display: flex;
+      align-items: center;
       gap: 16px;
-      margin-bottom: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 12px;
 
-      .stat-item {
+      .stat-icon {
+        width: 56px;
+        height: 56px;
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 16px;
-        background: var(--el-fill-color-lighter);
-        border-radius: 8px;
+        justify-content: center;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+        flex-shrink: 0;
+      }
 
-        .stat-icon {
-          width: 48px;
-          height: 48px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 8px;
-          font-size: 24px;
+      .stat-content {
+        flex: 1;
+        min-width: 0;
+
+        .stat-label {
+          font-size: 13px;
+          color: var(--el-text-color-secondary);
+          margin-bottom: 6px;
+          font-weight: 500;
         }
 
-        .stat-content {
-          flex: 1;
-
-          .stat-label {
-            font-size: 13px;
-            color: var(--el-text-color-secondary);
-            margin-bottom: 4px;
-          }
-
-          .stat-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--el-text-color-primary);
-          }
-
-          .stat-extra {
-            font-size: 12px;
-            color: var(--el-text-color-secondary);
-            margin-top: 2px;
-          }
+        .stat-value {
+          font-size: 28px;
+          font-weight: 700;
+          color: var(--el-text-color-primary);
+          line-height: 1.2;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
       }
     }
 
+    // 统计控制区域
+    .stats-controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding: 20px;
+      background: var(--el-fill-color-lighter);
+      border-radius: 12px;
+      align-items: end;
+
+      @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+      }
+
+      .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .control-label {
+          font-size: 13px;
+          color: var(--el-text-color-secondary);
+          font-weight: 500;
+        }
+      }
+    }
+
+    // 第二行：数据展示表格
     .stats-display {
       border-top: 1px solid var(--el-border-color-lighter);
       padding-top: 16px;
