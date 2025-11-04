@@ -96,6 +96,31 @@
       </el-form>
     </el-card>
 
+    <!-- 统计区域 -->
+    <div class="stats-card">
+      <div class="stat-item">
+        <div class="stat-header">
+          <IconifyIconOffline :icon="DataAnalysis" class="stat-icon icon-total" />
+          <span class="stat-title">投资人总数</span>
+        </div>
+        <span class="stat-value">{{ stats.totalCount.toLocaleString() }}</span>
+      </div>
+      <div class="stat-item">
+        <div class="stat-header">
+          <IconifyIconOffline :icon="Clock" class="stat-icon icon-pending" />
+          <span class="stat-title">待审核数</span>
+        </div>
+        <span class="stat-value">{{ stats.pendingReviewCount.toLocaleString() }}</span>
+      </div>
+      <div class="stat-item">
+        <div class="stat-header">
+          <IconifyIconOffline :icon="TrendCharts" class="stat-icon icon-growth" />
+          <span class="stat-title">月增长数</span>
+        </div>
+        <span class="stat-value">{{ stats.monthlyGrowth.toLocaleString() }}</span>
+      </div>
+    </div>
+
     <div
       ref="contentRef"
       :class="['grid', 'grid-cols-1', 'md:grid-cols-12', 'gap-2', 'w-full']"
@@ -169,9 +194,13 @@
 import { ref } from "vue";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { IconifyIconOffline } from "@/components/ReIcon";
 import { useInvestorTable } from "./composables/useInvestorTable";
 
 import View from "@iconify-icons/ep/view";
+import DataAnalysis from "@iconify-icons/ep/data-analysis";
+import Clock from "@iconify-icons/ep/clock";
+import TrendCharts from "@iconify-icons/ep/trend-charts";
 
 defineOptions({ name: "InvestorList" });
 
@@ -190,6 +219,7 @@ const {
   columns,
   pagination,
   isShow,
+  stats,
   handleSearch,
   handleReset,
   handleFilterChange,
@@ -206,6 +236,56 @@ const {
   .box-card {
     :deep(.el-card__body) {
       padding: 16px;
+    }
+  }
+}
+
+.stats-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 16px 0 20px;
+
+  .stat-item {
+    background: var(--el-fill-color-lighter);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .stat-icon {
+        font-size: 18px;
+
+        &.icon-total {
+          color: #409eff;
+        }
+
+        &.icon-pending {
+          color: #e6a23c;
+        }
+
+        &.icon-growth {
+          color: #67c23a;
+        }
+      }
+
+      .stat-title {
+        font-size: 12px;
+        color: var(--el-text-color-secondary);
+      }
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--el-text-color-primary);
+      margin-left: 26px;
     }
   }
 }

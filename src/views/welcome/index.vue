@@ -8,11 +8,13 @@ import {
   getProjectStats,
   getNewsStats,
   getMemberSummary,
+  getInvestorStats,
   type CompetitionStats,
   type EventStats,
   type ProjectStats,
   type NewsStats,
-  type MemberSummary
+  type MemberSummary,
+  type InvestorStats
 } from "@/api/dashboard";
 
 defineOptions({
@@ -129,6 +131,7 @@ const stats = reactive({
   project: null as ProjectStats | null,
   news: null as NewsStats | null,
   member: null as MemberSummary | null,
+  investor: null as InvestorStats | null,
   loading: false
 });
 
@@ -136,13 +139,14 @@ const stats = reactive({
 const fetchAllStats = async () => {
   stats.loading = true;
   try {
-    const [competitionRes, eventRes, projectRes, newsRes, memberRes] =
+    const [competitionRes, eventRes, projectRes, newsRes, memberRes, investorRes] =
       await Promise.all([
         getCompetitionStats(),
         getEventStats(),
         getProjectStats(),
         getNewsStats(),
-        getMemberSummary()
+        getMemberSummary(),
+        getInvestorStats()
       ]);
 
     if (competitionRes.code === 200) {
@@ -159,6 +163,9 @@ const fetchAllStats = async () => {
     }
     if (memberRes.code === 200) {
       stats.member = memberRes.data;
+    }
+    if (investorRes.code === 200) {
+      stats.investor = investorRes.data;
     }
   } catch (error) {
     console.error("获取统计数据失败:", error);
@@ -347,6 +354,15 @@ onMounted(() => {
                 <div class="module-stat-value">{{ stats.project?.totalProjectCount?.toLocaleString() || 0 }}</div>
               </div>
             </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:clock" width="18" class="module-stat-icon icon-project" />
+                <div class="module-stat-label">待审核项目</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.project?.pendingReviewCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -394,6 +410,37 @@ onMounted(() => {
               </div>
               <div class="module-stat-content">
                 <div class="module-stat-value">{{ stats.news?.totalFavoriteCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 投资人模块 -->
+        <div class="module-card">
+          <div class="module-card-header">
+            <div class="module-card-title">
+              <IconifyIconOnline icon="fa-solid:coins" width="20" class="module-title-icon icon-investor" />
+              投资人
+            </div>
+            <a href="javascript:;" class="module-card-action" @click="handleNavigate('/investor/list')">查看详情</a>
+          </div>
+          <div class="module-stats-grid">
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:users" width="18" class="module-stat-icon icon-investor" />
+                <div class="module-stat-label">总投资人数</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.investor?.totalInvestorCount?.toLocaleString() || 0 }}</div>
+              </div>
+            </div>
+            <div class="module-stat-item">
+              <div class="module-stat-header">
+                <IconifyIconOnline icon="fa-solid:clock" width="18" class="module-stat-icon icon-investor" />
+                <div class="module-stat-label">待审核数</div>
+              </div>
+              <div class="module-stat-content">
+                <div class="module-stat-value">{{ stats.investor?.pendingReviewCount?.toLocaleString() || 0 }}</div>
               </div>
             </div>
           </div>
@@ -1013,6 +1060,9 @@ onMounted(() => {
 .module-title-icon.icon-member {
   color: #e6a23c;
 }
+.module-title-icon.icon-investor {
+  color: #f56c6c;
+}
 
 .module-card-action {
   font-size: 13px;
@@ -1090,6 +1140,9 @@ onMounted(() => {
 }
 .module-stat-icon.icon-member {
   color: #e6a23c;
+}
+.module-stat-icon.icon-investor {
+  color: #f56c6c;
 }
 
 .module-stat-label {

@@ -1,7 +1,7 @@
 import { ref, reactive, computed, h, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage, ElAvatar, ElTag, ElLink } from "element-plus";
-import { getInvestorList } from "../api";
+import { getInvestorList, getInvestorStats } from "../api";
 import { useInvestorFilter } from "./useInvestorFilter";
 import { useInvestorActions } from "./useInvestorActions";
 import type {
@@ -18,6 +18,13 @@ export function useInvestorTable() {
   const investorList = ref<InvestorInfo[]>([]);
   const total = ref(0);
   const selectedRows = ref<InvestorInfo[]>([]);
+
+  // 统计数据
+  const stats = reactive({
+    totalCount: 0,
+    pendingReviewCount: 0,
+    monthlyGrowth: 0
+  });
 
   // 使用筛选器
   const {
@@ -38,6 +45,20 @@ export function useInvestorTable() {
     background: true,
     pageSizes: [10, 20, 50, 100]
   });
+
+  // 刷新统计数据
+  async function refreshStats() {
+    try {
+      const result = await getInvestorStats();
+      if (result.code === 200) {
+        stats.totalCount = result.data.totalInvestorCount ?? 0;
+        stats.pendingReviewCount = result.data.pendingReviewCount ?? 0;
+        stats.monthlyGrowth = result.data.monthlyGrowth ?? 0;
+      }
+    } catch (error) {
+      console.error("获取投资人统计信息失败:", error);
+    }
+  }
 
   // 获取投资人数据
   const getInvestorData = async () => {
@@ -73,6 +94,8 @@ export function useInvestorTable() {
     } finally {
       loading.value = false;
     }
+    // 同时刷新统计数据
+    refreshStats();
   };
 
   // 使用操作函数
@@ -336,6 +359,7 @@ export function useInvestorTable() {
   // 组件挂载时获取数据
   onMounted(() => {
     getInvestorData();
+    refreshStats();
   });
 
   const isShow = ref(false);
@@ -354,6 +378,7 @@ export function useInvestorTable() {
     columns,
     pagination,
     isShow,
+    stats,
     handleSearch,
     handleReset,
     handleFilterChange,

@@ -90,3 +90,17 @@ export const getInvestorTypeList = (): Promise<Response<BaseOption[]>> => {
     ]
   } as Response<BaseOption[]>);
 };
+
+/**
+ * 获取投资人统计信息
+ */
+export const getInvestorStats = () => {
+  return http.request<Response<{
+    totalInvestorCount: number;
+    pendingReviewCount: number;
+    monthlyGrowth: number;
+  }>>(
+    "get",
+    "/api/v1/admin/investors/stats"
+  );
+};

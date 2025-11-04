@@ -24,6 +24,7 @@ export interface ProjectStats {
   totalViewCount: number;
   totalFavoriteCount: number;
   totalProjectCount: number;
+  pendingReviewCount: number;
 }
 
 // 资讯统计
@@ -40,6 +41,12 @@ export interface MemberSummary {
   todayCount: number;
   thisWeekCount: number;
   thisMonthCount: number;
+}
+
+// 投资人统计
+export interface InvestorStats {
+  totalInvestorCount: number;
+  pendingReviewCount: number;
 }
 
 /**
@@ -86,6 +93,16 @@ export const getMemberSummary = () => {
   return http.request<Response<MemberSummary>>(
     "get",
     "/api/v1/admin/members/summary"
+  );
+};
+
+/**
+ * 获取投资人统计数据
+ */
+export const getInvestorStats = () => {
+  return http.request<Response<InvestorStats>>(
+    "get",
+    "/api/v1/admin/investors/stats"
   );
 };
 
