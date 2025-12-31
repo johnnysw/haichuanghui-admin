@@ -16,8 +16,7 @@ export function useRequestTable() {
   const total = ref(0)
 
   // 使用筛选器
-  const { filterForm, formRef, dateRange, typeOptions, statusOptions, resetForm } =
-    useRequestFilter()
+  const { filterForm, formRef, dateRange, statusOptions, resetForm } = useRequestFilter()
 
   // 分页配置
   const pagination = reactive<PaginationProps>({
@@ -36,7 +35,6 @@ export function useRequestTable() {
         page: pagination.currentPage,
         limit: pagination.pageSize,
         search: filterForm.search || undefined,
-        type: filterForm.type || undefined,
         status:
           filterForm.status !== undefined && filterForm.status !== ''
             ? filterForm.status
@@ -85,7 +83,6 @@ export function useRequestTable() {
   const handleReset = () => {
     resetForm(formRef.value)
     filterForm.search = ''
-    filterForm.type = ''
     filterForm.status = ''
     filterForm.startDate = ''
     filterForm.endDate = ''
@@ -330,7 +327,6 @@ export function useRequestTable() {
     loading,
     requestList,
     total,
-    typeOptions,
     statusOptions,
     columns,
     pagination,

@@ -18,23 +18,6 @@
           />
         </el-form-item>
 
-        <el-form-item label="请求类型：" prop="type">
-          <el-select
-            v-model="filterForm.type"
-            placeholder="请选择类型"
-            clearable
-            class="!w-[140px]"
-            @change="handleFilterChange"
-          >
-            <el-option
-              v-for="option in typeOptions"
-              :key="option.value"
-              :label="option.label"
-              :value="option.value"
-            />
-          </el-select>
-        </el-form-item>
-
         <el-form-item label="状态：" prop="status">
           <el-select
             v-model="filterForm.status"
@@ -134,7 +117,6 @@ const {
   dateRange,
   loading,
   requestList,
-  typeOptions,
   statusOptions,
   columns,
   pagination,

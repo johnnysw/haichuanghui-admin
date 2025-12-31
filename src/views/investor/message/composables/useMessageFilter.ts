@@ -1,27 +1,18 @@
 import { reactive, ref } from 'vue'
-import type { RequestQueryParams } from '../types/types'
+import type { MessageQueryParams } from '../types/types'
 
-export function useRequestFilter() {
-  const filterForm = reactive<RequestQueryParams>({
+export function useMessageFilter() {
+  const filterForm = reactive<MessageQueryParams>({
     page: 1,
     limit: 10,
     search: '',
-    status: '', // 状态
     startDate: '',
     endDate: ''
   })
 
   const formRef = ref()
 
-  // 日期范围（用于 el-date-picker）
   const dateRange = ref<[Date, Date] | null>(null)
-
-  // 状态选项
-  const statusOptions = [
-    { label: '全部', value: '' },
-    { label: '待查看', value: 0 },
-    { label: '已查看', value: 1 }
-  ]
 
   const resetForm = formEl => {
     if (!formEl) return
@@ -35,8 +26,6 @@ export function useRequestFilter() {
     filterForm,
     formRef,
     dateRange,
-    statusOptions,
     resetForm
   }
 }
-

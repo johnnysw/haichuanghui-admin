@@ -56,7 +56,6 @@ export interface InvestorRequestItem {
 
 // 查询参数
 export interface RequestQueryParams extends PaginationQuery {
-  type?: string // 请求类型筛选
   investorId?: number // 投资人筛选
   startDate?: string // 开始日期
   endDate?: string // 结束日期
