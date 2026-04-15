@@ -14,6 +14,7 @@ const {
   submitLoading,
   uploading,
   qrPreview,
+  qrPreview2,
   handleSubmit,
   handleReset,
   handleUploadQr,
@@ -35,6 +36,7 @@ const handleRegister = (instance: FormInstance) => {
       :submit-loading="submitLoading"
       :uploading="uploading"
       :qr-preview="qrPreview"
+      :qr-preview2="qrPreview2"
       @submit="handleSubmit"
       @reset="handleReset"
       @upload="handleUploadQr"

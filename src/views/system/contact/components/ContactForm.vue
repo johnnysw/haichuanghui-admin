@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, ref, toRef, watch } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import type { UploadRequestOptions } from "element-plus";
 import type { ContactFormModel } from "../types/types";
@@ -11,15 +11,21 @@ interface Props {
   submitLoading: boolean;
   uploading: boolean;
   qrPreview: string;
+  qrPreview2: string;
 }
 
 const props = defineProps<Props>();
+const formModel = toRef(props, "formModel");
 
 const emit = defineEmits<{
   (e: "submit"): void;
   (e: "reset"): void;
-  (e: "upload", options: UploadRequestOptions): void;
-  (e: "remove"): void;
+  (
+    e: "upload",
+    field: "wechatQr" | "wechatQr2",
+    options: UploadRequestOptions
+  ): void;
+  (e: "remove", field: "wechatQr" | "wechatQr2"): void;
   (e: "register", instance: FormInstance): void;
 }>();
 
@@ -33,28 +39,32 @@ watch(
   { immediate: true }
 );
 
-const hasQrImage = computed(() => Boolean(props.formModel.wechatQr));
+const hasQrImage = computed(() => Boolean(formModel.value.wechatQr));
+const hasQrImage2 = computed(() => Boolean(formModel.value.wechatQr2));
 
 const handleSubmit = () => emit("submit");
 const handleReset = () => emit("reset");
-const handleUpload = (options: UploadRequestOptions) => {
-  emit("upload", options);
+const handleUpload = (
+  field: "wechatQr" | "wechatQr2",
+  options: UploadRequestOptions
+) => {
+  emit("upload", field, options);
   return Promise.resolve();
 };
-const handleRemove = () => emit("remove");
+const handleRemove = (field: "wechatQr" | "wechatQr2") => emit("remove", field);
 
 const addQuickLink = () => {
-  props.formModel.quickLinks.push({ name: "", url: "" });
+  formModel.value.quickLinks.push({ name: "", url: "" });
   nextTick(() => formRef.value?.validateField?.("quickLinks"));
 };
 
 const removeQuickLink = (index: number) => {
-  props.formModel.quickLinks.splice(index, 1);
+  formModel.value.quickLinks.splice(index, 1);
   nextTick(() => formRef.value?.validateField?.("quickLinks"));
 };
 
 watch(
-  () => props.formModel.quickLinks,
+  () => formModel.value.quickLinks,
   () => {
     formRef.value?.validateField?.("quickLinks");
   },
@@ -238,48 +248,100 @@ watch(
           <el-row>
             <el-col :span="24">
               <el-form-item prop="wechatQr">
-                <div class="qr-upload-wrapper">
-                  <div class="upload-actions">
-                    <el-upload
-                      class="qr-uploader"
-                      accept="image/jpeg,image/png,image/gif"
-                      :show-file-list="false"
-                      :http-request="handleUpload"
-                      :disabled="uploading"
-                    >
-                      <el-button type="primary" :loading="uploading">
-                        <i class="ri-upload-cloud-line" />
-                        {{ hasQrImage ? "重新上传" : "上传二维码" }}
+                <div class="qr-grid">
+                  <div class="qr-upload-wrapper">
+                    <div class="qr-label">二维码 1</div>
+                    <div class="upload-actions">
+                      <el-upload
+                        class="qr-uploader"
+                        accept="image/jpeg,image/png,image/gif"
+                        :show-file-list="false"
+                        :http-request="
+                          options => handleUpload('wechatQr', options)
+                        "
+                        :disabled="uploading"
+                      >
+                        <el-button type="primary" :loading="uploading">
+                          <i class="ri-upload-cloud-line" />
+                          {{ hasQrImage ? "重新上传" : "上传二维码" }}
+                        </el-button>
+                      </el-upload>
+                      <el-button
+                        v-if="hasQrImage"
+                        type="danger"
+                        link
+                        @click="handleRemove('wechatQr')"
+                      >
+                        <i class="ri-delete-bin-line" />
+                        移除图片
                       </el-button>
-                    </el-upload>
-                    <el-button
-                      v-if="hasQrImage"
-                      type="danger"
-                      link
-                      @click="handleRemove"
-                    >
-                      <i class="ri-delete-bin-line" />
-                      移除图片
-                    </el-button>
+                    </div>
+                    <div class="form-tip">
+                      <i class="ri-information-line" />
+                      支持 JPG/PNG/GIF 格式，推荐尺寸 300×300 像素以上
+                    </div>
+                    <div v-if="hasQrImage" class="qr-preview-wrapper">
+                      <el-image
+                        :src="qrPreview"
+                        class="qr-preview"
+                        fit="contain"
+                        :preview-src-list="[qrPreview]"
+                      >
+                        <template #error>
+                          <div class="image-error">
+                            <i class="ri-image-line" />
+                            <span>加载失败</span>
+                          </div>
+                        </template>
+                      </el-image>
+                    </div>
                   </div>
-                  <div class="form-tip">
-                    <i class="ri-information-line" />
-                    支持 JPG/PNG/GIF 格式，推荐尺寸 300×300 像素以上
-                  </div>
-                  <div v-if="hasQrImage" class="qr-preview-wrapper">
-                    <el-image
-                      :src="qrPreview"
-                      class="qr-preview"
-                      fit="contain"
-                      :preview-src-list="[qrPreview]"
-                    >
-                      <template #error>
-                        <div class="image-error">
-                          <i class="ri-image-line" />
-                          <span>加载失败</span>
-                        </div>
-                      </template>
-                    </el-image>
+                  <div class="qr-upload-wrapper">
+                    <div class="qr-label">二维码 2</div>
+                    <div class="upload-actions">
+                      <el-upload
+                        class="qr-uploader"
+                        accept="image/jpeg,image/png,image/gif"
+                        :show-file-list="false"
+                        :http-request="
+                          options => handleUpload('wechatQr2', options)
+                        "
+                        :disabled="uploading"
+                      >
+                        <el-button type="primary" :loading="uploading">
+                          <i class="ri-upload-cloud-line" />
+                          {{ hasQrImage2 ? "重新上传" : "上传二维码" }}
+                        </el-button>
+                      </el-upload>
+                      <el-button
+                        v-if="hasQrImage2"
+                        type="danger"
+                        link
+                        @click="handleRemove('wechatQr2')"
+                      >
+                        <i class="ri-delete-bin-line" />
+                        移除图片
+                      </el-button>
+                    </div>
+                    <div class="form-tip">
+                      <i class="ri-information-line" />
+                      支持 JPG/PNG/GIF 格式，推荐尺寸 300×300 像素以上
+                    </div>
+                    <div v-if="hasQrImage2" class="qr-preview-wrapper">
+                      <el-image
+                        :src="qrPreview2"
+                        class="qr-preview"
+                        fit="contain"
+                        :preview-src-list="[qrPreview2]"
+                      >
+                        <template #error>
+                          <div class="image-error">
+                            <i class="ri-image-line" />
+                            <span>加载失败</span>
+                          </div>
+                        </template>
+                      </el-image>
+                    </div>
                   </div>
                 </div>
               </el-form-item>
@@ -447,6 +509,19 @@ watch(
   width: 100%;
 }
 
+.qr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.qr-label {
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+}
+
 .upload-actions {
   display: flex;
   align-items: center;
@@ -542,6 +617,11 @@ watch(
   .qr-preview {
     width: 150px;
     height: 150px;
+  }
+
+  .qr-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .form-actions {

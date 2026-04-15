@@ -12,6 +12,7 @@ export interface ContactFormModel {
   address: string;
   about: string;
   wechatQr: string | null;
+  wechatQr2: string | null;
   quickLinks: QuickLinkItem[];
 }
 
@@ -24,7 +25,7 @@ export interface ContactInfo extends ContactFormModel {
   updatedTime?: string;
 }
 
-export interface UpdateContactPayload extends Partial<ContactFormModel> {}
+export type UpdateContactPayload = Partial<ContactFormModel>;
 
 export const defaultContactForm: ContactFormModel = {
   phone: "",
@@ -33,5 +34,6 @@ export const defaultContactForm: ContactFormModel = {
   address: "",
   about: "",
   wechatQr: null,
+  wechatQr2: null,
   quickLinks: []
 };

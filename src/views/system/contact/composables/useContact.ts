@@ -16,6 +16,9 @@ import {
   type ContactInfo
 } from "../types/types";
 
+type QrField = "wechatQr" | "wechatQr2";
+type UploadError = Parameters<NonNullable<UploadRequestOptions["onError"]>>[0];
+
 /** 邮箱校验正则 */
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -34,6 +37,11 @@ export const useContact = () => {
   const qrPreview = computed(() => {
     if (!formModel.wechatQr) return "";
     return getFullImageUrl(formModel.wechatQr);
+  });
+
+  const qrPreview2 = computed(() => {
+    if (!formModel.wechatQr2) return "";
+    return getFullImageUrl(formModel.wechatQr2);
   });
 
   /** 表单规则（全部为可选字段，只做长度与格式校验） */
@@ -178,6 +186,7 @@ export const useContact = () => {
       address: data?.address ?? "",
       about: data?.about ?? "",
       wechatQr: data?.wechatQr ?? null,
+      wechatQr2: data?.wechatQr2 ?? null,
       quickLinks: normalizeQuickLinks(data?.quickLinks)
     };
 
@@ -212,34 +221,39 @@ export const useContact = () => {
   /**
    * 自定义上传处理（上传微信二维码图片）
    */
-  const handleUploadQr = async (options: UploadRequestOptions) => {
+  const handleUploadQr = async (
+    field: QrField,
+    options: UploadRequestOptions
+  ) => {
     const file = options.file as File;
+    const createUploadError = (errorMsg: string) =>
+      new Error(errorMsg) as UploadError;
     uploading.value = true;
 
     try {
       const res: Response<FileUploadResult> = await uploadImage(file, "system");
       if (res.code === 200 && res.data?.url) {
-        formModel.wechatQr = res.data.url;
+        formModel[field] = res.data.url;
         message(res.message || "上传成功", { type: "success" });
-        options.onSuccess?.(res, file);
+        options.onSuccess?.(res);
       } else {
         const errMsg = res.message || "上传失败";
         message(errMsg, { type: "error" });
-        options.onError?.(new Error(errMsg));
+        options.onError?.(createUploadError(errMsg));
       }
     } catch (error: any) {
       const errorMsg =
         error?.response?.data?.message || error?.message || "上传失败";
       message(errorMsg, { type: "error" });
-      options.onError?.(new Error(errorMsg));
+      options.onError?.(createUploadError(errorMsg));
     } finally {
       uploading.value = false;
     }
   };
 
   /** 清除二维码图片 */
-  const handleRemoveQr = () => {
-    formModel.wechatQr = null;
+  const handleRemoveQr = (field: QrField) => {
+    formModel[field] = null;
     message("已移除二维码图片", { type: "info" });
   };
 
@@ -266,6 +280,7 @@ export const useContact = () => {
       address: formModel.address.trim(),
       about: formModel.about.trim(),
       wechatQr: formModel.wechatQr,
+      wechatQr2: formModel.wechatQr2,
       quickLinks: formModel.quickLinks
         .map(item => ({
           name: item.name.trim(),
@@ -306,6 +321,7 @@ export const useContact = () => {
     submitLoading,
     uploading,
     qrPreview,
+    qrPreview2,
     fetchContact,
     handleSubmit,
     handleReset,
