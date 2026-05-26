@@ -158,7 +158,7 @@ watch(
 
         <!-- 公司介绍 -->
         <div class="form-section">
-          <div class="section-title">关于海创荟</div>
+          <div class="section-title">关于海创梦工坊</div>
           <el-row>
             <el-col :span="24">
               <el-form-item prop="about">
@@ -166,7 +166,7 @@ watch(
                   v-model="formModel.about"
                   type="textarea"
                   :autosize="{ minRows: 4, maxRows: 10 }"
-                  placeholder="请输入公司简介，支持多行文本&#10;例如：海创荟致力于打造海外创新创业生态圈..."
+                  placeholder="请输入公司简介，支持多行文本&#10;例如：海创梦工坊致力于打造海外创新创业生态圈..."
                   clearable
                   maxlength="2000"
                   show-word-limit

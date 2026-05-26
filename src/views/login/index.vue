@@ -65,7 +65,7 @@ const {
 const { VITE_ENABLE_TENANT } = import.meta.env;
 
 const ruleForm = reactive({
-  tenant: "海创荟",
+  tenant: "海创梦工坊",
   username: "",
   password: "",
   verifyCode: ""

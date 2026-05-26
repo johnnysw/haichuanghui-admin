@@ -113,7 +113,7 @@ export const useContact = () => {
           if (!value) return callback();
           const trimmed = value.trim();
           if (trimmed.length > 2000) {
-            callback(new Error("关于海创荟介绍长度不能超过2000字符"));
+            callback(new Error("关于海创梦工坊介绍长度不能超过2000字符"));
             return;
           }
           callback();

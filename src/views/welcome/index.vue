@@ -201,7 +201,7 @@ onMounted(() => {
           {{ greeting }}，{{ username }}！
         </h1>
         <p class="welcome-subtitle">
-          欢迎使用海创荟管理后台系统
+          欢迎使用海创梦工坊管理后台系统
         </p>
         <p class="current-date">
           <IconifyIconOnline icon="fa-solid:calendar" width="14" class="mr-1" />
@@ -559,7 +559,7 @@ onMounted(() => {
               class="info-icon"
             />
             <div>
-              <div class="info-label">海创荟</div>
+              <div class="info-label">海创梦工坊</div>
               <div class="info-value">海外创新创业生态圈平台</div>
             </div>
           </div>
